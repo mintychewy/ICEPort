@@ -36,7 +36,7 @@ public class SplashScreen extends JWindow {
 			this.screenWidth = (int) screenDim.getWidth();
 			this.screenHeight = (int) screenDim.getHeight();
 			// Get splash screen image
-			splash = new ImageIcon(getClass().getResource("splash.png"));
+			splash = new ImageIcon(getClass().getResource("/images/splash.png"));
 			this.imgWidth = splash.getIconWidth();
 			this.imgHeight = splash.getIconHeight();
 			// Set preferred size of this component(TransparentBGScreen) to be
