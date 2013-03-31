@@ -4,6 +4,7 @@ import iceworld.ICEWorldView;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -12,6 +13,7 @@ import javax.swing.JPanel;
 @SuppressWarnings("serial")
 public class ApplicationMainFrame extends JFrame{
 	public static ICEWorldView view;
+	public JPanel bottomPanel;
 	public final Dimension mainFrameDimension = new Dimension(900,750);
 	final static String VERSION = "0.1a";
 	
@@ -40,14 +42,24 @@ public class ApplicationMainFrame extends JFrame{
 		
 		setLayout(new BorderLayout());
 		
+		// Add the main ICEWorld View 
 		view = new ICEWorldView();
-		
 		add(view, BorderLayout.CENTER);
 		
+
+		// Bottom panel containing chat and controls panels
+		bottomPanel = new JPanel();
+		bottomPanel.setLayout(new GridLayout(2,1,0,0));
+		
+		// Add the chat panel
 		ChatPanel chat = new ChatPanel();
+		bottomPanel.add(chat);
 		
-		add(chat, BorderLayout.SOUTH);
+		// Add Additional Controls Panel
+		ControlsPanel control = new ControlsPanel();
+		bottomPanel.add(control);
 		
+		add(bottomPanel, BorderLayout.SOUTH);
 		pack();
 	}
 	

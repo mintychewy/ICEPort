@@ -23,11 +23,15 @@ public class ChatPanel extends JPanel{
 		
 		field = new JTextField();
 		sendButton = new JButton("Send");
-		buttonGroup = new ButtonGroup();
+		
 		talk = new JRadioButton("Talk");
 		yell = new JRadioButton("Yell");
+		
+		/*
+		buttonGroup = new ButtonGroup();
 		buttonGroup.add(talk);
 		buttonGroup.add(yell);
+		*/
 		
 		buttonPanel = new JPanel();
 		buttonPanel.add(talk);

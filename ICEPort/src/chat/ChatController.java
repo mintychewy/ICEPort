@@ -9,8 +9,8 @@ public class ChatController implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-	
+		
+		// Get the message string from the chatbox
 		ApplicationMainFrame.view.chatMessage = ChatPanel.getMessage();
 		ApplicationMainFrame.view.repaint();
 	}
