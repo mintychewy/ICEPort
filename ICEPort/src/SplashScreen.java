@@ -1,6 +1,7 @@
 import java.awt.*;
 import javax.swing.*;
 
+@SuppressWarnings("serial")
 public class SplashScreen extends JWindow {
 
 	public SplashScreen() {
