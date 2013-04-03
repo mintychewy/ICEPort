@@ -12,7 +12,7 @@ public class ImageLoader {
 	public static BufferedImage loadImageFromLocal(String path){
 		BufferedImage image = null;
 
-		URL url = ClassLoader.getSystemClassLoader().getResource("/images/green-tile.png");
+		URL url = ClassLoader.getSystemClassLoader().getResource(path);
 		try {
 			image = ImageIO.read(new File(url.toString().substring(5)));
 		} catch (IOException e) {
