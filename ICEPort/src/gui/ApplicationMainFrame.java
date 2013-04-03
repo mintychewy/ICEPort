@@ -29,6 +29,7 @@ public class ApplicationMainFrame extends JFrame{
 		*/
 		
 		initGUI();
+		//setResizable(false);
 		setVisible(true);
 	}
 	
