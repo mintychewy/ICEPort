@@ -65,6 +65,7 @@ public class LoggingInOut {
 		JButton buttonInhabitant = new JButton("Inhabitant");
 		JButton buttonAlien = new JButton("Alien");
 		JButton buttonOK = new JButton("OK"); 
+		JButton logOut = new JButton("Log out"); 
 		final JTextField t1 = new JTextField("username");
 		final JTextField t2 = new JTextField("password");
 		
@@ -93,6 +94,11 @@ public class LoggingInOut {
 			} 
 		}); 
 		
+		buttonInhabitant.addActionListener(new ActionListener() { 
+			public void actionPerformed(ActionEvent e) { 
+				ICEWorld.logout();
+			} 
+		});
 		
 		///////////////////////////////////////////////////////////////////////////////	
 		  
