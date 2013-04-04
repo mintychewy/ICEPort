@@ -15,6 +15,7 @@ public class LoggingInOut {
 	private String username;
 	private String password;
 	public boolean isInhabitant = false;
+	//public LogFile history = new LogFile();
 	
 	
 	public LoggingInOut(){
@@ -24,7 +25,8 @@ public class LoggingInOut {
 	//private Inhabitants moi = new Inhabitants();
 	//Inhabitants.loggingIn(username, password);
 
-	//Verify the username and name in the file of the studentlist
+	
+	
 	public void main(String[] args){
 		
 	//Pick the username and the name 
@@ -48,10 +50,27 @@ public class LoggingInOut {
 			} 
 		}); 
 		
-			
-	
+		///////////////////////////////////////////////////////////////////////////////	
+		 try {
+	           
+	            	Thread login = new Thread() {
+	                    public void run() {
+	                    	
+	                            try {
+	                            	
+	                            } catch (Exception e) {}
+	                     }  
+	                };
+	            
+		 } catch(Exception e) {
+	      
+	        }
+	        
+	        //System.out.println("Done processing alien's data.");
+	    
+	 ///////////////////////////////////////////////////////////////////////////////////////////////////
 		
-	//Verify the username and password in the list!
+	//Verify the username and password in the list! LG2-3
     String garder = "";
 	String filePath = "ListStudent.txt";
 		
@@ -102,12 +121,18 @@ public class LoggingInOut {
           System.out.println(e.getMessage()); 
           System.exit(1); 
        } 
-	
 		
     
-			
+    //Keep History in a logfile LG5
+    if (isInhabitant == true){
+    	try {
+			LogFile.write(username);
+			LogFile.write(password);
+		} 
+    	catch (IOException e1) {}
+    }
 	}
-		
 	
+	//Mistakes in username and password LG7
 		
 }
