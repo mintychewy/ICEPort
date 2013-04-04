@@ -1,13 +1,17 @@
 package iceworld;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.JPanel;
 
@@ -15,96 +19,194 @@ import objects.ICEtizen;
 import objects.Map;
 import util.Scaler;
 
-public class ICEWorldView extends JPanel implements MouseListener, MouseMotionListener{
-	
-	final Dimension ICEWORLD_VIEW_SIZE = new Dimension(900,600);
-	public double scale_factor = 1;
-	public String chatMessage;
-	public int avatarPosX;
-	public int avatarPosY;
-	public int deltaX = 0;
-	public int deltaY = 0;
+public class ICEWorldView extends JPanel implements MouseListener, MouseMotionListener, KeyListener {
+
+	// The current representation of ICEWorld
+	Map world;
+	// The background tiles used for adaptive tile replacement
 	Map map;
-	BufferedImage usersView;
+	// What users will see
+	BufferedImage viewport;
 
-	public ICEWorldView(){
-		setPreferredSize(ICEWORLD_VIEW_SIZE);
-		this.addMouseListener(this);
-		this.addMouseMotionListener(this);
-		map = new Map();
-	}	
-	
-	public void updateScaleFactor(double scale_factor){
-		this.scale_factor = scale_factor;
-	}
 
-	public void paintComponent(Graphics g){
-		super.paintComponent(g);
-	
-		Graphics2D g2 = (Graphics2D) g;
-		//BufferedImage scaledMap = Scaler.scaleBufferedImage(map.mapImage,1);
-		//g.drawImage(scaledMap,0,0,null);
-		
-		g.drawImage(usersView,0,0,null);
-		
-		ICEtizen icetizen = new ICEtizen();
-		g.drawImage(icetizen.avatar, avatarPosX, avatarPosY, this);
-		
-		g.setColor(Color.BLACK);
-		if(chatMessage != null)
-			g.drawString(chatMessage,avatarPosX,avatarPosY);
-	
-		
+	/*
+	public void updateChat(Graphics2D g2, String message) {
+		g2.setColor(Color.BLACK);
+		if (chatMessage != null)
+			g2.drawString(chatMessage, States.activeUserPosition.x,
+					States.activeUserPosition.y);
 	}
+	*/
 
 	@Override
-	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-	
-	}
+	public void mouseClicked(MouseEvent e) { }
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		avatarPosX = e.getPoint().x-47;
-		avatarPosY = e.getPoint().y-60;
-		repaint();
+		States.activeUserLastKnownPosition = States.activeUserPosition;
+
+		if (States.activeUserIsWalking == false) {
+			States.activeUserIsWalking = true;
+			walk();
+		}
+
+		updateWorld();
+	}
+
+	Timer timer;
+
+	public void walk() {
+		long myLong = 100;
+
+		timer = new Timer();
+		timer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				// if(States.avatarPosX == States.destinationX){
+
+				if (States.activeUserPosition.y == 25) {
+					States.activeUserIsWalking = false;
+					this.cancel();
+				}
+
+				if (States.activeUserPosition.x < States.activeUserDestination.x
+						&& States.activeUserPosition.y < States.activeUserDestination.y) {
+					// States.avatarPosX+= 1;
+					States.activeUserPosition.y += 1;
+				} else if (States.activeUserPosition.x < States.activeUserDestination.x
+						&& States.activeUserPosition.y == States.activeUserDestination.y) {
+					// States.avatarPosX+= 1;
+
+				} else {
+					States.activeUserPosition.y += 1;
+				}
+				// "-10" because of patchup bug
+				// States.avatarLastKnownLocationX = States.avatarPosX-10;
+				States.activeUserLastKnownPosition.y = States.activeUserPosition.y;
+
+				updateWorld();
+			}
+		}, 0, myLong);
+
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	Point currentPoint;
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+	}
+
+	/**
+	 * This method draws logged-in ICEtizens and Aliens on the World Image
+	 */
+	public void populateWorld(Graphics2D g2) {
+
+		patchCitizens(g2);
+
+		ICEtizen icetizen = new ICEtizen();
+		// ICEtizen icetizen2 = new ICEtizen();
+
+		// converts tileSpace to screenSpace coordinates
+		Point pos = Scaler.toScreenSpace(States.activeUserPosition);
+		g2.drawImage(icetizen.avatar, pos.x - Constants.AVATAR_OFFSET_X, pos.y
+				- Constants.AVATAR_OFFSET_Y, this);
+		// g2.drawImage(icetizen2.avatar, States.avatar1PosX,
+		// States.avatar1PosY,this);
+	}
+
+	/**
+	 * Puts empty tiles (from original map) in place of ICEtizens/Aliens This
+	 * avoids having to render a new world every time the world updates (aka.
+	 * Adaptive tile replacement)
+	 */
+	public void patchCitizens(Graphics2D g2) {
+
+		// This is just a demonstration of only one ICEtizen
+		// Real implementation requires iteration over a List
+		BufferedImage patchUp = Camera.getAvatarPatchImage(map.mapImage,
+				States.activeUserLastKnownPosition.x,
+				States.activeUserLastKnownPosition.y);
+		g2.drawImage(patchUp, States.activeUserLastKnownPosition.x,
+				States.activeUserLastKnownPosition.y, null);
 	}
 
 	@Override
-	public void mouseExited(MouseEvent e) {
+	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	// TODO Mouseover tile-highlighting
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		Panning.pan(e);
+		updateWorld();
 	}
 
 	@Override
-	public void mouseDragged(MouseEvent e) {
+	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
-		deltaX += 5;
+
+	}
+
+	public ICEWorldView() {
+		setPreferredSize(Constants.ICEWORLD_VIEWPORT_SIZE);
+		this.addMouseListener(this);
+		this.addMouseMotionListener(this);
+		this.addKeyListener(this);
+		setFocusable(true);
+		// initialise world
+		map = new Map();
+		world = new Map();
+		// set initial camera view position for viewport
+		States.deltaX = States.activeUserPosition.x;
+		States.deltaY = States.activeUserPosition.y;
+		updateWorld();
+	}
+
+	public void updateWorld() {
+		Graphics2D g2 = (Graphics2D) world.mapImage.getGraphics();
+
+		// Update ICEtizen/Alien positions
+		populateWorld(g2);
 		
-		usersView = Camera.getSubImage(map.mapImage,deltaX,deltaY);
+		// Update chat
+		// updateChat(g2);
+		
+		// Update yell
+		// updateYell(g2);
+
+		// Show update
+		viewport = Camera.getSubImage(world.mapImage, States.deltaX,
+				States.deltaY);
+		
 		repaint();
 	}
-
-	@Override
-	public void mouseMoved(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
 	
-
-
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		g.drawImage(viewport, 0, 0, null);
+	}
+	
 }

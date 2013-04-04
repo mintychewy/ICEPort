@@ -10,6 +10,8 @@ import java.net.URL;
 
 import javax.imageio.ImageIO;
 
+import util.ImageLoader;
+
 public class ICEtizen {
 	public Image avatar;
 	BufferedImage avatarImage;
@@ -22,13 +24,7 @@ public class ICEtizen {
 	}
 
 	public void loadResources(){
-		URL url = this.getClass().getResource("/images/test-icetizen.png");
-			try {
-				avatar = ImageIO.read(new File(url.toString().substring(5)));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}	
-	
+		avatar = ImageLoader.loadImageFromLocal("images/test-icetizen.png");
 	}
 	
 	

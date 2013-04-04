@@ -1,5 +1,7 @@
 package gui;
 
+import iceworld.ChatController;
+
 import java.awt.BorderLayout;
 
 import javax.swing.ButtonGroup;
@@ -8,7 +10,6 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
-import chat.ChatController;
 @SuppressWarnings("serial")
 public class ChatPanel extends JPanel{
 	

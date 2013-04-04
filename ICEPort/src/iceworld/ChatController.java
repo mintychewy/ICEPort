@@ -1,4 +1,4 @@
-package chat;
+package iceworld;
 
 import gui.ChatPanel;
 import gui.ApplicationMainFrame;
@@ -11,7 +11,7 @@ public class ChatController implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		
 		// Get the message string from the chatbox
-		ApplicationMainFrame.view.chatMessage = ChatPanel.getMessage();
+		//ApplicationMainFrame.view.chatMessage = ChatPanel.getMessage();
 		ApplicationMainFrame.view.repaint();
 	}
 
