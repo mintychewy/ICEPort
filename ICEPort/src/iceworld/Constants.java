@@ -9,6 +9,10 @@ public class Constants {
 	
 	public final static Dimension WORLD_SIZE = new Dimension(6480,4320);
 	
+	// MiniMap
+	public final static Dimension MINIMAP_SIZE = new Dimension(270,180);
+	public final static double MINIMAP_SCALE_FACTOR = (double)MINIMAP_SIZE.height/WORLD_SIZE.height;
+	
 	public static final int NUM_TILES = 100;
 	// must be modifiable at any time (for zooming)
 	public static int TILE_HEIGHT = 32;

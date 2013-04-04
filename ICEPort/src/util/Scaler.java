@@ -148,4 +148,13 @@ public class Scaler {
 		           +a[2][0] * (a[0][1] * a[1][2] - a[1][1] * a[0][2]));
 	}
 	
+	/**
+	 * Converts a map-coordinate Point to a minimap Point (in pixels)
+	 * @param mapPoint map-coordinate Point
+	 * @return MiniMap (pixel) coordinate Point
+	 */
+	public static Point toMiniMapPoint(Point mapPoint){
+		return scalePoint(mapPoint,Constants.MINIMAP_SCALE_FACTOR);
+	}
+	
 }
