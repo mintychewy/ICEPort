@@ -1,61 +1,41 @@
 package util;
 
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
+import javax.swing.JPanel;
 
-public class AvatarLoader extends ImageLoader{
-	String uri; 
+public class AvatarLoader extends JPanel{
 	
-	static BufferedImage head,body,weapon,headgear,overall;
-	
-	public static void avatarPart(String H, String B, String S, String W){
-		head= loadImageFromLocal(H);
-		body= loadImageFromRemote(B);
-		weapon= loadImageFromRemote(W);
-		headgear=loadImageFromRemote(H);	
+	String[] shirtList={"t_ice","t_appro","t_ice2","armor2"};
+	String[] bodyList={"orangy","blue","orangy","pale"};
+	String[] headList={"crown1","crown2","hat1","bighair1"};
+	String[] weaponList={"hammer4","sword2","stick3","sabre2"};
+	int shirtCount=0,weaponCount=0,bodyCount=0,headCount=0;
+	static BufferedImage head,body,weapon,shirt,background;	
+	public static void loadBufferedImage(String H, String B, String S, String W, String BG){
+		head= ImageLoader.loadImageFromRemote(H);
+		body= ImageLoader.loadImageFromRemote(B);
+		weapon= ImageLoader.loadImageFromRemote(W);
+		shirt=ImageLoader.loadImageFromRemote(S);	
+		background=ImageLoader.loadImageFromRemote(BG);
 		
 	}
 	
-	public static JFrame makeAvatar(){
-		avatarPart( null,null,null,null);
-		JFrame frame=new JFrame();
-		frame.setSize(400,400);
-		frame.getContentPane().add(new JLabel(new ImageIcon(head)));
-		frame.getContentPane().add(new JLabel(new ImageIcon(body)));
-		frame.getContentPane().add(new JLabel(new ImageIcon(weapon)));
-		frame.getContentPane().add(new JLabel(new ImageIcon(headgear)));
-		frame.pack();
-		frame.setVisible(true);
-		return frame;
-
-	}
-	
-	public static void main(String[] args){
-		makeAvatar();
-		/*
-		BufferedImage img = null;
-		try {
-			img = ImageIO.read(new URL(" http://iceworld.sls-atl.com/api/&cmd=gurl&gid=H008"));
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		JFrame x=new JFrame();
-		x.setSize(400,400);
-		x.setVisible(true);
-		*/
-	
-	}
+	public void paintComponent(Graphics g){
+		super.paintComponent(g);
+		String shirtURL="http://iceworld.sls-atl.com/graphics/shirt/"+shirtList[shirtCount]+".png";
+		String bodyURL="http://iceworld.sls-atl.com/graphics/body/"+bodyList[bodyCount]+".png";
+		String headURL="http://iceworld.sls-atl.com/graphics/head/"+headList[headCount]+".png";
+		String weaponURL="http://iceworld.sls-atl.com/graphics/weapon/"+weaponList[weaponCount]+".png";
+		String bgURL="";
+		loadBufferedImage(headURL,bodyURL,shirtURL,weaponURL,bgURL);
+		g.drawImage(background, 80, 50, this);
+		g.drawImage(body, 80, 50, this);
+        g.drawImage(head, 80, 40, this);
+        g.drawImage(shirt, 80, 50, this);
+        g.drawImage(weapon, 70, 50, this);
+    }
 	
 	
 	

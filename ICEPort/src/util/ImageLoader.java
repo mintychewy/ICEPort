@@ -27,7 +27,7 @@ public class ImageLoader {
 
 		
 		try {
-			image = ImageIO.read(new File(uri));
+			image = ImageIO.read(new URL(uri));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}	
