@@ -29,6 +29,7 @@ public class LoggingInOut {
 	private String username;
 	private String password;
 	public boolean isInhabitant = false;
+	public boolean isAlien = false;
 	public int nbOfTimes=0;
 	public ArrayList<Integer> time = new ArrayList<Integer>();
 	//public LogFile history = new LogFile();
@@ -78,8 +79,8 @@ public class LoggingInOut {
 		
 		buttonAlien.addActionListener(new ActionListener() { 
 			public void actionPerformed(ActionEvent e) { 
-				username = " ";
-				password=" ";
+				isAlien = true;
+				immigration.loginAlien();
 			} 
 		}); 
 		
@@ -102,7 +103,7 @@ public class LoggingInOut {
 		
 		///////////////////////////////////////////////////////////////////////////////	
 		  
-		
+		while(isInhabitant == false){
 		 try {
 			 Thread login = new Thread() {
 				 public void run() {
@@ -152,14 +153,12 @@ public class LoggingInOut {
 					    		
 						 }catch (IOException e1) {}
 					 }
-					 else{
-						 immigration.loginAlien();
-					 }
+					 
 	          	 } 
 		 		};
 		 
 		    int timeSize=time.size();
-			if (nbOfTimes<3 && time.get(timeSize)-time.get(timeSize -1)< 180) {
+			if (nbOfTimes<3 && time.get(timeSize)-time.get(0)< 180) {
 				login.start(); // cool you can loggin
 			}
 			else{
@@ -172,7 +171,7 @@ public class LoggingInOut {
 		 }
 		 catch(Exception e) {}
 	///////////////////////////////////////////////////////////////////////////////////////////////////
-	
+		}
 	
 	}
 	//Mistakes in username and password LG7
