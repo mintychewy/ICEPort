@@ -3,22 +3,24 @@ package util;
 import java.awt.image.BufferedImage;
 import objects.Map;
 
-public class Patcher extends Camera {
-	final int x;
-	final int y;
+public class Patcher {
+	final int width;
+	final int height;
+	BufferedImage sourceImage; 
 	
 	public Patcher(){
-	 this.x = Map.WORLD_SIZE.width;
-	 this.y = Map.WORLD_SIZE.height;
+	 this.width = Map.WORLD_SIZE.width;
+	 this.height = Map.WORLD_SIZE.height;
 	}
 	
-	public Patcher(int x, int y){
-		this.x = x;
-		this.y = y;
+	public Patcher(BufferedImage sourceImage, int width, int height){
+		this.sourceImage = sourceImage;
+		this.width = width;
+		this.height = height;
 	}
 	
-	public BufferedImage patch(BufferedImage sourceImage){
-		BufferedImage patch = getSubImage(sourceImage, x, y);
+	public BufferedImage patch(int originX, int originY){
+		BufferedImage patch = sourceImage.getSubimage(originX, originY, width, height);
 		return patch;
 	}
 

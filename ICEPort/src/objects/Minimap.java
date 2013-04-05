@@ -52,7 +52,7 @@ public class Minimap {
 
 		Graphics2D g= mapImage.createGraphics();
 		// Active ICEtizen's position dot 
-		Point activeUserPos = Scaler.toMiniMapPoint(Scaler.toScreenSpace(States.activeUserPosition));
+		Point activeUserPos = Scaler.toMiniMapPoint(Scaler.toScreenSpace(new Point(20,10)));
 
 		g.setColor(Color.WHITE);
 		g.fillOval(activeUserPos.x- POSITION_DOT_STROKE_SIZE/2, activeUserPos.y- POSITION_DOT_STROKE_SIZE/2, POSITION_DOT_STROKE_SIZE, POSITION_DOT_STROKE_SIZE);

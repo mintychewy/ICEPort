@@ -48,9 +48,7 @@ public class Scaler {
 	 * @param map destination map
 	 * @return map Point
 	 */
-	public static Point toMapPoint(Point screenspacePoint){
-		int deltaX = States.deltaX;
-		int deltaY = States.deltaY;
+	public static Point toMapPoint(Point screenspacePoint, int deltaX, int deltaY){
 		return new Point(deltaX+screenspacePoint.x,deltaY+screenspacePoint.y);
 	}
    

@@ -19,85 +19,86 @@ import objects.Entity;
 import objects.ICEtizen;
 import objects.Map;
 import objects.Minimap;
-import util.Camera;
-import util.Constraints;
 import util.ImageLoader;
 import util.Patcher;
 import util.Scaler;
 
-public class ICEWorldView extends JPanel implements MouseListener, MouseMotionListener, KeyListener {
+public class ICEWorldView extends JPanel implements MouseListener,
+		MouseMotionListener, KeyListener {
+
+	private static final long serialVersionUID = 5658988277615488303L;
 
 	Minimap minimap;
 	// The current representation of ICEWorld
 	Map world;
 	// The background tiles used for adaptive tile replacement
 	Map map;
-	// What users will see
+
+	ICEtizen me; 
+	
 	Panner panner;
 	Patcher avatarPatcher;
 	BufferedImage viewport;
-	
-
-
-	public final static Dimension ICEWORLD_VIEWPORT_SIZE = new Dimension(900,600);
 
 	
+	public static int deltaX = 0;
+	public static int deltaY = 0;
+	
+	public final static Dimension ICEWORLD_VIEWPORT_SIZE = new Dimension(900,
+			600);
+
 	public ICEWorldView() {
 		setPreferredSize(ICEWORLD_VIEWPORT_SIZE);
+		
+		// add listeners
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
 		this.addKeyListener(this);
 		setFocusable(true);
+	
 		// initialise world
 		map = new Map();
 		world = new Map();
 		minimap = new Minimap();
-		// panner
-		panner = new Panner();
+
 		// patchers
-		avatarPatcher = new Patcher(Entity.AVATAR_SIZE.width,Entity.AVATAR_SIZE.height);
+		avatarPatcher = new Patcher(map.getImage(),Entity.AVATAR_SIZE.width,
+				Entity.AVATAR_SIZE.height);
+		
 		// set initial camera view position for viewport
-		States.deltaX = States.activeUserPosition.x;
-		States.deltaY = States.activeUserPosition.y;
+		populateWorld((Graphics2D)world.getImage().getGraphics());
+
+		deltaX = States.currentPost.x;
+		deltaY = States.currentPost.y;
+		
+		// panner
+		panner = new Panner(world.getImage());
 		updateWorld();
 	}
 
-	
-	
-
-	/*
-	public void updateChat(Graphics2D g2, String message) {
-		g2.setColor(Color.BLACK);
-		if (chatMessage != null)
-			g2.drawString(chatMessage, States.activeUserPosition.x,
-					States.activeUserPosition.y);
-	}
-	*/
-
 	@Override
-	public void mouseClicked(MouseEvent e) { }
+	public void mouseClicked(MouseEvent e) {
+	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
 
-		States.activeUserLastKnownPosition = States.activeUserPosition;
+		States.activeUserLastKnownPosition = States.currentPost;
 
-		if(minimap.isMinimapClicked(e)){
+
+		if (minimap.isMinimapClicked(e)) {
 			// set destination
-			
+
 			// walk to destination
 			walk();
 		}
-		
-		
+
 		if (States.activeUserIsWalking == false) {
 			States.activeUserIsWalking = true;
-			//walk();
-		}else{
+			 walk();
+		} else {
 			/*
-			 * 1. get timer
-			 * 2. cancel task
-			 * 3. schedule a new task
+			 * 1. get timer 2. cancel task 3. schedule a new task
 			 */
 		}
 
@@ -113,29 +114,35 @@ public class ICEWorldView extends JPanel implements MouseListener, MouseMotionLi
 		timer.schedule(new TimerTask() {
 			@Override
 			public void run() {
-				// if(States.avatarPosX == States.destinationX){
-
-				if (States.activeUserPosition.y == 89) {
+				
+				// 1. see which direction the avatar has to walk
+				
+				// 2. increment of both X and Y positions until
+				// the destination is reached
+				
+				if (States.currentPost.y == 89) {
 					States.activeUserIsWalking = false;
 					this.cancel();
 				}
 
-				if (States.activeUserPosition.x < States.activeUserDestination.x
-						&& States.activeUserPosition.y < States.activeUserDestination.y) {
-					// States.avatarPosX+= 1;
-					States.activeUserPosition.y += 1;
-				} else if (States.activeUserPosition.x < States.activeUserDestination.x
-						&& States.activeUserPosition.y == States.activeUserDestination.y) {
-					// States.avatarPosX+= 1;
+				if (States.currentPost.x < States.activeUserDestination.x
+						&& States.currentPost.y < States.activeUserDestination.y) {
+					 States.currentPost.y+= 1;
+					States.currentPost.y += 1;
+				} else if (States.currentPost.x < States.activeUserDestination.x
+						&& States.currentPost.y == States.activeUserDestination.y) {
+					 States.currentPost.x+= 1;
 
 				} else {
-					States.activeUserPosition.y += 1;
+					States.currentPost.y += 1;
 				}
 
-				System.out.println(States.activeUserLastKnownPosition.toString());
-				States.activeUserLastKnownPosition = States.activeUserPosition;
-				System.out.println("UPDATED "+ States.activeUserLastKnownPosition.toString());
-				
+				System.out.println(States.activeUserLastKnownPosition
+						.toString());
+				States.activeUserLastKnownPosition = States.currentPost;
+				System.out.println("UPDATED "
+						+ States.activeUserLastKnownPosition.toString());
+
 				updateWorld();
 			}
 		}, 0, myLong);
@@ -143,16 +150,20 @@ public class ICEWorldView extends JPanel implements MouseListener, MouseMotionLi
 	}
 
 	@Override
-	public void mouseReleased(MouseEvent e) {}
+	public void mouseReleased(MouseEvent e) {
+	}
 
 	@Override
-	public void mouseDragged(MouseEvent e) {}
+	public void mouseDragged(MouseEvent e) {
+	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
 	}
 
-	BufferedImage redtile = ImageLoader.loadImageFromLocal("images/red-tile.png");
+	BufferedImage redtile = ImageLoader
+			.loadImageFromLocal("images/red-tile.png");
+
 	@Override
 	public void mouseMoved(MouseEvent e) {
 
@@ -170,11 +181,11 @@ public class ICEWorldView extends JPanel implements MouseListener, MouseMotionLi
 
 		patchCitizens(g2);
 
-		ICEtizen icetizen = new ICEtizen();
-		
+		me = new ICEtizen();
+
 		// converts tileSpace to screenSpace coordinates
-		Point pos = Scaler.toScreenSpace(States.activeUserPosition);
-		g2.drawImage(icetizen.avatar, pos.x - Entity.AVATAR_OFFSET_X, pos.y
+		Point pos = Scaler.toScreenSpace(States.currentPost);
+		g2.drawImage(me.avatar, pos.x - Entity.AVATAR_OFFSET_X, pos.y
 				- Entity.AVATAR_OFFSET_Y, this);
 
 	}
@@ -186,14 +197,15 @@ public class ICEWorldView extends JPanel implements MouseListener, MouseMotionLi
 	 */
 	public void patchCitizens(Graphics2D g2) {
 
-		Point screenspacePoint = Scaler.toMapPoint(new Point(States.activeUserLastKnownPosition.x, States.activeUserLastKnownPosition.y));
-		
+		Point screenspacePoint = Scaler.toMapPoint(new Point(
+				States.activeUserLastKnownPosition.x,
+				States.activeUserLastKnownPosition.y), deltaX, deltaY);
+
 		// This is just a demonstration of only one ICEtizen
 		// Real implementation requires iteration over a List
-		BufferedImage patchUp = avatarPatcher.patch(map.mapImage);
-				
-		g2.drawImage(patchUp, screenspacePoint.x,
-				screenspacePoint.y, null);
+		BufferedImage patchUp = avatarPatcher.patch(screenspacePoint.x,screenspacePoint.y);
+
+		g2.drawImage(patchUp, screenspacePoint.x, screenspacePoint.y, null);
 	}
 
 	@Override
@@ -202,11 +214,10 @@ public class ICEWorldView extends JPanel implements MouseListener, MouseMotionLi
 
 	}
 
-	
 	@Override
 	public void keyPressed(KeyEvent e) {
 		panner.pan(e);
-		
+
 		updateWorld();
 	}
 
@@ -217,37 +228,38 @@ public class ICEWorldView extends JPanel implements MouseListener, MouseMotionLi
 	}
 
 	public void updateWorld() {
-		Graphics2D g2 = (Graphics2D) world.mapImage.getGraphics();
+		Graphics2D g2 = (Graphics2D) world.getImage().getGraphics();
 
 		// Update ICEtizen/Alien positions
 		populateWorld(g2);
-		
+
 		// Update MiniMap
-	
+
 		// Update chat
 		// updateChat(g2);
-		
+
 		// Update yell
 		// updateYell(g2);
 
 		// Show update
-		viewport = panner.getWorldViewport(world.mapImage);
-	
+		viewport = panner.getWorldViewport();
+
 		updateMiniMap();
-		
+
 		repaint();
 	}
-	
-	public void updateMiniMap(){
+
+	public void updateMiniMap() {
 		minimap.updateMiniMap();
 	}
-	
+
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		minimap = new Minimap();
-		
+
 		g.drawImage(viewport, 0, 0, null);
-		g.drawImage(minimap.getImage(),ICEWORLD_VIEWPORT_SIZE.width-Minimap.MINIMAP_SIZE.width-10,10,null);
+		g.drawImage(minimap.getImage(), ICEWORLD_VIEWPORT_SIZE.width
+				- Minimap.MINIMAP_SIZE.width - 10, 10, null);
 	}
-	
+
 }
