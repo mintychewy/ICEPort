@@ -1,11 +1,18 @@
 package gui;
 
+import iceworld.HelpDialog;
+
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
+import javax.swing.JDialog;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
+
 
 @SuppressWarnings("serial")
 public class CustomMenuBar extends JMenuBar{
@@ -18,10 +25,33 @@ public class CustomMenuBar extends JMenuBar{
 	JMenu helpMenu;
 	JMenuItem quitMenuItem, userManualMenuItem, aboutMenuItem;
 	
+	// Windows
+	HelpDialog helpDialog;
+	JDialog x;
 	public CustomMenuBar(){
 		setMenuBarGUI();
+		addListeners();
 	}
 	
+	private void addListeners(){
+		userManualMenuItem.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				helpDialog = new HelpDialog();
+				x = new JDialog();
+				x.add(helpDialog);
+				x.pack();
+				x.setVisible(true);
+			}
+			
+		});
+	}
+	
+	
+	
+	
+
 	public void setMenuBarGUI(){
 	
 		settingsMenu = new JMenu("Settings");
