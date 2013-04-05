@@ -10,6 +10,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import util.Sound;
+
 @SuppressWarnings("serial")
 public class ApplicationMainFrame extends JFrame{
 	public static ICEWorldView view;
@@ -18,6 +20,10 @@ public class ApplicationMainFrame extends JFrame{
 	final static String VERSION = "0.1a";
 	
 	public JButton logoutButton, sendButton, soundButton, zoomInButton, zoomOutButton, setZoomButton; 
+	
+	
+	// sound
+	public Sound sound;
 	
 	public ApplicationMainFrame(){
 		super("ICE Port - version "+VERSION+" by Cerntainly");
@@ -29,7 +35,13 @@ public class ApplicationMainFrame extends JFrame{
 		*/
 		
 		initGUI();
+		
+		// setResizable(true) for debugging purpose
 		//setResizable(false);
+		
+		
+		// start playing BGM
+		sound = new Sound("music/grooving.wav");
 		setVisible(true);
 	}
 	
