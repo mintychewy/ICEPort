@@ -1,22 +1,15 @@
 package objects;
 
-import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-
-import javax.imageio.ImageIO;
 
 import util.ImageLoader;
 
-public class ICEtizen {
+public class ICEtizen extends Entity{
 	public Image avatar;
 	BufferedImage avatarImage;
 	
-	String H,B,W,S;
+	String B,S,H,W;
 
 	public ICEtizen(){
 		avatarImage =  new BufferedImage(95,120,BufferedImage.TYPE_INT_ARGB);
@@ -27,5 +20,8 @@ public class ICEtizen {
 		avatar = ImageLoader.loadImageFromLocal("images/test-icetizen.png");
 	}
 	
+	public void walk(){
+		
+	}
 	
 }

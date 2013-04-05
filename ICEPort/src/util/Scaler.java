@@ -1,12 +1,14 @@
 package util;
 
-import iceworld.Constants;
 import iceworld.States;
 
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+
+import objects.Map;
+import objects.Minimap;
 
 public class Scaler {
 	
@@ -62,15 +64,15 @@ public class Scaler {
 	public static Point toScreenSpace(Point tilePoint){
 		// see logic below
 		
-		int w = Constants.TILE_WIDTH/2;
-		int h = Constants.TILE_HEIGHT/2;
-		int fx = Constants.OFFSET_FROM_ORIGIN_X;
-		int fy = Constants.OFFSET_FROM_ORIGIN_Y;
+		int w = Map.TILE_WIDTH/2;
+		int h = Map.TILE_HEIGHT/2;
+		int fx = Map.OFFSET_FROM_ORIGIN_X;
+		int fy = Map.OFFSET_FROM_ORIGIN_Y;
 		int x = (tilePoint.x * w + tilePoint.y * -w + fx); 
 		int y = (tilePoint.x * h + tilePoint.y * h + fy);
 		
 		// centre of the tile
-		y += Constants.TILE_HEIGHT/2;
+		y += Map.TILE_HEIGHT/2;
 
 		return new Point(x,y);
 	}
@@ -127,11 +129,11 @@ public class Scaler {
 		 */
 		
 		// 1/det|A|
-		double iDet = (1.0/(2*(Constants.TILE_HEIGHT/2)*(Constants.TILE_WIDTH/2)));
+		double iDet = (1.0/(2*(Map.TILE_HEIGHT/2)*(Map.TILE_WIDTH/2)));
 		
-		int a = (int) ((iDet)*(screenspacePoint.x*Constants.TILE_HEIGHT/2 + screenspacePoint.y*Constants.TILE_WIDTH/2 - (Constants.OFFSET_FROM_ORIGIN_X+Constants.OFFSET_FROM_ORIGIN_Y*2)*(Constants.TILE_HEIGHT/2)));
-		int b = (int) ((iDet)*(screenspacePoint.x*-Constants.TILE_HEIGHT/2 + screenspacePoint.y*Constants.TILE_WIDTH/2 + (Constants.OFFSET_FROM_ORIGIN_X-Constants.OFFSET_FROM_ORIGIN_Y*2)*(Constants.TILE_HEIGHT/2)));
-			
+		int a = (int) ((iDet)*(screenspacePoint.x*Map.TILE_HEIGHT/2 + screenspacePoint.y*Map.TILE_WIDTH/2 - (Map.OFFSET_FROM_ORIGIN_X+Map.OFFSET_FROM_ORIGIN_Y*2)*(Map.TILE_HEIGHT/2)));
+		int b = (int) ((iDet)*(screenspacePoint.x*-Map.TILE_HEIGHT/2 + screenspacePoint.y*Map.TILE_WIDTH/2 + (Map.OFFSET_FROM_ORIGIN_X-Map.OFFSET_FROM_ORIGIN_Y*2)*(Map.TILE_HEIGHT/2)));
+		
 		System.out.println("Tile Indices: ["+a+","+b+"]");
 		return new Point((int)a,b);
 	}
@@ -154,7 +156,7 @@ public class Scaler {
 	 * @return MiniMap (pixel) coordinate Point
 	 */
 	public static Point toMiniMapPoint(Point mapPoint){
-		return scalePoint(mapPoint,Constants.MINIMAP_SCALE_FACTOR);
+		return scalePoint(mapPoint,Minimap.MINIMAP_SCALE_FACTOR);
 	}
 	
 }

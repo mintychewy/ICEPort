@@ -18,5 +18,7 @@ public class States {
 
 	// TODO: hashmap for list of online users
 
-
+	public static void updateStates(){
+		
+	}
 }

@@ -1,5 +1,6 @@
 package iceworld;
 
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -14,22 +15,55 @@ import java.util.TimerTask;
 
 import javax.swing.JPanel;
 
+import objects.Entity;
 import objects.ICEtizen;
 import objects.Map;
-import objects.MiniMap;
+import objects.Minimap;
+import util.Camera;
+import util.Constraints;
 import util.ImageLoader;
+import util.Patcher;
 import util.Scaler;
 
 public class ICEWorldView extends JPanel implements MouseListener, MouseMotionListener, KeyListener {
 
-	MiniMap minimap;
+	Minimap minimap;
 	// The current representation of ICEWorld
 	Map world;
 	// The background tiles used for adaptive tile replacement
 	Map map;
 	// What users will see
+	Panner panner;
+	Patcher avatarPatcher;
 	BufferedImage viewport;
+	
 
+
+	public final static Dimension ICEWORLD_VIEWPORT_SIZE = new Dimension(900,600);
+
+	
+	public ICEWorldView() {
+		setPreferredSize(ICEWORLD_VIEWPORT_SIZE);
+		this.addMouseListener(this);
+		this.addMouseMotionListener(this);
+		this.addKeyListener(this);
+		setFocusable(true);
+		// initialise world
+		map = new Map();
+		world = new Map();
+		minimap = new Minimap();
+		// panner
+		panner = new Panner();
+		// patchers
+		avatarPatcher = new Patcher(Entity.AVATAR_SIZE.width,Entity.AVATAR_SIZE.height);
+		// set initial camera view position for viewport
+		States.deltaX = States.activeUserPosition.x;
+		States.deltaY = States.activeUserPosition.y;
+		updateWorld();
+	}
+
+	
+	
 
 	/*
 	public void updateChat(Graphics2D g2, String message) {
@@ -48,6 +82,14 @@ public class ICEWorldView extends JPanel implements MouseListener, MouseMotionLi
 
 		States.activeUserLastKnownPosition = States.activeUserPosition;
 
+		if(minimap.isMinimapClicked(e)){
+			// set destination
+			
+			// walk to destination
+			walk();
+		}
+		
+		
 		if (States.activeUserIsWalking == false) {
 			States.activeUserIsWalking = true;
 			//walk();
@@ -101,16 +143,10 @@ public class ICEWorldView extends JPanel implements MouseListener, MouseMotionLi
 	}
 
 	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-	}
-
-	Point currentPoint;
+	public void mouseReleased(MouseEvent e) {}
 
 	@Override
-	public void mouseDragged(MouseEvent e) {
-		// TODO Auto-generated method stub
-	}
+	public void mouseDragged(MouseEvent e) {}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
@@ -138,8 +174,8 @@ public class ICEWorldView extends JPanel implements MouseListener, MouseMotionLi
 		
 		// converts tileSpace to screenSpace coordinates
 		Point pos = Scaler.toScreenSpace(States.activeUserPosition);
-		g2.drawImage(icetizen.avatar, pos.x - Constants.AVATAR_OFFSET_X, pos.y
-				- Constants.AVATAR_OFFSET_Y, this);
+		g2.drawImage(icetizen.avatar, pos.x - Entity.AVATAR_OFFSET_X, pos.y
+				- Entity.AVATAR_OFFSET_Y, this);
 
 	}
 
@@ -151,11 +187,11 @@ public class ICEWorldView extends JPanel implements MouseListener, MouseMotionLi
 	public void patchCitizens(Graphics2D g2) {
 
 		Point screenspacePoint = Scaler.toMapPoint(new Point(States.activeUserLastKnownPosition.x, States.activeUserLastKnownPosition.y));
+		
 		// This is just a demonstration of only one ICEtizen
 		// Real implementation requires iteration over a List
-		BufferedImage patchUp = Camera.getAvatarPatchImage(map.mapImage,
-				screenspacePoint.x,
-				screenspacePoint.y);
+		BufferedImage patchUp = avatarPatcher.patch(map.mapImage);
+				
 		g2.drawImage(patchUp, screenspacePoint.x,
 				screenspacePoint.y, null);
 	}
@@ -169,7 +205,8 @@ public class ICEWorldView extends JPanel implements MouseListener, MouseMotionLi
 	
 	@Override
 	public void keyPressed(KeyEvent e) {
-		Panning.pan(e);
+		panner.pan(e);
+		
 		updateWorld();
 	}
 
@@ -177,22 +214,6 @@ public class ICEWorldView extends JPanel implements MouseListener, MouseMotionLi
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
 
-	}
-
-	public ICEWorldView() {
-		setPreferredSize(Constants.ICEWORLD_VIEWPORT_SIZE);
-		this.addMouseListener(this);
-		this.addMouseMotionListener(this);
-		this.addKeyListener(this);
-		setFocusable(true);
-		// initialise world
-		map = new Map();
-		world = new Map();
-		minimap = new MiniMap();
-		// set initial camera view position for viewport
-		States.deltaX = States.activeUserPosition.x;
-		States.deltaY = States.activeUserPosition.y;
-		updateWorld();
 	}
 
 	public void updateWorld() {
@@ -210,9 +231,7 @@ public class ICEWorldView extends JPanel implements MouseListener, MouseMotionLi
 		// updateYell(g2);
 
 		// Show update
-		viewport = Camera.getSubImage(world.mapImage, States.deltaX,
-				States.deltaY);
-		
+		viewport = panner.getWorldViewport(world.mapImage);
 	
 		updateMiniMap();
 		
@@ -221,15 +240,14 @@ public class ICEWorldView extends JPanel implements MouseListener, MouseMotionLi
 	
 	public void updateMiniMap(){
 		minimap.updateMiniMap();
-		repaint();
 	}
 	
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		minimap = new MiniMap();
+		minimap = new Minimap();
 		
 		g.drawImage(viewport, 0, 0, null);
-		g.drawImage(minimap.mapImage,Constants.ICEWORLD_VIEWPORT_SIZE.width-Constants.MINIMAP_SIZE.width-10,10,null);
+		g.drawImage(minimap.getImage(),ICEWORLD_VIEWPORT_SIZE.width-Minimap.MINIMAP_SIZE.width-10,10,null);
 	}
 	
 }
