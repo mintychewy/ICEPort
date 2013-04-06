@@ -2,6 +2,9 @@ package util;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.LinkedList;
 
 import javax.swing.JPanel;
 
@@ -36,6 +39,7 @@ public class AvatarLoader extends JPanel{
         g.drawImage(shirt, 80, 50, this);
         g.drawImage(weapon, 70, 50, this);
     }
+	
 	
 	
 	
