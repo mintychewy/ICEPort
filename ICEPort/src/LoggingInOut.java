@@ -1,3 +1,9 @@
+//package iceworld.sample;
+
+import iceworld.given.ICEWorldImmigration;
+import iceworld.given.IcetizenLook;
+import iceworld.given.MyIcetizen;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -6,21 +12,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.regex.Pattern;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-//import iceworld.given.*;
 
 import javax.swing.JButton;
 import javax.swing.JTextField;
+//import iceworld.given.*;
+//import iceworld.given.*;
 
 
 public class LoggingInOut {
@@ -33,10 +29,10 @@ public class LoggingInOut {
 	public int nbOfTimes=0;
 	public ArrayList<Integer> time = new ArrayList<Integer>();
 	//public LogFile history = new LogFile();
-	TestMyIcetizen tester = new TestMyIcetizen();
-
-	ICEWorldImmigration immigration = new ICEWorldImmigration(tester);
-	tester.setIcePortID(10008);
+	
+	ICEtizen tester = new ICEtizen();
+	ICEWorldImmigration immigration = new ICEWorldImmigration((iceworld.given.MyIcetizen) tester);
+	//tester.setIcePortID(10008);
 	
 	
 	public LoggingInOut(){
@@ -44,16 +40,16 @@ public class LoggingInOut {
 	}
 	
 	//private Inhabitants moi = new Inhabitants();
-	//Inhabitants.loggingIn(username, password);
+	//Inhabitants.loggingIn(username, password)
 
 	
 	
 	public void main(String[] args){
 		
-		TestMyIcetizen tester = new TestMyIcetizen();
+		//TestMyIcetizen tester = new TestMyIcetizen();
 		tester.setIcePortID(10008);
 		tester.setUsername("mederic.blandin");
-		tester.setListeningPort(<<(String) A port number>>);
+		//tester.setListeningPort("10008");
 		IcetizenLook look = new IcetizenLook();
 		look.gidB = "B001";
 		look.gidS = "S001";
@@ -97,7 +93,7 @@ public class LoggingInOut {
 		
 		buttonInhabitant.addActionListener(new ActionListener() { 
 			public void actionPerformed(ActionEvent e) { 
-				ICEWorld.logout();
+				//ICEWorld.logout();
 			} 
 		});
 		
