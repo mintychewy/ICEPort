@@ -31,25 +31,7 @@ public class CustomMenuBar extends JMenuBar{
 	public CustomMenuBar(){
 		setMenuBarGUI();
 		addListeners();
-	}
-	
-	private void addListeners(){
-		userManualMenuItem.addActionListener(new ActionListener(){
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				helpDialog = new HelpDialog();
-				x = new JDialog();
-				x.add(helpDialog);
-				x.pack();
-				x.setVisible(true);
-			}
-			
-		});
-	}
-	
-	
-	
+	}	
 	
 
 	public void setMenuBarGUI(){
@@ -85,5 +67,18 @@ public class CustomMenuBar extends JMenuBar{
 		userManualMenuItem.addActionListener(new MenuBarListener());
 		aboutMenuItem.addActionListener(new MenuBarListener());
 		quitMenuItem.addActionListener(new MenuBarListener());
+		
+		userManualMenuItem.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				helpDialog = new HelpDialog();
+				x = new JDialog();
+				x.add(helpDialog);
+				x.pack();
+				x.setVisible(true);
+			}
+			
+		});
 	}
 }

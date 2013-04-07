@@ -115,7 +115,7 @@ public class LoggingInOut {
 						 try { 
 							 String line; 
 							 // Lire le fichier ligne par ligne 
-							 // La boucle se termine quand la méthode affiche "null" 
+							 // La boucle se termine quand la mï¿½thode affiche "null" 
 							 while ((line = buff.readLine()) != null) { 
 								 //System.out.println(line);
 								 garder+= line + "|";
