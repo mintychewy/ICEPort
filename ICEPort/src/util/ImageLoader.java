@@ -3,6 +3,7 @@ package util;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
@@ -25,9 +26,15 @@ public class ImageLoader {
 	public static BufferedImage loadImageFromRemote(String uri){
 		BufferedImage image = null;
 
+		try {
+			URL url = new URL(uri);
+		} catch (MalformedURLException e1) {
+			System.out.println(e1.getMessage());
+		}
 		
 		try {
-			image = ImageIO.read(new File(uri));
+			System.out.println(""+uri);
+			image = ImageIO.read(new URL(uri));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}	
