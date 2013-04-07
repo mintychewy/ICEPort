@@ -5,6 +5,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class ControlsPanel extends JPanel {
+	
+	private static final long serialVersionUID = -644027072382490108L;
+	
 	JTextField zoomLevelField;
 	JButton zoomInButton, zoomOutButton, setZoomButton, soundCtrlButton;
 	public ControlsPanel(){

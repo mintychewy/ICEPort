@@ -9,7 +9,14 @@ public class WalkingTask extends TimerTask{
 	@Override
 	public void run() {
 		
-
+		if(States.activeUserDestination.x == States.currentPost.x &&
+		   States.activeUserDestination.y == States.currentPost.y){
+			cancel();
+		}
+		
+		States.activeUserLastKnownPosition = States.currentPost;
+		
+		
 		if(States.activeUserDestination.x > States.currentPost.x){
 			// walk left
 			States.currentPost.x += 1;
@@ -30,8 +37,8 @@ public class WalkingTask extends TimerTask{
 			// no need to walk in the y-axis anymore
 		}
 		
-		States.activeUserLastKnownPosition = States.currentPost;
-	
+		
+		System.out.println("Lastknownposition: "+States.activeUserLastKnownPosition.toString());
 		ApplicationMainFrame.view.updateWorld();
 	}
 }

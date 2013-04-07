@@ -8,6 +8,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 public class Window extends JFrame{
+
+	private static final long serialVersionUID = 7071755398042013311L;
 	JMenuBar menuBar;
 	JMenu fileMenu;
 	JMenuItem about, close, closeAll, exit, help;

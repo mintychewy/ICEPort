@@ -1,6 +1,7 @@
 package util;
 
 import java.awt.image.BufferedImage;
+
 import objects.Map;
 
 public class Patcher {
@@ -19,7 +20,7 @@ public class Patcher {
 		this.height = height;
 	}
 	
-	public BufferedImage patch(int originX, int originY){
+	public BufferedImage getPatchImage(int originX, int originY){
 		BufferedImage patch = sourceImage.getSubimage(originX, originY, width, height);
 		return patch;
 	}

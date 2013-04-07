@@ -143,6 +143,7 @@ public class ICEWorldView extends JPanel implements MouseListener,
 
 		// converts tileSpace to screenSpace coordinates
 		Point pos = Scaler.toScreenSpace(States.currentPost);
+		
 		g2.drawImage(me.avatar, pos.x - Entity.AVATAR_OFFSET_X, pos.y
 				- Entity.AVATAR_OFFSET_Y, this);
 		
@@ -156,15 +157,10 @@ public class ICEWorldView extends JPanel implements MouseListener,
 	 */
 	public void patchCitizens(Graphics2D g2) {
 
-		Point screenspacePoint = Scaler.toMapPoint(new Point(
-				States.activeUserLastKnownPosition.x,
-				States.activeUserLastKnownPosition.y), deltaX, deltaY);
-
-		// This is just a demonstration of only one ICEtizen
-		// Real implementation requires iteration over a List
-		BufferedImage patchUp = avatarPatcher.patch(screenspacePoint.x,screenspacePoint.y);
-
-		g2.drawImage(patchUp, screenspacePoint.x, screenspacePoint.y, null);
+		Point draw = Scaler.toScreenSpace(States.activeUserLastKnownPosition);
+		
+		BufferedImage patchImage = avatarPatcher.getPatchImage(draw.x - Entity.AVATAR_OFFSET_X, draw.y - Entity.AVATAR_OFFSET_Y);
+		g2.drawImage(patchImage, draw.x - Entity.AVATAR_OFFSET_X, draw.y - Entity.AVATAR_OFFSET_Y, null);
 	}
 
 	@Override

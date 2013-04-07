@@ -1,6 +1,5 @@
 package objects;
 
-import iceworld.States;
 
 import java.awt.Color;
 import java.awt.Dimension;

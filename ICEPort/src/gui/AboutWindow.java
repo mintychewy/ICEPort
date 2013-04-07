@@ -11,6 +11,8 @@ import util.ImageLoader;
 
 public class AboutWindow extends JDialog {
 	
+	private static final long serialVersionUID = 6992601172376070322L;
+
 	public AboutWindow(){
 		createGUI();
 	}
