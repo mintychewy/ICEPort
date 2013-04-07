@@ -20,6 +20,7 @@ public class CustomMenuBar extends JMenuBar{
 	
 	public CustomMenuBar(){
 		setMenuBarGUI();
+		addListeners();
 	}
 	
 	public void setMenuBarGUI(){
@@ -35,7 +36,7 @@ public class CustomMenuBar extends JMenuBar{
 		helpMenu =  new JMenu("Help");
 		
 		quitMenuItem = new JMenuItem("Quit");
-		userManualMenuItem = new JMenuItem("User\'s Guide");
+		userManualMenuItem = new JMenuItem("User Guide");
 		aboutMenuItem = new JMenuItem("About");
 		
 		// set F1 shortcut for "User's Guide" menu item 
@@ -48,5 +49,11 @@ public class CustomMenuBar extends JMenuBar{
 		this.add(settingsMenu);
 		this.add(helpMenu);
 
+	}
+	
+	public void addListeners(){
+		userManualMenuItem.addActionListener(new MenuBarListener());
+		aboutMenuItem.addActionListener(new MenuBarListener());
+		quitMenuItem.addActionListener(new MenuBarListener());
 	}
 }

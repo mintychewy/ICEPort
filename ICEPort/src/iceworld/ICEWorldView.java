@@ -11,7 +11,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.swing.JPanel;
 
@@ -83,26 +82,19 @@ public class ICEWorldView extends JPanel implements MouseListener,
 	@Override
 	public void mousePressed(MouseEvent e) {
 
-		States.activeUserLastKnownPosition = States.currentPost;
-
-
-		if (minimap.isMinimapClicked(e)) {
+		// converts mouseclick position into a tile position
+		Point destinationTile = Scaler.toTileSpaceFromViewport(e.getPoint());
+		
+		// check whether if it is a valid destination
+		if(!world.isFallingIntoTartarus(destinationTile)){
 			// set destination
-
-			// walk to destination
+			States.activeUserDestination = Scaler.toTileSpaceFromViewport(e.getPoint());		
+			// walk to the destination
 			walk();
+		}else{
+			System.out.println("Invalid destination point");
 		}
 
-		if (States.activeUserIsWalking == false) {
-			States.activeUserIsWalking = true;
-			 walk();
-		} else {
-			/*
-			 * 1. get timer 2. cancel task 3. schedule a new task
-			 */
-		}
-
-		updateWorld();
 	}
 
 	Timer timer;
@@ -111,41 +103,7 @@ public class ICEWorldView extends JPanel implements MouseListener,
 		long myLong = 100;
 
 		timer = new Timer();
-		timer.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				
-				// 1. see which direction the avatar has to walk
-				
-				// 2. increment of both X and Y positions until
-				// the destination is reached
-				
-				if (States.currentPost.y == 89) {
-					States.activeUserIsWalking = false;
-					this.cancel();
-				}
-
-				if (States.currentPost.x < States.activeUserDestination.x
-						&& States.currentPost.y < States.activeUserDestination.y) {
-					 States.currentPost.y+= 1;
-					States.currentPost.y += 1;
-				} else if (States.currentPost.x < States.activeUserDestination.x
-						&& States.currentPost.y == States.activeUserDestination.y) {
-					 States.currentPost.x+= 1;
-
-				} else {
-					States.currentPost.y += 1;
-				}
-
-				System.out.println(States.activeUserLastKnownPosition
-						.toString());
-				States.activeUserLastKnownPosition = States.currentPost;
-				System.out.println("UPDATED "
-						+ States.activeUserLastKnownPosition.toString());
-
-				updateWorld();
-			}
-		}, 0, myLong);
+		timer.schedule(new WalkingTask(), 0, myLong);
 
 	}
 
@@ -178,7 +136,7 @@ public class ICEWorldView extends JPanel implements MouseListener,
 	 * This method draws logged-in ICEtizens and Aliens on the World Image
 	 */
 	public void populateWorld(Graphics2D g2) {
-
+		
 		patchCitizens(g2);
 
 		me = new ICEtizen();
@@ -187,7 +145,8 @@ public class ICEWorldView extends JPanel implements MouseListener,
 		Point pos = Scaler.toScreenSpace(States.currentPost);
 		g2.drawImage(me.avatar, pos.x - Entity.AVATAR_OFFSET_X, pos.y
 				- Entity.AVATAR_OFFSET_Y, this);
-
+		
+		
 	}
 
 	/**

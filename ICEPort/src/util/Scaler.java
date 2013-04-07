@@ -1,6 +1,6 @@
 package util;
 
-import iceworld.States;
+import iceworld.ICEWorldView;
 
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -76,10 +76,20 @@ public class Scaler {
 	}
 	
 	/**
-	 * Converts a viewport (mouseclick) Point into 
+	 * A conveniece method to converts a viewport (mouseclick) Point into
+	 * tile-space coordinates  
+	 * @param viewportPoint viewport mouseclick Point
+	 * @return tile indices Point
+	 */
+	public static Point toTileSpaceFromViewport(Point viewportPoint){
+		return toTileSpace(toMapPoint(viewportPoint, ICEWorldView.deltaX, ICEWorldView.deltaY));
+	}
+	
+	/**
+	 * Converts a screenSpace (aka.map point) Point into 
 	 * tile-space coordinates 
 	 * @param screenspacePoint screen-space mouseclick Point
-	 * @return tile indices
+	 * @return tile indices Point
 	 */
 	public static Point toTileSpace(Point screenspacePoint){
 		
