@@ -52,6 +52,7 @@ public class CustomMenuBar extends JMenuBar{
 	}
 	
 	public void addListeners(){
+		customiseAvatarMenuItem.addActionListener(new MenuBarListener());
 		userManualMenuItem.addActionListener(new MenuBarListener());
 		aboutMenuItem.addActionListener(new MenuBarListener());
 		quitMenuItem.addActionListener(new MenuBarListener());

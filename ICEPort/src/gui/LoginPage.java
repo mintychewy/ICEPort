@@ -23,6 +23,10 @@ import javax.swing.SwingUtilities;
 
 public class LoginPage {
 
+	public LoginPage(){
+		createAndDisplayGUI();
+	}
+	
 	private void createAndDisplayGUI() {
 
 		JFrame frame = new JFrame("ICE WORLD");
@@ -47,13 +51,15 @@ public class LoginPage {
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				new LoginPage().createAndDisplayGUI();
+				LoginPage loginPage = new LoginPage();
 			}
 		});
 	}
 }
 
 class ImagePanel extends JPanel {
+	
+	private static final long serialVersionUID = -7940935013415887043L;
 	JTextField userField;
 	JPasswordField passField;
 	JLabel label;
@@ -106,7 +112,7 @@ class ImagePanel extends JPanel {
 		inhabitant.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String username = new String(userField.getText());
-				String password = new String(passField.getText());
+				String password = new String(passField.getPassword());
 				String[] user = { username, getUnixTime() + "" };
 
 				if (isInBlackList(user)) {
@@ -250,7 +256,7 @@ class ImagePanel extends JPanel {
 
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		g.drawImage(image, 0, 0, this);
+	//	g.drawImage(image, 0, 0, this);
 	}
 
 }

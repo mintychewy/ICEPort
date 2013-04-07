@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.AbstractButton;
 
+
 public class MenuBarListener implements ActionListener {
 
 	@Override
@@ -28,6 +29,9 @@ public class MenuBarListener implements ActionListener {
 		}
 		else if(source.getText().equals("User Guide")){
 			System.out.println("User Guide");
+		}else if(source.getText().equals("Customise Avatar")){
+			Customisation cus = new Customisation();
+			cus.setVisible(true);
 		}
 		else{
 			System.out.println("do nothing");

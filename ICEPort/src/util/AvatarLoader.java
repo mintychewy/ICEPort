@@ -7,11 +7,19 @@ import javax.swing.JPanel;
 
 public class AvatarLoader extends JPanel{
 	
+	private static final long serialVersionUID = -4563598054724744700L;
+	
 	String[] shirtList={"t_ice","t_appro","t_ice2","armor2"};
 	String[] bodyList={"orangy","blue","orangy","pale"};
 	String[] headList={"crown1","crown2","hat1","bighair1"};
 	String[] weaponList={"hammer4","sword2","stick3","sabre2"};
-	int shirtCount=0,weaponCount=0,bodyCount=0,headCount=0;
+	public int shirtCount=0;
+
+	public int weaponCount=0;
+
+	public int bodyCount=0;
+
+	public int headCount=0;
 	static BufferedImage head,body,weapon,shirt,background;	
 	public static void loadBufferedImage(String H, String B, String S, String W, String BG){
 		head= ImageLoader.loadImageFromRemote(H);

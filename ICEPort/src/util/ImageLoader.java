@@ -27,6 +27,7 @@ public class ImageLoader {
 		BufferedImage image = null;
 
 		try {
+			@SuppressWarnings("unused")
 			URL url = new URL(uri);
 		} catch (MalformedURLException e1) {
 			System.out.println(e1.getMessage());
