@@ -47,10 +47,10 @@ public class Sun extends JPanel implements Runnable {
 			int y2=(int)((100+y)+r*Math.cos(Math.toRadians(36*i)));		
 		//	g.setColor(Color.BLACK);
 		//	g.drawLine(300+x,100+y,x2,y2);		
-			drawThickLine(g,300+x,100+y,x2,y2,5,Color.RED); //red line animated
+			drawThickLine(g,300+x,100+y,x2,y2,4,Color.RED); //red line animated
 			int x3=(int)((300+x)+200*Math.sin(Math.toRadians(18+36*i)));
 			int y3=(int)((100+y)+200*Math.cos(Math.toRadians(18+36*i)));	
-			drawThickLine(g,300+x,100+y,x3,y3,3,Color.ORANGE); // orange line still
+			drawThickLine(g,300+x,100+y,x3,y3,6,Color.ORANGE); // orange line still
 		}
 		
 		g.setColor(new Color(255,215,0));
