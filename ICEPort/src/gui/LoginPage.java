@@ -1,4 +1,7 @@
 package gui;
+
+import iceworld.given.ICEWorldImmigration;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -19,19 +22,20 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 
-public class LoginPage {
+import objects.ICEtizen;
+import core.Application;
 
-	public LoginPage(){
+public class LoginPage extends JFrame {
+
+	public LoginPage() {
+		super("Login Page");
 		createAndDisplayGUI();
 	}
-	
+
 	private void createAndDisplayGUI() {
 
-		JFrame frame = new JFrame("ICE WORLD");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		JPanel contentPane = new JPanel();
 		contentPane.setOpaque(true);
 		contentPane.setBorder(BorderFactory.createMatteBorder(5, 5, 5, 5,
@@ -42,24 +46,19 @@ public class LoginPage {
 		ImagePanel imagePanel = new ImagePanel();
 
 		contentPane.add(imagePanel, BorderLayout.CENTER);
-		frame.setContentPane(contentPane);
-		frame.pack();
-		frame.setLocationByPlatform(true);
-		frame.setVisible(true);
+		this.setContentPane(contentPane);
+		this.pack();
+		this.setLocationByPlatform(true);
+		this.setVisible(true);
 	}
 
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				LoginPage loginPage = new LoginPage();
-			}
-		});
-	}
 }
 
 class ImagePanel extends JPanel {
-	
+
+	ICEtizen testizen;
 	private static final long serialVersionUID = -7940935013415887043L;
+
 	JTextField userField;
 	JPasswordField passField;
 	JLabel label;
@@ -116,20 +115,27 @@ class ImagePanel extends JPanel {
 				String[] user = { username, getUnixTime() + "" };
 
 				if (isInBlackList(user)) {
-				
+
 					label.setText("blocked!");
 					System.out.println("userBlock");
 				} else {
 
-					
-					  if(username.equals("") || password.equals("")){
-					  label.setForeground(Color.RED);
-					  label.setText("empty username/password!"); }
-					
+					if (username.equals("") || password.equals("")) {
+						label.setForeground(Color.RED);
+						label.setText("Username / Password cannot be empty!");
+					}
+
 					// correct username and password
-					  else if (authenticate("usernameTest", "passwordTest")) {
+					else if (authenticate(username, password)) {
+							
 						label.setForeground(Color.BLACK);
 						label.setText("logged in");
+						
+						// add username to the history
+						
+						
+						//
+						Application.login.setVisible(false);
 					} else {
 						failure++;
 						label.setText("incorrect username or password" + "\t"
@@ -139,7 +145,7 @@ class ImagePanel extends JPanel {
 						else if (failure == 2) {
 							time2 = getUnixTime();
 							if ((time2 - time1) >= 3) {
-								
+
 								failure = 0;
 								// label.setText("incorrect username or password"+
 								// "\t"+ failure+"/3");
@@ -149,7 +155,7 @@ class ImagePanel extends JPanel {
 						}
 						if (failure == 3) {
 							time3 = getUnixTime();
-							if ((time3 - time1) >= 3) {
+							if ((time3 - time1) >= 180) {
 								failure = 0;
 								// label.setText("incorrect username or password"+
 								// "\t"+ failure+"/3");
@@ -194,7 +200,10 @@ class ImagePanel extends JPanel {
 
 		aliens.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				login();
+				if(authenticateAlien()){
+					System.out.println("alien logged in ");
+					Application.login.setVisible(false);
+				}
 			}
 		});
 
@@ -203,6 +212,12 @@ class ImagePanel extends JPanel {
 		inhabitantLogIn.add(passLabel);
 		inhabitantLogIn.add(passField);
 
+	}
+	
+	public boolean authenticateAlien(){
+		testizen = new ICEtizen();
+		ICEWorldImmigration immigration = new ICEWorldImmigration(testizen);
+		return immigration.loginAlien();
 	}
 
 	public long getUnixTime() {
@@ -218,46 +233,38 @@ class ImagePanel extends JPanel {
 	}
 
 	public boolean isInBlackList(String[] user) {
-		for(int i=0;i<blackList.size();i++){
-			//for(String[] s : blackList){
-				if(blackList.get(i)[0].equals(user[0])){
-					if((getUnixTime() - Integer.parseInt(blackList.get(i)[1])) <5){
-						return true;
-					}else{
-						blackList.remove(i);
-					}
+		for (int i = 0; i < blackList.size(); i++) {
+			// for(String[] s : blackList){
+			if (blackList.get(i)[0].equals(user[0])) {
+				if ((getUnixTime() - Integer.parseInt(blackList.get(i)[1])) < 300) {
+					return true;
+				} else {
+					blackList.remove(i);
 				}
 			}
-			
-			return false;
+		}
+
+		return false;
 	}
 
 	public boolean authenticate(String user, String pass) {
-
-		// wait for the real implementation from mederic
-
-		/*
-		 * 
-		 * boolean success = ICEWorldImmigration(user,pass); return success;
-		 */
-
-		// test
-		if (user.equals("a") && pass.equals("b"))
-			return true;
-
-		//
-		return false;
+		System.out.println("authenticating user: "+user+" pass: "+pass);
+		testizen = new ICEtizen();
+		testizen.setUsername(user);
+		ICEWorldImmigration immigration = new ICEWorldImmigration(testizen);
+		boolean status = immigration.login(pass);
+		System.out.println("Success?: "+status);
+		return status;
 	}
 
 	@Override
 	public Dimension getPreferredSize() {
-		return (new Dimension(1000, 700));
+		return (new Dimension(600, 300));
 	}
 
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-	//	g.drawImage(image, 0, 0, this);
+		// g.drawImage(image, 0, 0, this);
 	}
 
 }
-

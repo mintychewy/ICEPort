@@ -14,8 +14,8 @@ import java.util.Timer;
 
 import javax.swing.JPanel;
 
-import objects.Entity;
 import objects.ICEtizen;
+import objects.Inhabitant;
 import objects.Map;
 import objects.Minimap;
 import util.ImageLoader;
@@ -33,7 +33,7 @@ public class ICEWorldView extends JPanel implements MouseListener,
 	// The background tiles used for adaptive tile replacement
 	Map map;
 
-	ICEtizen me; 
+	Inhabitant me; 
 	
 	Panner panner;
 	Patcher avatarPatcher;
@@ -51,7 +51,7 @@ public class ICEWorldView extends JPanel implements MouseListener,
 		
 		
 		// create an instance of myself :P
-		me = new ICEtizen();
+		me = new Inhabitant();
 		
 		
 		// add listeners
@@ -66,8 +66,8 @@ public class ICEWorldView extends JPanel implements MouseListener,
 		minimap = new Minimap();
 
 		// patchers
-		avatarPatcher = new Patcher(map.getImage(),Entity.AVATAR_SIZE.width,
-				Entity.AVATAR_SIZE.height);
+		avatarPatcher = new Patcher(map.getImage(),ICEtizen.AVATAR_SIZE.width,
+				ICEtizen.AVATAR_SIZE.height);
 		
 		// set initial camera view position for viewport
 		populateWorld((Graphics2D)world.getImage().getGraphics());
@@ -177,8 +177,8 @@ public class ICEWorldView extends JPanel implements MouseListener,
 		// converts tileSpace to screenSpace coordinates
 		Point pos = Scaler.toScreenSpace(States.currentPost);
 		
-		g2.drawImage(me.avatar, pos.x - Entity.AVATAR_OFFSET_X, pos.y
-				- Entity.AVATAR_OFFSET_Y, this);
+		g2.drawImage(me.avatar, pos.x - ICEtizen.AVATAR_OFFSET_X, pos.y
+				- ICEtizen.AVATAR_OFFSET_Y, this);
 		
 	
 	}
@@ -192,10 +192,10 @@ public class ICEWorldView extends JPanel implements MouseListener,
 
 		Point draw = Scaler.toScreenSpace(States.activeUserLastKnownPosition);
 		
-		BufferedImage patchImage = avatarPatcher.getPatchImage(draw.x - Entity.AVATAR_OFFSET_X, draw.y - Entity.AVATAR_OFFSET_Y);
+		BufferedImage patchImage = avatarPatcher.getPatchImage(draw.x - ICEtizen.AVATAR_OFFSET_X, draw.y - ICEtizen.AVATAR_OFFSET_Y);
 
-		g2.drawImage(patchImage, draw.x - Entity.AVATAR_OFFSET_X, draw.y
-				- Entity.AVATAR_OFFSET_Y, this);
+		g2.drawImage(patchImage, draw.x - ICEtizen.AVATAR_OFFSET_X, draw.y
+				- ICEtizen.AVATAR_OFFSET_Y, this);
 	}
 
 	@Override

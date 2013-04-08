@@ -30,7 +30,7 @@ public class LoggingInOut {
 	public ArrayList<Integer> time = new ArrayList<Integer>();
 	//public LogFile history = new LogFile();
 	
-	ICEtizen tester = new ICEtizen();
+	Inhabitant tester = new Inhabitant();
 	ICEWorldImmigration immigration = new ICEWorldImmigration((iceworld.given.MyIcetizen) tester);
 	//tester.setIcePortID(10008);
 	
@@ -45,57 +45,6 @@ public class LoggingInOut {
 	
 	
 	public void main(String[] args){
-		
-		//TestMyIcetizen tester = new TestMyIcetizen();
-		tester.setIcePortID(10008);
-		tester.setUsername("mederic.blandin");
-		//tester.setListeningPort("10008");
-		IcetizenLook look = new IcetizenLook();
-		look.gidB = "B001";
-		look.gidS = "S001";
-		look.gidH = "H001";
-		look.gidW = "W001";
-		final ICEWorldImmigration immigration = new ICEWorldImmigration(tester);
-
-
-	//Pick the username and the name 
-		JButton buttonInhabitant = new JButton("Inhabitant");
-		JButton buttonAlien = new JButton("Alien");
-		JButton buttonOK = new JButton("OK"); 
-		JButton logOut = new JButton("Log out"); 
-		final JTextField t1 = new JTextField("username");
-		final JTextField t2 = new JTextField("password");
-		
-		buttonInhabitant.addActionListener(new ActionListener() { 
-			public void actionPerformed(ActionEvent e) { 
-				username = t1.getText();
-				password = t2.getText();
-			} 
-		}); 
-		
-		buttonAlien.addActionListener(new ActionListener() { 
-			public void actionPerformed(ActionEvent e) { 
-				isAlien = true;
-				immigration.loginAlien();
-			} 
-		}); 
-		
-		buttonOK.addActionListener(new ActionListener() { 
-			public void actionPerformed(ActionEvent e) { 
-				nbOfTimes ++;
-				Calendar c = Calendar.getInstance();
-				int h = c.get(Calendar.HOUR);
-				int m = c.get(Calendar.MINUTE);
-				int s = c.get(Calendar.SECOND);
-				time.add(3600*h + 60*m + s);
-			} 
-		}); 
-		
-		buttonInhabitant.addActionListener(new ActionListener() { 
-			public void actionPerformed(ActionEvent e) { 
-				//ICEWorld.logout();
-			} 
-		});
 		
 		///////////////////////////////////////////////////////////////////////////////	
 		  

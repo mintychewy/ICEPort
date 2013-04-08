@@ -1,5 +1,5 @@
 package objects;
 
-public class Alien {
+public class Alien extends ICEtizen {
 
 }

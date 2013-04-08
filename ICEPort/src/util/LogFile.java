@@ -5,7 +5,7 @@ import java.text.*;
 import java.util.*;
 
 public class LogFile {
-	protected static String defaultLogFile = "c:\\msglog.txt";
+	protected static String defaultLogFile = "~\\iceportuserlog.txt";
 
 	public static void write(String s) throws IOException {
 		write(defaultLogFile, s);
