@@ -7,6 +7,8 @@ public class States {
 	// ICEPort camera view states
 	public static int zoom_level;
 	
+
+	
 	// active ICEtizen
 	public static Point activeUserLastKnownPosition = new Point(10,9);
 	
@@ -21,4 +23,7 @@ public class States {
 	public static void updateStates(){
 		
 	}
+	
+	
+	
 }

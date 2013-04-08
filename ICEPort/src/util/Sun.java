@@ -36,8 +36,8 @@ public class Sun extends JPanel implements Runnable {
 	public void paintComponent(Graphics g){
 		x+=3;// y+=2;
 		Dimension d = this.getSize();
-		g.setColor(Color.white);
-		g.fillRect(0,0,d.width,d.height);
+		//g.setColor(Color.white);
+		g.clearRect(0,0,d.width,d.height);
 		
 	
 		int y=(int)(Math.random()*30)+100;

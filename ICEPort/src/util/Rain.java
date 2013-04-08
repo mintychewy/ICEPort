@@ -1,12 +1,17 @@
 package util;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 
 import javax.swing.JPanel;
 
 public class Rain extends JPanel{
+	
 	public void paintComponent(Graphics g){
+		Dimension d = this.getSize();
+		
+		g.clearRect(0,0,d.width,d.height);
 	for(int i=0;i<150;i++){
 		g.setColor(Color.BLACK);
 		int x=(int)(Math.random()*900)+1;
