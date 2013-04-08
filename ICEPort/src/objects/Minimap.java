@@ -1,6 +1,8 @@
 package objects;
 
 
+import iceworld.States;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -51,7 +53,8 @@ public class Minimap {
 
 		Graphics2D g= mapImage.createGraphics();
 		// Active ICEtizen's position dot 
-		Point activeUserPos = Scaler.toMiniMapPoint(Scaler.toScreenSpace(new Point(20,10)));
+		Point activeUserPos = Scaler.toMiniMapPoint(Scaler.toScreenSpace(States.currentPost
+				));
 
 		g.setColor(Color.WHITE);
 		g.fillOval(activeUserPos.x- POSITION_DOT_STROKE_SIZE/2, activeUserPos.y- POSITION_DOT_STROKE_SIZE/2, POSITION_DOT_STROKE_SIZE, POSITION_DOT_STROKE_SIZE);

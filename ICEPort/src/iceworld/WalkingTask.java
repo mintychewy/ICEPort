@@ -8,24 +8,40 @@ public class WalkingTask extends TimerTask{
 	
 	@Override
 	public void run() {
+
+		System.out.println("(Before update) Lastknownposition: "+States.activeUserLastKnownPosition.toString());
+
 		
+		
+		States.activeUserLastKnownPosition.x = States.currentPost.x;
+		States.activeUserLastKnownPosition.y = States.currentPost.y;
+		
+		//System.out.println("CurrentPosition: "+States.currentPost.toString());
+
+		// end walking if destination is reached
 		if(States.activeUserDestination.x == States.currentPost.x &&
 		   States.activeUserDestination.y == States.currentPost.y){
+			System.out.println("Destination Reached");
 			cancel();
 		}
 		
-		States.activeUserLastKnownPosition = States.currentPost;
 		
+		// move in the x-axis 
 		
 		if(States.activeUserDestination.x > States.currentPost.x){
 			// walk left
 			States.currentPost.x += 1;
+			
+
 		}else if(States.activeUserDestination.x < States.currentPost.x){
 			// walk right
 			States.currentPost.x -= 1;
 		}else{
 			// no need to walk in the x-axis anymore
 		}
+		
+		
+		// move the in y-axis
 		
 		if(States.activeUserDestination.y > States.currentPost.y){
 			// walk down
@@ -38,7 +54,6 @@ public class WalkingTask extends TimerTask{
 		}
 		
 		
-		System.out.println("Lastknownposition: "+States.activeUserLastKnownPosition.toString());
 		ApplicationMainFrame.view.updateWorld();
 	}
 }

@@ -49,6 +49,11 @@ public class ICEWorldView extends JPanel implements MouseListener,
 	public ICEWorldView() {
 		setPreferredSize(ICEWORLD_VIEWPORT_SIZE);
 		
+		
+		// create an instance of myself :P
+		me = new ICEtizen();
+		
+		
 		// add listeners
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
@@ -85,10 +90,12 @@ public class ICEWorldView extends JPanel implements MouseListener,
 		// converts mouseclick position into a tile position
 		Point destinationTile = Scaler.toTileSpaceFromViewport(e.getPoint());
 		
+		System.out.println("Heading to: "+destinationTile.toString());
+		
 		// check whether if it is a valid destination
 		if(!world.isFallingIntoTartarus(destinationTile)){
 			// set destination
-			States.activeUserDestination = Scaler.toTileSpaceFromViewport(e.getPoint());		
+			States.activeUserDestination = destinationTile;
 			// walk to the destination
 			walk();
 		}else{
@@ -101,10 +108,8 @@ public class ICEWorldView extends JPanel implements MouseListener,
 
 	public void walk() {
 		long myLong = 100;
-
 		timer = new Timer();
 		timer.schedule(new WalkingTask(), 0, myLong);
-
 	}
 
 	@Override
@@ -131,57 +136,11 @@ public class ICEWorldView extends JPanel implements MouseListener,
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
 	}
-
+	
+	
 	/**
-	 * This method draws logged-in ICEtizens and Aliens on the World Image
+	 * Renders the World image with the latest elements
 	 */
-	public void populateWorld(Graphics2D g2) {
-		
-		patchCitizens(g2);
-
-		me = new ICEtizen();
-
-		// converts tileSpace to screenSpace coordinates
-		Point pos = Scaler.toScreenSpace(States.currentPost);
-		
-		g2.drawImage(me.avatar, pos.x - Entity.AVATAR_OFFSET_X, pos.y
-				- Entity.AVATAR_OFFSET_Y, this);
-		
-		
-	}
-
-	/**
-	 * Puts empty tiles (from original map) in place of ICEtizens/Aliens This
-	 * avoids having to render a new world every time the world updates (aka.
-	 * Adaptive tile replacement)
-	 */
-	public void patchCitizens(Graphics2D g2) {
-
-		Point draw = Scaler.toScreenSpace(States.activeUserLastKnownPosition);
-		
-		BufferedImage patchImage = avatarPatcher.getPatchImage(draw.x - Entity.AVATAR_OFFSET_X, draw.y - Entity.AVATAR_OFFSET_Y);
-		g2.drawImage(patchImage, draw.x - Entity.AVATAR_OFFSET_X, draw.y - Entity.AVATAR_OFFSET_Y, null);
-	}
-
-	@Override
-	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void keyPressed(KeyEvent e) {
-		panner.pan(e);
-
-		updateWorld();
-	}
-
-	@Override
-	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
 	public void updateWorld() {
 		Graphics2D g2 = (Graphics2D) world.getImage().getGraphics();
 
@@ -202,6 +161,60 @@ public class ICEWorldView extends JPanel implements MouseListener,
 		updateMiniMap();
 
 		repaint();
+	}
+
+
+	/**
+	 * This method draws logged-in ICEtizens and Aliens on the World Image
+	 */
+	public void populateWorld(Graphics2D g2) {
+		
+		// remove all users from the map 
+		patchCitizens(g2);
+
+
+
+		// converts tileSpace to screenSpace coordinates
+		Point pos = Scaler.toScreenSpace(States.currentPost);
+		
+		g2.drawImage(me.avatar, pos.x - Entity.AVATAR_OFFSET_X, pos.y
+				- Entity.AVATAR_OFFSET_Y, this);
+		
+	
+	}
+
+	/**
+	 * Puts empty tiles (from original map) in place of ICEtizens/Aliens This
+	 * avoids having to render a new world every time the world updates (aka.
+	 * Adaptive tile replacement)
+	 */
+	public void patchCitizens(Graphics2D g2) {
+
+		Point draw = Scaler.toScreenSpace(States.activeUserLastKnownPosition);
+		
+		BufferedImage patchImage = avatarPatcher.getPatchImage(draw.x - Entity.AVATAR_OFFSET_X, draw.y - Entity.AVATAR_OFFSET_Y);
+
+		g2.drawImage(patchImage, draw.x - Entity.AVATAR_OFFSET_X, draw.y
+				- Entity.AVATAR_OFFSET_Y, this);
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		panner.pan(e);
+
+		updateWorld();
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
+
 	}
 
 	public void updateMiniMap() {

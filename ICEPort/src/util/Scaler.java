@@ -142,7 +142,6 @@ public class Scaler {
 		int a = (int) ((iDet)*(screenspacePoint.x*Map.TILE_HEIGHT/2 + screenspacePoint.y*Map.TILE_WIDTH/2 - (Map.OFFSET_FROM_ORIGIN_X+Map.OFFSET_FROM_ORIGIN_Y*2)*(Map.TILE_HEIGHT/2)));
 		int b = (int) ((iDet)*(screenspacePoint.x*-Map.TILE_HEIGHT/2 + screenspacePoint.y*Map.TILE_WIDTH/2 + (Map.OFFSET_FROM_ORIGIN_X-Map.OFFSET_FROM_ORIGIN_Y*2)*(Map.TILE_HEIGHT/2)));
 		
-		System.out.println("Tile Indices: ["+a+","+b+"]");
 		return new Point((int)a,b);
 	}
 		
