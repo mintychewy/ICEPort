@@ -23,7 +23,7 @@ public class Application {
 		Dimension screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
 		
 		// Create a new application frame
-		//app = new ApplicationMainFrame();
+		//login = new ApplicationMainFrame();
 		login = new LoginPage();
 		
 		// Positioning the frame

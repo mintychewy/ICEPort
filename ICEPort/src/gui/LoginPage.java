@@ -11,25 +11,42 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.TreeSet;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 
 import objects.ICEtizen;
+import util.ICEWorldPeek;
 import core.Application;
+
 
 public class LoginPage extends JFrame {
 
 	public LoginPage() {
 		super("Login Page");
+		
+		if(!ICEWorldPeek.isReachable("http://iceworld.sls-atl.com")){
+			System.out.println("unreachable");
+			System.exit(0);
+		}
+			
 		createAndDisplayGUI();
 	}
 
@@ -55,7 +72,7 @@ public class LoginPage extends JFrame {
 }
 
 class ImagePanel extends JPanel {
-
+	String filePath;
 	ICEtizen testizen;
 	private static final long serialVersionUID = -7940935013415887043L;
 
@@ -68,14 +85,17 @@ class ImagePanel extends JPanel {
 	private BufferedImage image;
 
 	public ImagePanel() {
+
+
+		filePath = (ClassLoader.getSystemClassLoader().getResource("logs/log.txt").toString()).substring(5);
 		setOpaque(true);
 		setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
 		try {
 			image = ImageIO
 					.read(new URL(
-							"http://iceworld.sls-atl.com/sites/default/files/logo.png"));
+						"http://iceworld.sls-atl.com/sites/default/files/logo.png"));
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println("System Unreachable");
 		}
 		createGUI();
 	}
@@ -99,6 +119,8 @@ class ImagePanel extends JPanel {
 		loginPanel.add(label);
 		loginPanel.add(aliens);
 
+		JButton history = new JButton("History");
+		loginPanel.add(history);
 		add(loginPanel);
 
 		JLabel userLabel = new JLabel("USERNAME : ");
@@ -107,6 +129,73 @@ class ImagePanel extends JPanel {
 		JLabel passLabel = new JLabel("PASSWORD : ");
 		passLabel.setForeground(Color.BLACK);
 		passField = new JPasswordField(10);
+
+
+		history.addActionListener(new ActionListener(){
+
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				TreeSet<String> usernameList = new TreeSet<String>();
+				BufferedReader reader;
+				try {
+					reader = new BufferedReader(new FileReader(filePath));
+
+					String line;
+
+					while((line=reader.readLine())!=null){
+						usernameList.add(line);
+					}
+			
+				} catch (FileNotFoundException e1) {
+					System.out.println("No logs found");
+				} catch (IOException e1) {
+				}
+
+			System.out.println("TreeSet"+usernameList.toString());
+				
+			
+				
+				if(usernameList.isEmpty()){
+					usernameList.add("No logged-in history yet");
+				}else if(usernameList.size() == 1){
+					String s = usernameList.pollFirst();
+					if(s.equals("No logged-in history yet"))
+						usernameList.clear();
+					else
+						usernameList.add(s);
+				}else{}
+				
+					final JComboBox comboBox = new JComboBox(
+							usernameList.toArray());
+					
+				//comboBox.setSelectedIndex(0);
+				
+				comboBox.addActionListener(new ActionListener(){
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						// fill the username field when one is selected
+						userField.setText((String) comboBox.getSelectedItem());
+					}
+					
+				});
+			
+				
+				JDialog dia = new JDialog();
+				dia.add(comboBox);
+				dia.setVisible(true);
+				// show JTable 
+				while(!usernameList.isEmpty()){
+					System.out.println(usernameList.pollFirst());
+				}
+				// doubleclick on the JTable fills 
+				// the username field
+
+			}
+
+		});
 
 		inhabitant.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -127,13 +216,21 @@ class ImagePanel extends JPanel {
 
 					// correct username and password
 					else if (authenticate(username, password)) {
-							
+
 						label.setForeground(Color.BLACK);
 						label.setText("logged in");
-						
+
 						// add username to the history
-						
-						
+						try {
+							//LogFile.write(username);
+
+							FileWriter writer = new FileWriter(filePath, true);
+							writer.write(username+"\n");
+							writer.close();
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
 						//
 						Application.login.setVisible(false);
 					} else {
@@ -144,11 +241,9 @@ class ImagePanel extends JPanel {
 							time1 = getUnixTime();
 						else if (failure == 2) {
 							time2 = getUnixTime();
-							if ((time2 - time1) >= 3) {
+							if ((time2 - time1) >= 180) {
 
 								failure = 0;
-								// label.setText("incorrect username or password"+
-								// "\t"+ failure+"/3");
 
 							}
 
@@ -213,7 +308,7 @@ class ImagePanel extends JPanel {
 		inhabitantLogIn.add(passField);
 
 	}
-	
+
 	public boolean authenticateAlien(){
 		testizen = new ICEtizen();
 		ICEWorldImmigration immigration = new ICEWorldImmigration(testizen);
