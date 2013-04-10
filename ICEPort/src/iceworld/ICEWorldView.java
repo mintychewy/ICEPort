@@ -10,6 +10,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
 import java.util.Timer;
 
 import javax.swing.JPanel;
@@ -27,6 +28,12 @@ public class ICEWorldView extends JPanel implements MouseListener,
 
 	private static final long serialVersionUID = 5658988277615488303L;
 
+	// Current weather
+	String weather;
+	
+	// HashMap of logged-in ICEtizens (String = username is the key)
+	HashMap<String, ICEtizen> loggedinUsers = new HashMap<String, ICEtizen>();
+	
 	Minimap minimap;
 	// The current representation of ICEWorld
 	Map world;
