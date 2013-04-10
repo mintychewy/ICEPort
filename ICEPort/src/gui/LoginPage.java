@@ -29,7 +29,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
-import javax.swing.JTable;
 import javax.swing.JTextField;
 
 import objects.ICEtizen;
@@ -41,6 +40,7 @@ public class LoginPage extends JFrame {
 
 	public static ICEWorldImmigration immigration;
 	static ApplicationMainFrame app;
+	public static ICEtizen me;
 	public LoginPage() {
 		super("Login Page");
 		
@@ -57,8 +57,6 @@ public class LoginPage extends JFrame {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		JPanel contentPane = new JPanel();
 		contentPane.setOpaque(true);
-		contentPane.setBorder(BorderFactory.createMatteBorder(5, 5, 5, 5,
-				Color.WHITE));
 		contentPane.setBackground(Color.WHITE);
 		contentPane.setLayout(new BorderLayout(10, 10));
 
@@ -75,7 +73,7 @@ public class LoginPage extends JFrame {
 
 class ImagePanel extends JPanel {
 	String filePath;
-	ICEtizen testizen;
+
 	private static final long serialVersionUID = -7940935013415887043L;
 
 	JTextField userField;
@@ -91,7 +89,6 @@ class ImagePanel extends JPanel {
 
 		filePath = (ClassLoader.getSystemClassLoader().getResource("logs/log.txt").toString()).substring(5);
 		setOpaque(true);
-		setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
 		try {
 			image = ImageIO
 					.read(new URL(
@@ -328,8 +325,10 @@ class ImagePanel extends JPanel {
 	}
 
 	public boolean authenticateAlien(){
-		testizen = new ICEtizen();
-		LoginPage.immigration = new ICEWorldImmigration(testizen);
+		LoginPage.me = new ICEtizen();
+		LoginPage.me.setType(0);
+		LoginPage.me.setListeningPort(10000 + (int)(Math.random() * ((20000 - 10000) + 1)));
+		LoginPage.immigration = new ICEWorldImmigration(LoginPage.me);
 		return LoginPage.immigration.loginAlien();
 	}
 
@@ -362,9 +361,11 @@ class ImagePanel extends JPanel {
 
 	public boolean authenticate(String user, String pass) {
 		System.out.println("authenticating user: "+user+" pass: "+pass);
-		testizen = new ICEtizen();
-		testizen.setUsername(user);
-		LoginPage.immigration = new ICEWorldImmigration(testizen);
+		LoginPage.me = new ICEtizen();
+		LoginPage.me.setType(1);
+		LoginPage.me.setUsername(user);
+		LoginPage.me.setListeningPort(10000 + (int)(Math.random() * ((20000 - 10000) + 1)));
+		LoginPage.immigration = new ICEWorldImmigration(LoginPage.me);
 		boolean status = LoginPage.immigration.login(pass);
 		System.out.println("Success?: "+status);
 		return status;

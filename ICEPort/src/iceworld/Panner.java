@@ -9,13 +9,14 @@ public class Panner {
 
 	private BufferedImage fullImage;
 	
-	private final int DELTA_INC = 300;
+	private int DELTA_INC;
 	private final int UP = 0;
 	private final int DOWN = 1;
 	private final int LEFT = 2;
 	private final int RIGHT = 3;
 
 	public Panner(BufferedImage fullImage) {
+		DELTA_INC = (int)(300*ICEWorldView.zoom_factor);
 		this.fullImage = fullImage;
 	}
 

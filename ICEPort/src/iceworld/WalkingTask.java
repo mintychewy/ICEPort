@@ -2,9 +2,16 @@ package iceworld;
 
 import gui.ApplicationMainFrame;
 
+import java.awt.Point;
 import java.util.TimerTask;
 
 public class WalkingTask extends TimerTask{
+	
+	Point userLastKnownPosition;
+	
+	public WalkingTask(){
+		userLastKnownPosition = new Point();
+	}
 	
 	@Override
 	public void run() {

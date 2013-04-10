@@ -1,5 +1,7 @@
 package objects;
 
+import iceworld.ICEWorldView;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -12,18 +14,23 @@ import java.net.URL;
 
 import javax.imageio.ImageIO;
 
+import util.Scaler;
+
 public class World {
 	Image tile;
 	private BufferedImage mapImage;
 
-	public static int TILE_HEIGHT = 32;
-	public static int TILE_WIDTH = 64;
-	public final static Dimension WORLD_SIZE = new Dimension(6480, 4320);
+	public static int TILE_HEIGHT;
+	public static int TILE_WIDTH;
+	private static int h ;
+	private static int w ;
+	
+	public static Dimension WORLD_SIZE;
 	public static final int NUM_TILES = 100;
 
 	// NUM_TILES *+ (Arbitrary offset multiplier/adders)
-	public static final int OFFSET_FROM_ORIGIN_X = World.NUM_TILES * 32 + 25;
-	public static final int OFFSET_FROM_ORIGIN_Y = World.NUM_TILES + 350;
+	public static int OFFSET_FROM_ORIGIN_X;
+	public static int OFFSET_FROM_ORIGIN_Y;
 
 	private int x, y;
 
@@ -32,6 +39,17 @@ public class World {
 	}
 
 	public World() {
+		 TILE_HEIGHT = (int)(32*ICEWorldView.zoom_factor);
+		 TILE_WIDTH = (int)(64*ICEWorldView.zoom_factor);
+		 h = (int)(6480*ICEWorldView.zoom_factor);
+		 w = (int)(4320*ICEWorldView.zoom_factor);
+		 
+		 OFFSET_FROM_ORIGIN_X = (int)((World.NUM_TILES * 32 + 25)*ICEWorldView.zoom_factor);
+		 OFFSET_FROM_ORIGIN_Y = (int)((World.NUM_TILES + 350)*ICEWorldView.zoom_factor);
+		 
+		WORLD_SIZE = new Dimension(h,w);
+		System.out.println("Zoom factor in World: " +ICEWorldView.zoom_factor);
+		System.out.println("Create new World image with size: "+h+","+w);
 		mapImage = new BufferedImage(WORLD_SIZE.width, WORLD_SIZE.height,
 				BufferedImage.TYPE_INT_ARGB);
 		loadResources();
@@ -39,7 +57,7 @@ public class World {
 	}
 
 	public void loadResources() {
-		URL url = this.getClass().getResource("/images/green-tile.png");
+		URL url = this.getClass().getResource("/images/l-tile.png");
 		try {
 			tile = ImageIO.read(new File(url.toString().substring(5)));
 		} catch (IOException e) {
@@ -68,7 +86,11 @@ public class World {
 		 * }
 		 */
 
+		Image newTile = tile;
 		// alternate rendering method
+		if(ICEWorldView.zoom_factor != 1){
+			 newTile = Scaler.scaleBufferedImage((BufferedImage)tile, ICEWorldView.zoom_factor);
+		}
 		int offsetX = OFFSET_FROM_ORIGIN_X - TILE_HEIGHT;
 		int offsetY = OFFSET_FROM_ORIGIN_Y;
 		for (int a = 0; a < NUM_TILES; a++)
@@ -76,9 +98,10 @@ public class World {
 				x = a * TILE_WIDTH / 2 - b * TILE_WIDTH / 2 + offsetX;
 				y = a * TILE_HEIGHT / 2 + b * TILE_HEIGHT / 2 + offsetY;
 
-				g.drawImage(tile, x, y, null);
-				g.drawString(a + "," + b, x + TILE_WIDTH / 2 - 10, y
-						+ TILE_HEIGHT / 2 + 5);
+				g.drawImage(newTile, x, y, null);
+				// Tile coord label
+				//g.drawString(a + "," + b, x + TILE_WIDTH / 2, y
+				//+ TILE_HEIGHT / 2);
 			}
 
 	}

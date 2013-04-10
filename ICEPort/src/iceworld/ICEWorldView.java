@@ -1,5 +1,7 @@
 package iceworld;
 
+import gui.LoginPage;
+
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -28,6 +30,9 @@ public class ICEWorldView extends JPanel implements MouseListener,
 		MouseMotionListener, KeyListener {
 
 	private static final long serialVersionUID = 5658988277615488303L;
+	
+	// zooming factor -- default being 1
+	public static double zoom_factor = 1;
 
 	// responsible for fetching everything from the server
 	WorldStatesFetcher fetcher;
@@ -35,8 +40,6 @@ public class ICEWorldView extends JPanel implements MouseListener,
 	// HashMap of logged-in ICEtizens (String = username is the key)
 	HashMap<String, ICEtizen> loggedinUsers;
 	// Controller user
-	ICEtizen me;
-	
 	
 	Minimap minimap;
 	// The current representation of ICEWorld
@@ -48,6 +51,11 @@ public class ICEWorldView extends JPanel implements MouseListener,
 	Patcher avatarPatcher;
 	BufferedImage viewport;
 
+	
+	
+	///
+	BufferedImage alienImage = ImageLoader.loadImageFromLocal("images/alien.png");
+	///
 	
 	public static int deltaX = 0;
 	public static int deltaY = 0;
@@ -63,6 +71,35 @@ public class ICEWorldView extends JPanel implements MouseListener,
 		fetcher.updateWorldStates();
 		
 		loggedinUsers = fetcher.getLoggedinUserMap();
+		
+		// alien
+		if(LoginPage.me.getType() == 0 ){
+			
+			// need to find and remove self from the loggedinUsers list
+			
+			
+			LoginPage.me.setCurrentPosition(new Point(0,0));
+			LoginPage.immigration.walk(0, 0);
+		}
+		
+		// inhabitant
+		if(LoginPage.me.getType()!=0){
+			// give the controller a dedicated instance
+			LoginPage.me = loggedinUsers.get(LoginPage.me.getUsername());
+			
+			// remove from the list
+			loggedinUsers.remove(LoginPage.me.getUsername());
+			
+			// if there's no position yet, assume 0,0
+			if(LoginPage.me.getCurrentPosition() == null){
+
+				LoginPage.immigration.walk(0, 0);
+				// avoid having to re-fetch the states
+				LoginPage.me.setCurrentPosition(new Point(0,0));
+	
+			}
+		}
+
 		
 		// add listeners
 		this.addMouseListener(this);
@@ -82,13 +119,12 @@ public class ICEWorldView extends JPanel implements MouseListener,
 		// set initial camera view position for viewport
 		populateWorld((Graphics2D)world.getImage().getGraphics());
 
-		deltaX = 2000;
-		deltaY = 2000;
+		deltaX = 0;
+		deltaY = 0;
 		
 		// panner
 		panner = new Panner(world.getImage());
 		
-	
 		updateWorld();
 	}
 
@@ -114,6 +150,25 @@ public class ICEWorldView extends JPanel implements MouseListener,
 			System.out.println("Invalid destination point");
 		}
 
+	}
+	
+	
+	public void zoomChanged(){
+		map = null;
+		world = null;
+		Runtime runtime = Runtime.getRuntime();
+		int mb = 1024*1024;
+    
+		System.gc();
+		
+		map = new World();
+		world = new World();
+		
+	    System.out.println("Used Memory:" + (runtime.totalMemory() - runtime.freeMemory()) / mb);
+        System.out.println("Free mem: "+runtime.freeMemory()/mb);
+ 
+        panner = new Panner(world.getImage());
+		updateWorld();
 	}
 
 	Timer timer;
@@ -199,20 +254,31 @@ public class ICEWorldView extends JPanel implements MouseListener,
 		
 		for (ICEtizen value : loggedinUsers.values()) {
 			
-		    System.out.println("VALUE: "+value.getUsername());
+		    System.out.print("VALUE: "+value.getUsername());
+		
 			currentTileSpacePos = value.getCurrentPosition();
-		   
+
+	
 		    if(currentTileSpacePos!=null){
+				System.out.println("  "+currentTileSpacePos.x+","+currentTileSpacePos.y);
 		    	 pos = Scaler.toScreenSpace(currentTileSpacePos);
-			    	g2.drawImage(inh.avatar, pos.x - ICEtizen.AVATAR_OFFSET_X, pos.y - ICEtizen.AVATAR_OFFSET_Y, this);
+			    	g2.drawImage((value.getType() == 1)?inh.avatar:alienImage, pos.x - ICEtizen.AVATAR_OFFSET_X, pos.y - ICEtizen.AVATAR_OFFSET_Y, this);
 			    	minimap.drawUser(pos);
 			    	
 		    }
 		}
 		
-		// TODO remove self from the loggedinusers list
+		// update the controller user
+		currentTileSpacePos = LoginPage.me.getCurrentPosition();
+		pos = Scaler.toScreenSpace(currentTileSpacePos);
 		
-	
+    	g2.drawImage((LoginPage.me.getType() == 1)?inh.avatar:alienImage, pos.x - ICEtizen.AVATAR_OFFSET_X, pos.y - ICEtizen.AVATAR_OFFSET_Y, this);
+    	minimap.drawUser(pos);
+    	
+		// TODO Handle walk. If position changed then walk
+		Point lastKnownPosition = null;
+		// schedule a walk for every users
+		// 
 	}
 
 	/**

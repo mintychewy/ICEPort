@@ -9,7 +9,7 @@ import iceworld.given.*;
 public class ICEtizen implements MyIcetizen {
 
 	// group ICEPort ID
-	public static int ICEPORT_ID;
+	public static int ICEPORT_ID = 245;
 	//
 
 	public static final Dimension AVATAR_SIZE = new Dimension(95,120);
@@ -45,9 +45,6 @@ public class ICEtizen implements MyIcetizen {
 		look.gidH = "H001";
 		look.gidW = "W001";
 
-		// listening port for now 
-		// TODO different listening port for each game instance
-		listeningPort = 10245;
 	}
 
 	@Override

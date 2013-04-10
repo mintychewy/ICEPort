@@ -28,5 +28,6 @@ public class ControlsPanel extends JPanel {
 	
 	public void addListeners(){
 		logoutButton.addActionListener(new ControlsPaneListener());
+		zoomOutButton.addActionListener(new ControlsPaneListener());
 	}
 }

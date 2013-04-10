@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 
 public class QuitConfirmationDialog extends JDialog {
 	
+	
 	JLabel message;
 	JButton yesBtn, noBtn;
 	public QuitConfirmationDialog(){
@@ -21,7 +22,6 @@ public class QuitConfirmationDialog extends JDialog {
 		noBtn = new JButton("No");
 		this.setLayout(new GridLayout(2,1,5,5));
 		this.add(message);
-		
 		JPanel buttonsPanel = new JPanel();
 		
 		buttonsPanel.add(yesBtn);
