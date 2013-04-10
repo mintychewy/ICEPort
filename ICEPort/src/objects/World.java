@@ -12,7 +12,7 @@ import java.net.URL;
 
 import javax.imageio.ImageIO;
 
-public class Map {
+public class World {
 	Image tile;
 	private BufferedImage mapImage;
 
@@ -22,8 +22,8 @@ public class Map {
 	public static final int NUM_TILES = 100;
 
 	// NUM_TILES *+ (Arbitrary offset multiplier/adders)
-	public static final int OFFSET_FROM_ORIGIN_X = Map.NUM_TILES * 32 + 25;
-	public static final int OFFSET_FROM_ORIGIN_Y = Map.NUM_TILES + 350;
+	public static final int OFFSET_FROM_ORIGIN_X = World.NUM_TILES * 32 + 25;
+	public static final int OFFSET_FROM_ORIGIN_Y = World.NUM_TILES + 350;
 
 	private int x, y;
 
@@ -31,7 +31,7 @@ public class Map {
 		return mapImage;
 	}
 
-	public Map() {
+	public World() {
 		mapImage = new BufferedImage(WORLD_SIZE.width, WORLD_SIZE.height,
 				BufferedImage.TYPE_INT_ARGB);
 		loadResources();

@@ -1,8 +1,5 @@
 package objects;
 
-
-import iceworld.States;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -23,11 +20,10 @@ public class Minimap {
 	
 	// public static 
 	public final static Dimension MINIMAP_SIZE = new Dimension(270,180);
-	public final static double MINIMAP_SCALE_FACTOR = (double)MINIMAP_SIZE.height/Map.WORLD_SIZE.height;
+	public final static double MINIMAP_SCALE_FACTOR = (double)MINIMAP_SIZE.height/World.WORLD_SIZE.height;
 		
 	public Minimap(){
 		renderMap();
-		updateMiniMap();
 	}
 
 	public BufferedImage getImage(){
@@ -46,25 +42,22 @@ public class Minimap {
 		g.fillRect(0, 0, MINIMAP_SIZE.width, MINIMAP_SIZE.height);
 	}
 
-	public void updateMiniMap(){
-
-		// clears the map
-		renderMap();
-
+	
+	
+	public void drawUser(Point pos){
+		//renderMap();
+		Point drawPos = Scaler.toMiniMapPoint(pos);
+		
 		Graphics2D g= mapImage.createGraphics();
-		// Active ICEtizen's position dot 
-		Point activeUserPos = Scaler.toMiniMapPoint(Scaler.toScreenSpace(States.currentPost
-				));
 
 		g.setColor(Color.WHITE);
-		g.fillOval(activeUserPos.x- POSITION_DOT_STROKE_SIZE/2, activeUserPos.y- POSITION_DOT_STROKE_SIZE/2, POSITION_DOT_STROKE_SIZE, POSITION_DOT_STROKE_SIZE);
+		g.fillOval(drawPos.x- POSITION_DOT_STROKE_SIZE/2, drawPos.y- POSITION_DOT_STROKE_SIZE/2, POSITION_DOT_STROKE_SIZE, POSITION_DOT_STROKE_SIZE);
 
 		g.setColor(Color.RED);
-		g.fillOval(activeUserPos.x- POSITION_DOT_SIZE/2, activeUserPos.y- POSITION_DOT_SIZE/2, POSITION_DOT_SIZE,  POSITION_DOT_SIZE);
-
-		// Other ICETizen's position dots
+		g.fillOval(drawPos.x- POSITION_DOT_SIZE/2, drawPos.y- POSITION_DOT_SIZE/2, POSITION_DOT_SIZE,  POSITION_DOT_SIZE);
 
 	}
+	
 	
 	public boolean isMinimapClicked(MouseEvent e){
 		//

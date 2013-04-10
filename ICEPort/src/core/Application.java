@@ -13,8 +13,9 @@ import java.awt.Toolkit;
 public class Application {
 	
 	public static ApplicationMainFrame app;
+	//public static ApplicationMainFrame login;
 	public static LoginPage login;
-	
+
 	/**
 	 * Create an application frame at the centre of the screen
 	 */

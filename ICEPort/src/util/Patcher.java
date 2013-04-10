@@ -2,7 +2,7 @@ package util;
 
 import java.awt.image.BufferedImage;
 
-import objects.Map;
+import objects.World;
 
 public class Patcher {
 	final int width;
@@ -10,8 +10,8 @@ public class Patcher {
 	BufferedImage sourceImage; 
 	
 	public Patcher(){
-	 this.width = Map.WORLD_SIZE.width;
-	 this.height = Map.WORLD_SIZE.height;
+	 this.width = World.WORLD_SIZE.width;
+	 this.height = World.WORLD_SIZE.height;
 	}
 	
 	public Patcher(BufferedImage sourceImage, int width, int height){

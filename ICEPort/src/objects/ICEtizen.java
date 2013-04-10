@@ -19,7 +19,7 @@ public class ICEtizen implements MyIcetizen {
 	public Point lastKnownIntendedDestination;
 	public String destinationSpecifyTimestamp;
 	public Point currentPosition;
-
+	// AtomicReference<Object> cache = new AtomicReference<Object>();
 	public Image avatar;
 	public IcetizenLook look;
 	// used for loading avatar

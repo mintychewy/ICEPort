@@ -6,16 +6,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.AbstractButton;
+import javax.swing.JDialog;
 
 
 public class MenuBarListener implements ActionListener {
-
+	public static QuitConfirmationDialog confirmDialog;
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		AbstractButton source = (AbstractButton) e.getSource();
 		if(source.getText().equals("Quit")){
-			// exit program
-			System.exit(0);
+			
+			confirmDialog = new QuitConfirmationDialog();
+			confirmDialog.setVisible(true);
+			
 		}
 		else if(source.getText().equals("About")){
 			Dimension screenDimension = Toolkit.getDefaultToolkit().getScreenSize();

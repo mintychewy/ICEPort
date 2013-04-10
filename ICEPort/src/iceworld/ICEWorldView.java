@@ -17,30 +17,32 @@ import javax.swing.JPanel;
 
 import objects.ICEtizen;
 import objects.Inhabitant;
-import objects.Map;
 import objects.Minimap;
+import objects.World;
 import util.ImageLoader;
 import util.Patcher;
 import util.Scaler;
+import util.WorldStatesFetcher;
 
 public class ICEWorldView extends JPanel implements MouseListener,
 		MouseMotionListener, KeyListener {
 
 	private static final long serialVersionUID = 5658988277615488303L;
 
-	// Current weather
-	String weather;
-	
+	// responsible for fetching everything from the server
+	WorldStatesFetcher fetcher;
+
 	// HashMap of logged-in ICEtizens (String = username is the key)
-	HashMap<String, ICEtizen> loggedinUsers = new HashMap<String, ICEtizen>();
+	HashMap<String, ICEtizen> loggedinUsers;
+	// Controller user
+	ICEtizen me;
+	
 	
 	Minimap minimap;
 	// The current representation of ICEWorld
-	Map world;
+	World world;
 	// The background tiles used for adaptive tile replacement
-	Map map;
-
-	Inhabitant me; 
+	World map;
 	
 	Panner panner;
 	Patcher avatarPatcher;
@@ -56,10 +58,11 @@ public class ICEWorldView extends JPanel implements MouseListener,
 	public ICEWorldView() {
 		setPreferredSize(ICEWORLD_VIEWPORT_SIZE);
 		
+		// fetcher
+		fetcher = new WorldStatesFetcher();
+		fetcher.updateWorldStates();
 		
-		// create an instance of myself :P
-		me = new Inhabitant();
-		
+		loggedinUsers = fetcher.getLoggedinUserMap();
 		
 		// add listeners
 		this.addMouseListener(this);
@@ -68,8 +71,8 @@ public class ICEWorldView extends JPanel implements MouseListener,
 		setFocusable(true);
 	
 		// initialise world
-		map = new Map();
-		world = new Map();
+		map = new World();
+		world = new World();
 		minimap = new Minimap();
 
 		// patchers
@@ -79,11 +82,13 @@ public class ICEWorldView extends JPanel implements MouseListener,
 		// set initial camera view position for viewport
 		populateWorld((Graphics2D)world.getImage().getGraphics());
 
-		deltaX = States.currentPost.x;
-		deltaY = States.currentPost.y;
+		deltaX = 2000;
+		deltaY = 2000;
 		
 		// panner
 		panner = new Panner(world.getImage());
+		
+	
 		updateWorld();
 	}
 
@@ -102,7 +107,7 @@ public class ICEWorldView extends JPanel implements MouseListener,
 		// check whether if it is a valid destination
 		if(!world.isFallingIntoTartarus(destinationTile)){
 			// set destination
-			States.activeUserDestination = destinationTile;
+			//States.activeUserDestination = destinationTile;
 			// walk to the destination
 			walk();
 		}else{
@@ -165,8 +170,6 @@ public class ICEWorldView extends JPanel implements MouseListener,
 		// Show update
 		viewport = panner.getWorldViewport();
 
-		updateMiniMap();
-
 		repaint();
 	}
 
@@ -177,15 +180,37 @@ public class ICEWorldView extends JPanel implements MouseListener,
 	public void populateWorld(Graphics2D g2) {
 		
 		// remove all users from the map 
-		patchCitizens(g2);
+		//patchCitizens(g2);
 
 
 
 		// converts tileSpace to screenSpace coordinates
-		Point pos = Scaler.toScreenSpace(States.currentPost);
+		Point pos = null;
+		Point currentTileSpacePos = null;
 		
-		g2.drawImage(me.avatar, pos.x - ICEtizen.AVATAR_OFFSET_X, pos.y
-				- ICEtizen.AVATAR_OFFSET_Y, this);
+		
+		/* MINIMAP STUFF */
+		// for minimap display
+		Point miniMapPos = null;
+		// clear minimap
+		minimap = new Minimap();
+		
+		Inhabitant inh = new Inhabitant();
+		
+		for (ICEtizen value : loggedinUsers.values()) {
+			
+		    System.out.println("VALUE: "+value.getUsername());
+			currentTileSpacePos = value.getCurrentPosition();
+		   
+		    if(currentTileSpacePos!=null){
+		    	 pos = Scaler.toScreenSpace(currentTileSpacePos);
+			    	g2.drawImage(inh.avatar, pos.x - ICEtizen.AVATAR_OFFSET_X, pos.y - ICEtizen.AVATAR_OFFSET_Y, this);
+			    	minimap.drawUser(pos);
+			    	
+		    }
+		}
+		
+		// TODO remove self from the loggedinusers list
 		
 	
 	}
@@ -197,12 +222,12 @@ public class ICEWorldView extends JPanel implements MouseListener,
 	 */
 	public void patchCitizens(Graphics2D g2) {
 
-		Point draw = Scaler.toScreenSpace(States.activeUserLastKnownPosition);
+		//Point draw = Scaler.toScreenSpace(States.activeUserLastKnownPosition);
 		
-		BufferedImage patchImage = avatarPatcher.getPatchImage(draw.x - ICEtizen.AVATAR_OFFSET_X, draw.y - ICEtizen.AVATAR_OFFSET_Y);
+		//BufferedImage patchImage = avatarPatcher.getPatchImage(draw.x - ICEtizen.AVATAR_OFFSET_X, draw.y - ICEtizen.AVATAR_OFFSET_Y);
 
-		g2.drawImage(patchImage, draw.x - ICEtizen.AVATAR_OFFSET_X, draw.y
-				- ICEtizen.AVATAR_OFFSET_Y, this);
+		//g2.drawImage(patchImage, draw.x - ICEtizen.AVATAR_OFFSET_X, draw.y
+		//		- ICEtizen.AVATAR_OFFSET_Y, this);
 	}
 
 	@Override
@@ -224,13 +249,9 @@ public class ICEWorldView extends JPanel implements MouseListener,
 
 	}
 
-	public void updateMiniMap() {
-		minimap.updateMiniMap();
-	}
 
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		minimap = new Minimap();
 
 		g.drawImage(viewport, 0, 0, null);
 		g.drawImage(minimap.getImage(), ICEWORLD_VIEWPORT_SIZE.width

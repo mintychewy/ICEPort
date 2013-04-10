@@ -40,9 +40,9 @@ public class WorldStatesFetcher {
 	 * 
 	 * It also checks whether if the server is reachable. If not, 
 	 * the method does nothing further (aka. no data is being updated)
-	 * @throws Exception
+	 * 
 	 */
-	public void updateWorldStates() throws Exception {
+	public void updateWorldStates() {
 	
 		
 		// checks whether if the ICEWorld can be reached
@@ -55,7 +55,12 @@ public class WorldStatesFetcher {
 	// STATES													//
 	//////////////////////////////////////////////////////////////
 		// fetch and print out the raw states (for debugging)
-		String out = ICEWorldPeek.getData("states");
+		String out = null;
+		try {
+			out = ICEWorldPeek.getData("states");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		System.out.println(out);
 		
 		// create a new parser / keyfinders
@@ -307,7 +312,11 @@ public class WorldStatesFetcher {
 		IcetizenLook look;
 		while(uidItr.hasNext()){
 			int key = (Integer) uidItr.next();
-				rawLook = ICEWorldPeek.getLooks(key+"");
+				try {
+					rawLook = ICEWorldPeek.getLooks(key+"");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 				// {"status":1,"data":[{"B":null,"H":null,"S":null,"W":null}]}
 				// null will become "ul"
 				look = new IcetizenLook();
@@ -389,5 +398,14 @@ public class WorldStatesFetcher {
 			icetizens.put(username.poll(), icetizen);
 			
 		}
+		
+		
+		// get controller user
+		//icetizens.get();
 	}
+	
+	public HashMap<String,ICEtizen> getLoggedinUserMap() {
+		return this.icetizens;
+	}
+	
 }

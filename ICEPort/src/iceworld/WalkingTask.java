@@ -8,10 +8,6 @@ public class WalkingTask extends TimerTask{
 	
 	@Override
 	public void run() {
-
-		System.out.println("(Before update) Lastknownposition: "+States.activeUserLastKnownPosition.toString());
-
-		
 		
 		States.activeUserLastKnownPosition.x = States.currentPost.x;
 		States.activeUserLastKnownPosition.y = States.currentPost.y;

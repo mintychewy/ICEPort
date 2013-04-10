@@ -3,7 +3,7 @@ package iceworld;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
-import objects.Map;
+import objects.World;
 
 public class Panner {
 
@@ -25,10 +25,10 @@ public class Panner {
 			if (ICEWorldView.deltaY - increment >= 0)
 				return true;
 		} else if (direction == 1) { // DOWN
-			if (ICEWorldView.deltaY + increment + ICEWorldView.ICEWORLD_VIEWPORT_SIZE.height <= Map.WORLD_SIZE.height)
+			if (ICEWorldView.deltaY + increment + ICEWorldView.ICEWORLD_VIEWPORT_SIZE.height <= World.WORLD_SIZE.height)
 				return true;
 		} else if (direction == 3) { // RIGHT
-			if (ICEWorldView.deltaX + increment + ICEWorldView.ICEWORLD_VIEWPORT_SIZE.width <= Map.WORLD_SIZE.width)
+			if (ICEWorldView.deltaX + increment + ICEWorldView.ICEWORLD_VIEWPORT_SIZE.width <= World.WORLD_SIZE.width)
 				return true;
 		} else { // LEFT
 			if (ICEWorldView.deltaX - increment >= 0)
@@ -55,7 +55,7 @@ public class Panner {
 			} else {
 				// If next panning makes the camera view out of bound,
 				// return the rightmost view possible
-				ICEWorldView.deltaX = Map.WORLD_SIZE.width
+				ICEWorldView.deltaX = World.WORLD_SIZE.width
 						- ICEWorldView.ICEWORLD_VIEWPORT_SIZE.width;
 			}
 		} else if (e.getKeyCode() == KeyEvent.VK_LEFT) {

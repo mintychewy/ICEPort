@@ -39,6 +39,8 @@ import core.Application;
 
 public class LoginPage extends JFrame {
 
+	public static ICEWorldImmigration immigration;
+	static ApplicationMainFrame app;
 	public LoginPage() {
 		super("Login Page");
 		
@@ -232,7 +234,17 @@ class ImagePanel extends JPanel {
 							e1.printStackTrace();
 						}
 						//
+						
+						javax.swing.SwingUtilities.invokeLater(new Runnable(){
+							public void run(){
+								LoginPage.app = new ApplicationMainFrame();
+							}
+						});
+						
 						Application.login.setVisible(false);
+	
+						
+						
 					} else {
 						failure++;
 						label.setText("incorrect username or password" + "\t"
@@ -297,6 +309,12 @@ class ImagePanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				if(authenticateAlien()){
 					System.out.println("alien logged in ");
+					
+					javax.swing.SwingUtilities.invokeLater(new Runnable(){
+						public void run(){
+							LoginPage.app = new ApplicationMainFrame();
+						}
+					});
 					Application.login.setVisible(false);
 				}
 			}
@@ -311,8 +329,8 @@ class ImagePanel extends JPanel {
 
 	public boolean authenticateAlien(){
 		testizen = new ICEtizen();
-		ICEWorldImmigration immigration = new ICEWorldImmigration(testizen);
-		return immigration.loginAlien();
+		LoginPage.immigration = new ICEWorldImmigration(testizen);
+		return LoginPage.immigration.loginAlien();
 	}
 
 	public long getUnixTime() {
@@ -346,8 +364,8 @@ class ImagePanel extends JPanel {
 		System.out.println("authenticating user: "+user+" pass: "+pass);
 		testizen = new ICEtizen();
 		testizen.setUsername(user);
-		ICEWorldImmigration immigration = new ICEWorldImmigration(testizen);
-		boolean status = immigration.login(pass);
+		LoginPage.immigration = new ICEWorldImmigration(testizen);
+		boolean status = LoginPage.immigration.login(pass);
 		System.out.println("Success?: "+status);
 		return status;
 	}
