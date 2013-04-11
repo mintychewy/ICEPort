@@ -72,8 +72,7 @@ class ImagePanel extends JPanel {
 		setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
 		try {
 			image = ImageIO
-					.read(new URL(
-							"http://iceworld.sls-atl.com/sites/default/files/logo.png"));
+					.read(getClass().getResource("/images/loginbg.png"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -81,32 +80,30 @@ class ImagePanel extends JPanel {
 	}
 
 	public void createGUI() {
-		setLayout(new GridBagLayout());
-		JPanel inhabitantLogIn = new JPanel();
-		inhabitantLogIn.setOpaque(true);
-		inhabitantLogIn.setBackground(new Color(0f, 0f, 0f, 0f));
-		label = new JLabel();
-		label.setForeground(Color.BLACK);
-		inhabitantLogIn.setLayout(new GridLayout(2, 2, 2, 2));
-		JButton aliens = new JButton("aliens");
-		aliens.setSize(2, 1);
-		JButton inhabitant = new JButton("inhabitants");
-		final JPanel loginPanel = new JPanel();
-		loginPanel.setOpaque(false);
-		loginPanel.setLayout(new GridLayout(6, 1, 2, 2));
-		loginPanel.add(inhabitantLogIn);
-		loginPanel.add(inhabitant);
-		loginPanel.add(label);
-		loginPanel.add(aliens);
+		
+		
+		setLayout(null);
+		
+		JButton aliens = new JButton("log in as alien");
+		JButton history=new JButton("history");
+		JButton inhabitant = new JButton("log in");
+		
+		userField = new JTextField(11);
+		passField = new JPasswordField(11);
+		
+		userField.setBounds(70, 55, 170, 50);
+		add(userField);
+		passField.setBounds(360, 55, 170, 50);
+		add(passField);
+		aliens.setBounds(40,120,160,50);
+		add(aliens);
+		inhabitant.setBounds(230, 120, 160,50);
+		add(inhabitant);
+		history.setBounds(420, 120, 160, 50);
+		add(history);
+		
 
-		add(loginPanel);
-
-		JLabel userLabel = new JLabel("USERNAME : ");
-		userLabel.setForeground(Color.BLACK);
-		userField = new JTextField(10);
-		JLabel passLabel = new JLabel("PASSWORD : ");
-		passLabel.setForeground(Color.BLACK);
-		passField = new JPasswordField(10);
+		
 
 		inhabitant.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -207,10 +204,7 @@ class ImagePanel extends JPanel {
 			}
 		});
 
-		inhabitantLogIn.add(userLabel);
-		inhabitantLogIn.add(userField);
-		inhabitantLogIn.add(passLabel);
-		inhabitantLogIn.add(passField);
+		
 
 	}
 	
@@ -259,12 +253,14 @@ class ImagePanel extends JPanel {
 
 	@Override
 	public Dimension getPreferredSize() {
-		return (new Dimension(600, 300));
+		return (new Dimension(600, 195));
 	}
 
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		// g.drawImage(image, 0, 0, this);
+		Dimension d=this.getSize();
+		
+		g.drawImage(image, 0, 0, this);
 	}
 
 }
