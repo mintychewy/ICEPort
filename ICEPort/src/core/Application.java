@@ -15,13 +15,14 @@ public class Application {
 	public static ApplicationMainFrame app;
 	//public static ApplicationMainFrame login;
 	public static LoginPage login;
+	public static Dimension screenDimension;
 
 	/**
 	 * Create an application frame at the centre of the screen
 	 */
 	public static void createAppAndShowGUI(){
 		// Get screen dimension
-		Dimension screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
+		screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
 		
 		// Create a new application frame
 		//login = new ApplicationMainFrame();

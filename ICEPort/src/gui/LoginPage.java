@@ -6,8 +6,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -16,12 +14,10 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.TreeSet;
 
 import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -32,7 +28,6 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import objects.ICEtizen;
-import util.ICEWorldPeek;
 import core.Application;
 
 
@@ -44,10 +39,12 @@ public class LoginPage extends JFrame {
 	public LoginPage() {
 		super("Login Page");
 		
+		/*
 		if(!ICEWorldPeek.isReachable("http://iceworld.sls-atl.com")){
 			System.out.println("unreachable");
 			System.exit(0);
 		}
+		*/
 			
 		createAndDisplayGUI();
 	}
@@ -109,6 +106,8 @@ class ImagePanel extends JPanel {
 		userField = new JTextField(11);
 		passField = new JPasswordField(11);
 		
+		label = new JLabel("");
+		
 		userField.setBounds(70, 55, 170, 50);
 		add(userField);
 		passField.setBounds(360, 55, 170, 50);
@@ -119,7 +118,7 @@ class ImagePanel extends JPanel {
 		add(inhabitant);
 		history.setBounds(420, 120, 160, 50);
 		add(history);
-		
+		label.setBounds(230,140,160,50);
 
 
 		history.addActionListener(new ActionListener(){
@@ -158,6 +157,8 @@ class ImagePanel extends JPanel {
 						usernameList.add(s);
 				}else{}
 				
+				
+				final JDialog dia = new JDialog();
 					final JComboBox comboBox = new JComboBox(
 							usernameList.toArray());
 					
@@ -169,20 +170,22 @@ class ImagePanel extends JPanel {
 					public void actionPerformed(ActionEvent e) {
 						// fill the username field when one is selected
 						userField.setText((String) comboBox.getSelectedItem());
+						dia.dispose();
 					}
 					
 				});
 			
 				
-				JDialog dia = new JDialog();
+				
 				dia.add(comboBox);
+				dia.pack();
+				dia.setLocation(Application.screenDimension.width/2,Application.screenDimension.height/2);
 				dia.setVisible(true);
-				// show JTable 
+	
 				while(!usernameList.isEmpty()){
 					System.out.println(usernameList.pollFirst());
 				}
-				// doubleclick on the JTable fills 
-				// the username field
+			
 
 			}
 
