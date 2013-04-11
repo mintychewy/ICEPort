@@ -99,9 +99,9 @@ class ImagePanel extends JPanel {
 		
 		setLayout(null);
 		
-		JButton aliens = new JButton("log in as alien");
-		JButton history=new JButton("history");
-		JButton inhabitant = new JButton("log in");
+		JButton aliens = new JButton("Login as Alien");
+		JButton history=new JButton("History");
+		JButton inhabitant = new JButton("Login");
 		
 		userField = new JTextField(11);
 		passField = new JPasswordField(11);
@@ -110,16 +110,16 @@ class ImagePanel extends JPanel {
 		
 		userField.setBounds(70, 55, 170, 50);
 		add(userField);
-		passField.setBounds(360, 55, 170, 50);
+		passField.setBounds(350, 55, 170, 50);
 		add(passField);
-		aliens.setBounds(40,120,160,50);
+		aliens.setBounds(30,120,160,50);
 		add(aliens);
-		inhabitant.setBounds(230, 120, 160,50);
+		inhabitant.setBounds(220, 120, 160,50);
 		add(inhabitant);
-		history.setBounds(420, 120, 160, 50);
+		history.setBounds(410, 120, 160, 50);
 		add(history);
-		label.setBounds(230,140,160,50);
-
+		label.setBounds(200,155,500,50);
+		add(label);
 
 		history.addActionListener(new ActionListener(){
 
@@ -174,8 +174,6 @@ class ImagePanel extends JPanel {
 					}
 					
 				});
-			
-				
 				
 				dia.add(comboBox);
 				dia.pack();
@@ -199,20 +197,16 @@ class ImagePanel extends JPanel {
 
 				if (isInBlackList(user)) {
 
-					label.setText("blocked!");
-					System.out.println("userBlock");
+					label.setText("User blocked!");
 				} else {
 
 					if (username.equals("") || password.equals("")) {
-						label.setForeground(Color.RED);
+						label.setForeground(Color.WHITE);
 						label.setText("Username / Password cannot be empty!");
 					}
 
 					// correct username and password
 					else if (authenticate(username, password)) {
-
-						label.setForeground(Color.BLACK);
-						label.setText("logged in");
 
 						// add username to the history
 						try {
@@ -307,6 +301,8 @@ class ImagePanel extends JPanel {
 							LoginPage.app = new ApplicationMainFrame();
 						}
 					});
+					label.setText("");
+
 					Application.login.setVisible(false);
 				}
 			}
@@ -361,6 +357,7 @@ class ImagePanel extends JPanel {
 		LoginPage.immigration = new ICEWorldImmigration(LoginPage.me);
 		boolean status = LoginPage.immigration.login(pass);
 		System.out.println("Success?: "+status);
+		label.setText("");
 		return status;
 	}
 
