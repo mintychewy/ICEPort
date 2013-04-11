@@ -4,6 +4,8 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
+
+import iceworld.ICEWorldView;
 import iceworld.given.*;
 
 public class ICEtizen implements MyIcetizen {
@@ -13,8 +15,12 @@ public class ICEtizen implements MyIcetizen {
 	//
 
 	public static final Dimension AVATAR_SIZE = new Dimension(95,120);
-	public static int AVATAR_OFFSET_X = 48;
-	public static int AVATAR_OFFSET_Y = 115;
+	
+	// TODO make non-static
+	// Zoom in
+
+	public static int AVATAR_OFFSET_X;
+	public static int AVATAR_OFFSET_Y;
 
 	public Point lastKnownIntendedDestination;
 	public String destinationSpecifyTimestamp;
@@ -38,6 +44,9 @@ public class ICEtizen implements MyIcetizen {
 	public Integer type;
 
 	public ICEtizen(){
+		AVATAR_OFFSET_X = (int)(48*ICEWorldView.zoom_factor);
+		AVATAR_OFFSET_Y = (int)(115*ICEWorldView.zoom_factor);
+		
 		// set the default looks
 		look = new IcetizenLook();
 		look.gidB = "B001";

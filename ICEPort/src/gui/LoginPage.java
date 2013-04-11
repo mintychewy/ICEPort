@@ -39,7 +39,7 @@ import core.Application;
 public class LoginPage extends JFrame {
 
 	public static ICEWorldImmigration immigration;
-	static ApplicationMainFrame app;
+	public static ApplicationMainFrame app;
 	public static ICEtizen me;
 	public LoginPage() {
 		super("Login Page");

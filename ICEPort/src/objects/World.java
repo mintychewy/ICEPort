@@ -45,7 +45,7 @@ public class World {
 		 w = (int)(4320*ICEWorldView.zoom_factor);
 		 
 		 OFFSET_FROM_ORIGIN_X = (int)((World.NUM_TILES * 32 + 25)*ICEWorldView.zoom_factor);
-		 OFFSET_FROM_ORIGIN_Y = (int)((World.NUM_TILES + 350)*ICEWorldView.zoom_factor);
+		 OFFSET_FROM_ORIGIN_Y = (int)((World.NUM_TILES + 350    )*ICEWorldView.zoom_factor);
 		 
 		WORLD_SIZE = new Dimension(h,w);
 		System.out.println("Zoom factor in World: " +ICEWorldView.zoom_factor);
@@ -100,8 +100,8 @@ public class World {
 
 				g.drawImage(newTile, x, y, null);
 				// Tile coord label
-				//g.drawString(a + "," + b, x + TILE_WIDTH / 2, y
-				//+ TILE_HEIGHT / 2);
+				g.drawString(a + "," + b, x + TILE_WIDTH / 2, y
+					+ TILE_HEIGHT / 2);
 			}
 
 	}

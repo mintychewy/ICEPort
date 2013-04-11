@@ -46,7 +46,7 @@ public class Minimap {
 	
 	public void drawUser(Point pos){
 		//renderMap();
-		Point drawPos = Scaler.toMiniMapPoint(pos);
+		Point drawPos = Scaler.toMiniMapPoint(pos,1);
 		
 		Graphics2D g= mapImage.createGraphics();
 

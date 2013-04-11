@@ -72,6 +72,7 @@ public class Scaler {
 		// centre of the tile
 		y += World.TILE_HEIGHT/2;
 
+		System.out.println("Converted Back: "+ Scaler.toTileSpace(new Point(x,y)));
 		return new Point(x,y);
 	}
 	
@@ -158,12 +159,40 @@ public class Scaler {
 	}
 	
 	/**
-	 * Converts a map-coordinate Point to a minimap Point (in pixels)
-	 * @param mapPoint map-coordinate Point
+	 * Converts a map-coordinate/tile-space Point to a minimap Point (in pixels)
+	 * @param mode 0 for map-coordinate => minimap Point, 1 for tilespace-coordinate => minimap Point
+	 * @param p Point
 	 * @return MiniMap (pixel) coordinate Point
 	 */
-	public static Point toMiniMapPoint(Point mapPoint){
-		return scalePoint(mapPoint,Minimap.MINIMAP_SCALE_FACTOR);
+	public static Point toMiniMapPoint(Point p, int mode){
+		if(mode == 0)
+			return scalePoint(p,Minimap.MINIMAP_SCALE_FACTOR);
+		else if(mode == 1)
+			return scalePoint(toScreenSpaceNoZoom(p),Minimap.MINIMAP_SCALE_FACTOR);
+		return null;
 	}
 	
+	
+	
+	/**
+	 * Converts tile indices Point into Screen-space coordinates
+	 * (aka.pixel coordinates) WITHOUT TAKING ZOOM_FACTOR INTO CONSIDERATION
+	 * @param tilePoint tile indices
+	 * @return pixel coordinate Point
+	 */
+	public static Point toScreenSpaceNoZoom(Point tilePoint){
+		// see logic below
+		
+		int w = 32;
+		int h = 16;
+		int fx = World.NUM_TILES * 32 + 25;
+		int fy = World.NUM_TILES + 350;
+		int x = (tilePoint.x * w + tilePoint.y * -w + fx); 
+		int y = (tilePoint.x * h + tilePoint.y * h + fy);
+		
+		// centre of the tile
+		y += 16;
+
+		return new Point(x,y);
+	}
 }
