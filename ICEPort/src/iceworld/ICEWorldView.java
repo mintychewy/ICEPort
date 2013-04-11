@@ -137,7 +137,7 @@ MouseMotionListener, KeyListener {
 
 			}
 		}
-
+		
 
 		// add listeners
 		this.addMouseListener(this);
@@ -163,6 +163,8 @@ MouseMotionListener, KeyListener {
 		// panner
 		panner = new Panner(world.getImage());
 
+
+		
 		updateWorld();
 	}
 
@@ -194,6 +196,8 @@ MouseMotionListener, KeyListener {
 
 	public void zoomChanged(){
 
+		
+		
 		/* KEEP MAX-ZOOM IN MEMORY FOR LATER USE */
 		mapFull = map;
 		worldFull = world;
@@ -324,17 +328,24 @@ MouseMotionListener, KeyListener {
 
 		inh = new Inhabitant();
 
-		/* Y-OFFSET CORRECTION IN ZOOM MODE */
+		/* XY-OFFSET CORRECTION IN ZOOM MODE */
 		int zoomCorrectionYOffset = 0;
-
+		int zoomCorrectionXOffset = 0;
 		if(zoom_factor == 1.0){
 			// = 0
 		} else if(zoom_factor >= 0.8){
 			zoomCorrectionYOffset = (int)((1.0/zoom_factor)*6);
-		}else if(zoom_factor >= 0.3 ){
+			zoomCorrectionXOffset = (int)((1.0/zoom_factor)*4);
+		}else if(zoom_factor >= 0.5 && zoom_factor < 0.8){
 			zoomCorrectionYOffset = (int)((1.0/zoom_factor)*10);
+			zoomCorrectionXOffset = (int)((1.0/zoom_factor)*3);
+		}else if(zoom_factor >= 0.3 && zoom_factor < 0.5){
+			zoomCorrectionYOffset = (int)((1.0/zoom_factor)*7);
+			zoomCorrectionXOffset = (int)((1.0/zoom_factor)*2);
 		}else if(zoom_factor < 0.3){
 			zoomCorrectionYOffset = (int)((1.0/zoom_factor)*2);
+			zoomCorrectionXOffset = (int)((1.0/zoom_factor)*1);
+		
 		}
 
 		for (ICEtizen value : loggedinUsers.values()) {
@@ -347,7 +358,7 @@ MouseMotionListener, KeyListener {
 
 				System.out.print("  "+currentTileSpacePos.x+","+currentTileSpacePos.y);
 				pos = Scaler.toScreenSpace(currentTileSpacePos);
-				g2.drawImage((value.getType() == 1)?inh.avatar:ali.avatar, pos.x - (int) (ICEtizen.AVATAR_OFFSET_X * zoom_factor), (int) (pos.y - ICEtizen.AVATAR_OFFSET_Y * zoom_factor)
+				g2.drawImage((value.getType() == 1)?inh.avatar:ali.avatar, pos.x - (int) (ICEtizen.AVATAR_OFFSET_X * zoom_factor) - zoomCorrectionXOffset, (int) (pos.y - ICEtizen.AVATAR_OFFSET_Y * zoom_factor)
 						-zoomCorrectionYOffset, this);
 
 
@@ -369,7 +380,7 @@ MouseMotionListener, KeyListener {
 		currentTileSpacePos = LoginPage.me.getCurrentPosition();
 		pos = Scaler.toScreenSpace(currentTileSpacePos);
 
-		g2.drawImage((LoginPage.me.getType() == 1)?inh.avatar:ali.avatar, pos.x - (int) (ICEtizen.AVATAR_OFFSET_X*zoom_factor), pos.y - (int)(ICEtizen.AVATAR_OFFSET_Y * zoom_factor)
+		g2.drawImage((LoginPage.me.getType() == 1)?inh.avatar:ali.avatar, pos.x - (int) (ICEtizen.AVATAR_OFFSET_X*zoom_factor) - zoomCorrectionXOffset, pos.y - (int)(ICEtizen.AVATAR_OFFSET_Y * zoom_factor)
 				- zoomCorrectionYOffset , this);
 
 		// put a red arrow above the head of the controller ICEtizen

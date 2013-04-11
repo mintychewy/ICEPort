@@ -22,7 +22,7 @@ public class ZoomAdjustmentWindow extends JDialog {
 	public ZoomAdjustmentWindow() {
 		createGUI();
 		addListeners();
-		setPreferredSize(new Dimension(300,200));
+		setPreferredSize(new Dimension(300,100));
 		pack();
 		setVisible(true);
 		
@@ -39,6 +39,7 @@ public class ZoomAdjustmentWindow extends JDialog {
 		container.setLayout(new GridLayout(1,2,5,5));
 		container.add(field);
 		container.add(setBtn);
+		this.add(container);
 	}
 	
 	public void addListeners() {
@@ -49,7 +50,7 @@ public class ZoomAdjustmentWindow extends JDialog {
 				try{
 					
 					String s = field.getText();
-					
+					System.out.println("s = "+s);
 					double d = Double.parseDouble(s);
 					
 					/* d is in "meters"
@@ -68,14 +69,14 @@ public class ZoomAdjustmentWindow extends JDialog {
 					if(d >= 100){
 						zoom_level = 1.0;
 					}else if( d < 100 && d >= 14){
-						zoom_level = d/10.0;
+						zoom_level = d/100.0;
 					}else{
-						zoom_level = 1.3888889;
+						zoom_level = 0.13888889;
 					}
 					
 					ICEWorldView.zoom_factor = zoom_level;
 					LoginPage.app.view.zoomChanged();
-					
+					dispose();
 				} catch(Exception ex){
 					System.out.println("Invalid Input");
 				}

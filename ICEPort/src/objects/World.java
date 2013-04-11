@@ -14,6 +14,7 @@ import java.net.URL;
 
 import javax.imageio.ImageIO;
 
+import util.ImageLoader;
 import util.Scaler;
 
 public class World {
@@ -100,8 +101,10 @@ public class World {
 
 				g.drawImage(newTile, x, y, null);
 				// Tile coord label
+				/*
 				g.drawString(a + "," + b, x + TILE_WIDTH / 2, y
 					+ TILE_HEIGHT / 2);
+				*/
 			}
 
 	}
