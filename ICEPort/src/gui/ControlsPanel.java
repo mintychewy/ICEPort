@@ -14,7 +14,7 @@ public class ControlsPanel extends JPanel {
 		zoomInButton = new JButton("Zoom In");
 		zoomOutButton = new JButton("Zoom Out");
 		zoomLevelField = new JTextField();
-		setZoomButton = new JButton("Set Zoom");
+		setZoomButton = new JButton("Specify Zoom");
 		soundCtrlButton = new JButton("Sound Control");
 		logoutButton = new JButton("Logout");
 		add(zoomInButton);
@@ -27,6 +27,7 @@ public class ControlsPanel extends JPanel {
 	}
 	
 	public void addListeners(){
+		setZoomButton.addActionListener(new ControlsPaneListener());
 		logoutButton.addActionListener(new ControlsPaneListener());
 		zoomInButton.addActionListener(new ControlsPaneListener());
 		zoomOutButton.addActionListener(new ControlsPaneListener());

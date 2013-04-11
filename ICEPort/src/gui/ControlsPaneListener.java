@@ -37,6 +37,8 @@ public class ControlsPaneListener implements ActionListener {
 				ICEWorldView.zoom_factor = 1.0;
 		
 			LoginPage.app.view.zoomChanged();
+		}else if(btn.getText().equals("Specify Zoom")){
+			ZoomAdjustmentWindow zoomAdjustmentWindow = new ZoomAdjustmentWindow();
 		}
 	}
 	
