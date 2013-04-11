@@ -1,17 +1,17 @@
 package core;
-
-
-
-
+ 
+ 
+ 
+ 
 import gui.ApplicationMainFrame;
 import gui.LoginPage;
-
+ 
 import java.awt.Dimension;
 import java.awt.Toolkit;
-
-
+ 
+ 
 public class Application {
-	
+  
 	public static ApplicationMainFrame app;
 	//public static ApplicationMainFrame login;
 	public static LoginPage login;
