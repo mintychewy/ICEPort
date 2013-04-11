@@ -24,7 +24,7 @@ public class Customisation extends JDialog {
 		this.setSize(1000,600);
 		this.setLayout(new GridLayout(1,2,50,10));
 
-
+		
 
 		avatar = new AvatarLoader();
 

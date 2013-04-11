@@ -5,6 +5,7 @@ import gui.LoginPage;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -62,6 +63,10 @@ MouseMotionListener, KeyListener {
 	Patcher avatarPatcher;
 	BufferedImage viewport;
 
+	// Indicators
+	Image yellowIndicator = ImageLoader.loadImageFromLocal("images/yellow-arrow.png");
+	Image redIndicator = ImageLoader.loadImageFromLocal("images/red-arrow.png");
+
 
 	public static int deltaX = 0;
 	public static int deltaY = 0;
@@ -76,9 +81,8 @@ MouseMotionListener, KeyListener {
 		// KEY BINDING FOR ZOOM
 		// zoom out CTRL + - 
 		ZoomOutAction zoomOutAction = new ZoomOutAction();
-		
-		this.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS,
-				ActionEvent.CTRL_MASK),
+
+		this.getInputMap().put(KeyStroke.getKeyStroke(ActionEvent.CTRL_MASK,KeyEvent.VK_MINUS),
 				"doZoomOut");
 		this.getActionMap().put("doZoomOut",
 				zoomOutAction);
@@ -89,7 +93,7 @@ MouseMotionListener, KeyListener {
 		this.getActionMap().put("doZoomIn",
 				zoomInAction);
 		////////////////////////
-		
+
 		inh = new Inhabitant();
 		ali = new Alien();
 
@@ -107,6 +111,7 @@ MouseMotionListener, KeyListener {
 
 			LoginPage.me.setCurrentPosition(new Point(0,0));
 			LoginPage.immigration.walk(0, 0);
+
 		}
 
 		// inhabitant
@@ -172,6 +177,7 @@ MouseMotionListener, KeyListener {
 			// set destination
 			//States.activeUserDestination = destinationTile;
 			// walk to the destination
+			LoginPage.immigration.walk(destinationTile.x, destinationTile.y);
 			walk();
 		}else{
 			System.out.println("Invalid destination point");
@@ -269,12 +275,23 @@ MouseMotionListener, KeyListener {
 		// updateChat(g2);
 
 		// Update yell
-		// updateYell(g2);
+		updateYell(g2);
 
 		// Show update
 		viewport = panner.getWorldViewport();
 
 		repaint();
+	}
+
+	/**
+	 * This methods paints a yell on the user's screen
+	 * @param g2 World Graphics2D object
+	 */
+	public void updateYell(Graphics2D g2) {
+		// long lastYelled = (timestamp);
+		// long latestYellTimestamp;
+		// compare these two 
+
 	}
 
 
@@ -322,12 +339,22 @@ MouseMotionListener, KeyListener {
 
 			if(currentTileSpacePos!=null){
 
-
 				System.out.println("  "+currentTileSpacePos.x+","+currentTileSpacePos.y);
 				pos = Scaler.toScreenSpace(currentTileSpacePos);
 				g2.drawImage((value.getType() == 1)?inh.avatar:ali.avatar, pos.x - (int) (ICEtizen.AVATAR_OFFSET_X * zoom_factor), (int) (pos.y - ICEtizen.AVATAR_OFFSET_Y * zoom_factor)
 						-zoomCorrectionYOffset, this);
-				minimap.drawUser(currentTileSpacePos);
+
+
+				// put a yellow arrow above the head to ICEtizen with the same ICEPort (pid = 245)
+				if(value.getIcePortID() == 245){
+					g2.drawImage(redIndicator, pos.x - (int) (ICEtizen.AVATAR_OFFSET_X * zoom_factor), (int) (pos.y - ICEtizen.AVATAR_OFFSET_Y * zoom_factor)
+							-zoomCorrectionYOffset - 10, this);
+				}
+
+				// put username
+				g2.drawString(value.getUsername(), pos.x-10, pos.y+10);
+
+				minimap.drawUser(currentTileSpacePos,1);
 
 			}
 		}
@@ -338,7 +365,13 @@ MouseMotionListener, KeyListener {
 
 		g2.drawImage((LoginPage.me.getType() == 1)?inh.avatar:ali.avatar, pos.x - (int) (ICEtizen.AVATAR_OFFSET_X*zoom_factor), pos.y - (int)(ICEtizen.AVATAR_OFFSET_Y * zoom_factor)
 				- zoomCorrectionYOffset , this);
-		minimap.drawUser(pos);
+
+		// put a red arrow above the head of the controller ICEtizen
+		g2.drawImage(redIndicator, pos.x - (int) (ICEtizen.AVATAR_OFFSET_X * zoom_factor), (int) (pos.y - ICEtizen.AVATAR_OFFSET_Y * zoom_factor)
+				-zoomCorrectionYOffset - 10, this);
+		minimap.drawUser(pos,0);
+
+		// put username
 
 		// TODO Handle walk. If position changed then walk
 		Point lastKnownPosition = null;
@@ -385,7 +418,7 @@ MouseMotionListener, KeyListener {
 		g.drawImage(minimap.getImage(), ICEWORLD_VIEWPORT_SIZE.width
 				- Minimap.MINIMAP_SIZE.width - 10, 10, null);
 	}
-	
-	
+
+
 
 }

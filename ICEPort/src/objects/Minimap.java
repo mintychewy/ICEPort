@@ -17,11 +17,11 @@ public class Minimap {
 	private final int POSITION_DOT_STROKE_SIZE = 14;
 	private final int POSITION_DOT_SIZE = 10;
 	private final Color BLACK_WITH_50_PERCENT_ALPHA = new Color(0f,0f,0f,0.5f);
-	
+
 	// public static 
 	public final static Dimension MINIMAP_SIZE = new Dimension(270,180);
 	public final static double MINIMAP_SCALE_FACTOR = (double)MINIMAP_SIZE.height/World.WORLD_SIZE.height;
-		
+
 	public Minimap(){
 		renderMap();
 	}
@@ -42,23 +42,29 @@ public class Minimap {
 		g.fillRect(0, 0, MINIMAP_SIZE.width, MINIMAP_SIZE.height);
 	}
 
-	
-	
-	public void drawUser(Point pos){
+
+
+	public void drawUser(Point pos, int mode){
 		//renderMap();
+
+
 		Point drawPos = Scaler.toMiniMapPoint(pos,1);
-		
+
 		Graphics2D g= mapImage.createGraphics();
 
-		g.setColor(Color.WHITE);
-		g.fillOval(drawPos.x- POSITION_DOT_STROKE_SIZE/2, drawPos.y- POSITION_DOT_STROKE_SIZE/2, POSITION_DOT_STROKE_SIZE, POSITION_DOT_STROKE_SIZE);
+		// isSelf
+		if(mode == 0){
+			g.setColor(Color.WHITE);
+			g.fillOval(drawPos.x- POSITION_DOT_STROKE_SIZE/2, drawPos.y- POSITION_DOT_STROKE_SIZE/2, POSITION_DOT_STROKE_SIZE, POSITION_DOT_STROKE_SIZE);
+
+		}
 
 		g.setColor(Color.RED);
 		g.fillOval(drawPos.x- POSITION_DOT_SIZE/2, drawPos.y- POSITION_DOT_SIZE/2, POSITION_DOT_SIZE,  POSITION_DOT_SIZE);
 
 	}
-	
-	
+
+
 	public boolean isMinimapClicked(MouseEvent e){
 		//
 		return false;

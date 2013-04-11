@@ -2,13 +2,14 @@ package util;
 
 import iceworld.given.IcetizenLook;
 
+import java.awt.Dimension;
 import java.awt.Point;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+
+import javax.swing.JDialog;
+import javax.swing.JLabel;
 
 import objects.ICEtizen;
 
@@ -48,8 +49,16 @@ public class WorldStatesFetcher {
 		// checks whether if the ICEWorld can be reached
 		// if not, update nothing and prints the error
 		
-		if(!ICEWorldPeek.isReachable(ICEWorldPeek.BASE_URL))
+		if(!ICEWorldPeek.isReachable(ICEWorldPeek.BASE_URL)){
+			JDialog dialog = new JDialog();
+			dialog.add(new JLabel("ICEWorld Server cannot be reached!"));
+			dialog.setPreferredSize(new Dimension(200,100));
+			dialog.pack();
+			dialog.setModal(true);
+			dialog.setVisible(true);
 			return ;
+		}
+			
 		
 	//////////////////////////////////////////////////////////////
 	// STATES													//
