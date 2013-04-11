@@ -42,7 +42,7 @@ MouseMotionListener, KeyListener {
 	public static int deltaX = 0;
 	public static int deltaY = 0;
 
-
+	protected Thread fetchThread;
 	String weather = "raining";
 
 	Inhabitant inh;
@@ -121,16 +121,19 @@ MouseMotionListener, KeyListener {
 
 		
 		
-		Thread fetchThread = new Thread(new Runnable(){
+		fetchThread = new Thread(new Runnable(){
 			public void run() {
-				System.out.println("fetching states..");
-				fetcher.updateWorldStates();
-				updateWorld();
-				try {
-					Thread.sleep(5000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+				while(true){
+					System.out.println("fetching states..");
+					fetcher.updateWorldStates();
+					updateWorld();
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 				}
+				
 			}
 		});
 		

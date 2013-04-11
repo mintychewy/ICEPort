@@ -70,7 +70,6 @@ public class WorldStatesFetcher {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println(out);
 		
 		// create a new parser / keyfinders
 		JSONParser parser = new JSONParser();
@@ -194,8 +193,6 @@ public class WorldStatesFetcher {
 					finder.setFound(false);
 					usernm = finder.getValue();
 					usernm1 = Integer.parseInt(usernm.toString());
-					if(usernm1 != null)
-					System.out.println("PID: "+usernm1);
 					pid.add(usernm1);
 				}
 			}
