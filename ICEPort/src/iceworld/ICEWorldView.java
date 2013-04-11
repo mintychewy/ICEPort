@@ -35,12 +35,14 @@ MouseMotionListener, KeyListener {
 
 	private static final long serialVersionUID = 5658988277615488303L;
 
-
+	String weather = "raining";
 	// 
 	Inhabitant inh;
 	Alien ali;
-	// zooming factor -- default being 1
-	public static double zoom_factor = 1;
+	
+	
+	// zooming factor -- default being 1.0 (i.e., 1.0*100 = 100 %)
+	public static double zoom_factor = 1.0;
 
 	// responsible for fetching everything from the server
 	WorldStatesFetcher fetcher;
@@ -82,16 +84,20 @@ MouseMotionListener, KeyListener {
 		// zoom out CTRL + - 
 		ZoomOutAction zoomOutAction = new ZoomOutAction();
 
-		this.getInputMap().put(KeyStroke.getKeyStroke(ActionEvent.CTRL_MASK,KeyEvent.VK_MINUS),
+		
+		this.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, KeyEvent.CTRL_DOWN_MASK),
 				"doZoomOut");
 		this.getActionMap().put("doZoomOut",
 				zoomOutAction);
+		
+		
 		// zoom in CTRL + +
 		ZoomInAction zoomInAction = new ZoomInAction();
-		this.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_PLUS,
-				ActionEvent.CTRL_MASK), "doZoomIn");
+		this.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK),
+				"doZoomIn");
 		this.getActionMap().put("doZoomIn",
 				zoomInAction);
+				
 		////////////////////////
 
 		inh = new Inhabitant();
@@ -333,13 +339,13 @@ MouseMotionListener, KeyListener {
 
 		for (ICEtizen value : loggedinUsers.values()) {
 
-			System.out.print("VALUE: "+value.getUsername());
+			System.out.print("Users: "+value.getUsername());
 
 			currentTileSpacePos = value.getCurrentPosition();
 
 			if(currentTileSpacePos!=null){
 
-				System.out.println("  "+currentTileSpacePos.x+","+currentTileSpacePos.y);
+				System.out.print("  "+currentTileSpacePos.x+","+currentTileSpacePos.y);
 				pos = Scaler.toScreenSpace(currentTileSpacePos);
 				g2.drawImage((value.getType() == 1)?inh.avatar:ali.avatar, pos.x - (int) (ICEtizen.AVATAR_OFFSET_X * zoom_factor), (int) (pos.y - ICEtizen.AVATAR_OFFSET_Y * zoom_factor)
 						-zoomCorrectionYOffset, this);

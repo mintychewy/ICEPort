@@ -1,5 +1,7 @@
 package gui;
 
+import iceworld.given.IcetizenLook;
+
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -23,10 +25,7 @@ public class Customisation extends JDialog {
 	public Customisation(){
 		this.setSize(1000,600);
 		this.setLayout(new GridLayout(1,2,50,10));
-
-		
-
-		avatar = new AvatarLoader();
+	avatar = new AvatarLoader();
 
 		TitledBorder idHeader = new TitledBorder("ID");
 		TitledBorder lookHeader = new TitledBorder("Preview");

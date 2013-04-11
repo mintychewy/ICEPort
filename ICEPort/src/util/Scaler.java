@@ -72,7 +72,6 @@ public class Scaler {
 		// centre of the tile
 		y += World.TILE_HEIGHT/2;
 
-		System.out.println("Converted Back: "+ Scaler.toTileSpace(new Point(x,y)));
 		return new Point(x,y);
 	}
 	
