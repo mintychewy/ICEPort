@@ -194,6 +194,8 @@ public class WorldStatesFetcher {
 					finder.setFound(false);
 					usernm = finder.getValue();
 					usernm1 = Integer.parseInt(usernm.toString());
+					if(usernm1 != null)
+					System.out.println("PID: "+usernm1);
 					pid.add(usernm1);
 				}
 			}
@@ -380,7 +382,7 @@ public class WorldStatesFetcher {
 	
 			icetizen.setType(type.poll());
 			
-			System.out.println(pid.getFirst());
+			//System.out.println(pid.getFirst());
 			icetizen.setIcePortID(pid.poll());
 			
 			icetizen.setuid(uids.poll());
@@ -390,7 +392,6 @@ public class WorldStatesFetcher {
 			icetizen.setListeningPort(Integer.parseInt(port.poll()));
 			
 			icetizen.setCurrentPosition(position.poll());
-			
 			
 		
 			// if icetizen is not an alien 

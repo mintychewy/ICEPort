@@ -85,7 +85,7 @@ public class ICEWorldPeek {
 			String buffer = "";
 			while ((buffer = br.readLine()) != null) {
 				if(!buffer.equals(null) )
-					output += buffer;
+					output = buffer;
 			}
 
 			connection.disconnect();

@@ -79,7 +79,7 @@ MouseMotionListener, KeyListener {
 		loadResources();
 		setKeybinding();
 
-
+	
 		inh = new Inhabitant();
 		ali = new Alien();
 
@@ -115,7 +115,26 @@ MouseMotionListener, KeyListener {
 		}
 
 		addListeners();
+		
+		
 		initialiseWorld();
+
+		
+		
+		Thread fetchThread = new Thread(new Runnable(){
+			public void run() {
+				System.out.println("fetching states..");
+				fetcher.updateWorldStates();
+				updateWorld();
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		
+		fetchThread.start();
 	}
 
 	@Override
