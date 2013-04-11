@@ -365,6 +365,7 @@ class ImagePanel extends JPanel {
 		LoginPage.me.setType(1);
 		LoginPage.me.setUsername(user);
 		LoginPage.me.setListeningPort(10000 + (int)(Math.random() * ((20000 - 10000) + 1)));
+		System.out.println("set listeningport to "+ LoginPage.me.getListeningPort());
 		LoginPage.immigration = new ICEWorldImmigration(LoginPage.me);
 		boolean status = LoginPage.immigration.login(pass);
 		System.out.println("Success?: "+status);
