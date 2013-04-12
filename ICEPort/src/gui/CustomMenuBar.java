@@ -67,6 +67,7 @@ public class CustomMenuBar extends JMenuBar{
 		userManualMenuItem.addActionListener(new MenuBarListener());
 		aboutMenuItem.addActionListener(new MenuBarListener());
 		quitMenuItem.addActionListener(new MenuBarListener());
+		refreshRateMenuItem.addActionListener(new MenuBarListener());
 		
 		userManualMenuItem.addActionListener(new ActionListener(){
 

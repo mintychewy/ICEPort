@@ -8,6 +8,8 @@ import java.awt.event.ActionListener;
 import javax.swing.AbstractButton;
 import javax.swing.JDialog;
 
+import core.Application;
+
 
 public class MenuBarListener implements ActionListener {
 	public static QuitConfirmationDialog confirmDialog;
@@ -35,6 +37,10 @@ public class MenuBarListener implements ActionListener {
 		}else if(source.getText().equals("Customise Avatar")){
 			Customisation cus = new Customisation();
 			cus.setVisible(true);
+		}else if(source.getText().equals("Refresh Rate")){
+			RefreshRateWindow rrwindow = new RefreshRateWindow();
+			rrwindow.setLocation(Application.screenDimension.width/2,Application.screenDimension.height/2);
+			rrwindow.setVisible(true);
 		}
 		else{
 			System.out.println("do nothing");

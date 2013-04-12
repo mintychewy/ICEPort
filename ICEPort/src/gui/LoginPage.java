@@ -218,7 +218,6 @@ class ImagePanel extends JPanel {
 							writer.write(username+"\n");
 							writer.close();
 						} catch (IOException e1) {
-							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
 						//
@@ -226,6 +225,7 @@ class ImagePanel extends JPanel {
 						javax.swing.SwingUtilities.invokeLater(new Runnable(){
 							public void run(){
 								LoginPage.app = new ApplicationMainFrame();
+								LoginPage.app.setLocation(Application.screenDimension.width/2-450,Application.screenDimension.height/2-450);
 							}
 						});
 						
@@ -260,33 +260,7 @@ class ImagePanel extends JPanel {
 							}
 						}
 
-						/*
-						 * failure++; Calendar c=Calendar.getInstance();
-						 * 
-						 * if(failure==1){sec1=c.get(Calendar.SECOND);} else
-						 * if(failure==2){sec2=c.get(Calendar.SECOND);
-						 * if((sec2-sec1)>=3){ failure=0;
-						 * label.setText("incorrect username or password"+ "\t"+
-						 * failure+"/3");
-						 * 
-						 * } } else if(failure==3){ sec3=c.get(Calendar.SECOND);
-						 * if((sec3-sec1)>3){ failure=0;
-						 * label.setText("incorrect username or password"+ "\t"+
-						 * failure+"/3");
-						 * 
-						 * }
-						 * 
-						 * else{
-						 * 
-						 * try {
-						 * 
-						 * Thread.sleep(5000); failure=0; } catch
-						 * (InterruptedException e1) { // TODO Auto-generated
-						 * catch block e1.printStackTrace();
-						 * 
-						 * } } } label.setText("incorrect username or password"+
-						 * "\t"+ failure+"/3");
-						 */
+	
 					}
 				}
 			}
@@ -305,6 +279,8 @@ class ImagePanel extends JPanel {
 					javax.swing.SwingUtilities.invokeLater(new Runnable(){
 						public void run(){
 							LoginPage.app = new ApplicationMainFrame();
+							LoginPage.app.setLocation(Application.screenDimension.width/2-450,Application.screenDimension.height/2-450);
+
 						}
 					});
 					label.setText("");
@@ -374,7 +350,6 @@ class ImagePanel extends JPanel {
 
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		Dimension d=this.getSize();
 		
 		g.drawImage(image, 0, 0, this);
 	}

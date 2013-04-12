@@ -41,7 +41,10 @@ MouseMotionListener, KeyListener {
 	public static int deltaX = 0;
 	public static int deltaY = 0;
 
-	protected Thread fetchThread;
+	// states fetching interval (default: 2000ms)
+	public static int REFRESH_INTERVAL = 2000;
+	
+	public Thread fetchThread;
 	private boolean terminateThread;
 
 	String controllerUsername;
@@ -144,7 +147,7 @@ MouseMotionListener, KeyListener {
 					fetcher.updateWorldStates();
 					updateWorld();
 					try {
-						Thread.sleep(1000);
+						Thread.sleep(REFRESH_INTERVAL);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -171,6 +174,32 @@ MouseMotionListener, KeyListener {
 		this.terminateThread = true;
 	}
 
+	/**
+	 * Starts a thread to fetch data from server
+	 */
+	public void createNewFetchingThread() {
+		
+		/* THREAD FOR FETCHING DATA FROM SERVER */
+		terminateThread = false;
+		fetchThread = new Thread(new Runnable(){
+			public void run() {
+				while(!terminateThread){
+					System.out.println("fetching states..");
+					isolateController();
+					fetcher.updateWorldStates();
+					updateWorld();
+					try {
+						Thread.sleep(REFRESH_INTERVAL);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+
+			}
+		});
+
+	}
+	
 	@Override
 	public void mousePressed(MouseEvent e) {
 
@@ -378,6 +407,12 @@ MouseMotionListener, KeyListener {
 				- (int) (ICEtizen.AVATAR_OFFSET_X * zoom_factor),
 				(int) (pos.y - ICEtizen.AVATAR_OFFSET_Y * zoom_factor)
 				- zoomCorrectionYOffset - 10, this);
+		// put username
+		g2.drawString(LoginPage.me.getUsername(), pos.x - 10, pos.y + 10);
+		// put ip
+		g2.drawString(LoginPage.me.getIPAddress(), pos.x - 10, pos.y + 20);
+
+		
 		minimap.drawUser(currentTileSpacePos, 0);
 
 		// put username
