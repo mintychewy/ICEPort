@@ -17,6 +17,7 @@ public class ControlsPaneListener implements ActionListener {
 		if(btn.getText().equals("Logout")){
 			if (LoginPage.immigration.logout()){
 				System.out.println("Logout OK");
+				LoginPage.app.view.terminate();
 				LoginPage.app.dispose();
 				Application.login.setVisible(true);
 			}

@@ -43,6 +43,8 @@ MouseMotionListener, KeyListener {
 	public static int deltaY = 0;
 
 	protected Thread fetchThread;
+	private boolean terminateThread;
+	
 	String weather = "raining";
 
 	Inhabitant inh;
@@ -120,10 +122,10 @@ MouseMotionListener, KeyListener {
 		initialiseWorld();
 
 		
-		
+		terminateThread = false;
 		fetchThread = new Thread(new Runnable(){
 			public void run() {
-				while(true){
+				while(!terminateThread){
 					System.out.println("fetching states..");
 					fetcher.updateWorldStates();
 					updateWorld();
@@ -140,6 +142,10 @@ MouseMotionListener, KeyListener {
 		fetchThread.start();
 	}
 
+	public void terminate() {
+		this.terminateThread = true;
+	}
+	
 	@Override
 	public void mousePressed(MouseEvent e) {
 
@@ -300,14 +306,14 @@ MouseMotionListener, KeyListener {
 		// iterate the list of logged-in users and draw them
 		for (ICEtizen value : loggedinUsers.values()) {
 
-			System.out.print(value.getUsername()+" client: "+value.getIcePortID());
+			//System.out.println(value.getUsername()+" has PID: "+value.getIcePortID());
 
 			currentTileSpacePos = value.getCurrentPosition();
 
 			if (currentTileSpacePos != null) {
 
-				System.out.print(" " + currentTileSpacePos.x + ","
-						+ currentTileSpacePos.y+" ");
+				//System.out.print(" " + currentTileSpacePos.x + ","
+					//	+ currentTileSpacePos.y+" ");
 				
 				// find the pixel position of the user on the world
 				pos = Scaler.toScreenSpace(currentTileSpacePos);

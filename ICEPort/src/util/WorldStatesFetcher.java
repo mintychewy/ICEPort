@@ -379,9 +379,7 @@ public class WorldStatesFetcher {
 	
 			icetizen.setType(type.poll());
 			
-			//System.out.println(pid.getFirst());
 			icetizen.setIcePortID(pid.poll());
-			
 			icetizen.setuid(uids.poll());
 			
 			icetizen.setIPAddress(ip.poll());
