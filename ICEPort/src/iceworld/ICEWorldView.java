@@ -2,9 +2,12 @@ package iceworld;
 
 import gui.LoginPage;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
@@ -16,6 +19,7 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Timer;
 
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
@@ -29,30 +33,41 @@ import util.Patcher;
 import util.Scaler;
 import util.WorldStatesFetcher;
 
-public class ICEWorldView extends JPanel implements MouseListener,
+public class ICEWorldView extends JLayeredPane implements MouseListener,
 MouseMotionListener, KeyListener {
 
+	// username is used as a key in the users HashMap
+	String controllerUsername;
+	
+	public String weather = "sunny";
+	
+	/* LAYERS */
+	JLayeredPane jlp;
+	
+	JPanel mapPanel;
+	AnimationTestPanel testPanel;
+	
+	
 	private static final long serialVersionUID = 5658988277615488303L;
 	public final static Dimension ICEWORLD_VIEWPORT_SIZE = new Dimension(900,600);
+	
 	// zooming factor
 	// default being 1.0 (i.e., 1.0*100 = 100 %)
 	public static double zoom_factor = 1.0;
-	// camera panning start position
-	public static int deltaX = 0;
-	public static int deltaY = 0;
-
-	// states fetching interval (default: 2000ms)
-	public static int REFRESH_INTERVAL = 2000;
-	
-	public Thread fetchThread;
-	private boolean terminateThread;
-
-	String controllerUsername;
 	/* XY-OFFSET CORRECTION IN ZOOM MODE */
 	int zoomCorrectionYOffset = 0;
 	int zoomCorrectionXOffset = 0;
+	// camera panning position
+	public static int deltaX = 0;
+	public static int deltaY = 0;
 	
-	String weather = "raining";
+	public static String instantYellMessage = "";
+	public static String instantTalkMessage = "";
+
+	// states fetching interval (default: 2000ms)
+	public static int REFRESH_INTERVAL = 2000;
+	public Thread fetchThread;
+	private boolean terminateThread;
 
 	Inhabitant inh;
 	Alien ali;
@@ -78,13 +93,32 @@ MouseMotionListener, KeyListener {
 	Patcher avatarPatcher;
 	BufferedImage viewport;
 
-	Image yellowIndicator;
-	Image redIndicator;
+	Image yellowIndicator, redIndicator;
 
 	public ICEWorldView() {
 
 		setPreferredSize(ICEWORLD_VIEWPORT_SIZE);
 
+		
+		mapPanel = new JPanel();
+		mapPanel.setPreferredSize(new Dimension(900,600));
+		mapPanel.setBounds(0,0,900,600);
+		//jlp.add(mapPanel, new Integer(10000));
+		this.add(mapPanel, new Integer(0));
+		testPanel = new AnimationTestPanel();
+		//testPanel.setOpaque(false);
+		testPanel.setBounds(0,0,900,600);
+		testPanel.setBackground(new Color(0,0,0,0));
+		//jlp.add(testPanel, new Integer(-10000));
+		this.add(testPanel, JLayeredPane.DRAG_LAYER);
+		
+		
+		//this.add(jlp);
+		/*////////////////////////////////////////*/
+		
+		
+		
+		
 		loadResources();
 		setKeybinding();
 
@@ -135,8 +169,13 @@ MouseMotionListener, KeyListener {
 
 		addListeners();
 
+		
 		initialiseWorld();
 
+		
+
+		
+		
 		/* THREAD FOR FETCHING DATA FROM SERVER */
 		terminateThread = false;
 		fetchThread = new Thread(new Runnable(){
@@ -158,7 +197,8 @@ MouseMotionListener, KeyListener {
 
 		fetchThread.start();
 	}
-
+	
+	
 	/**
 	 * Isolates the controller ICEtizen from the 
 	 * list of loggedin users
@@ -293,9 +333,17 @@ MouseMotionListener, KeyListener {
 		// Show update
 		viewport = panner.getWorldViewport();
 
-		repaint();
-	}
+		Graphics2D g2Viewport = (Graphics2D) viewport.getGraphics();
 
+		updateYell(g2Viewport);
+		
+		g2Viewport.drawImage(minimap.getImage(), ICEWORLD_VIEWPORT_SIZE.width
+				- Minimap.MINIMAP_SIZE.width - 10, 10, null);
+		
+		showView();
+	}
+	
+	
 	/**
 	 * This methods paints a yell on the user's screen
 	 * 
@@ -309,6 +357,12 @@ MouseMotionListener, KeyListener {
 		g.setColor(Minimap.BLACK_WITH_50_PERCENT_ALPHA);
 		g.fillRect(0, 300, 900, 300);
 		
+		Font font = new Font ("Arial", Font.PLAIN, (instantYellMessage.length() <= 5)?200:100);
+		g.setFont(font);
+		g.setColor(Color.YELLOW);
+		g.drawString(instantYellMessage, 10, (instantYellMessage.length() <=5)?530:500);
+	
+	
 	}
 
 	/**
@@ -376,7 +430,8 @@ MouseMotionListener, KeyListener {
 				if (value.getIcePortID() == 245) {
 
 					//System.out.println("PLAYER: "+value.getUsername()+" has the same client.");
-					g2.drawImage(yellowIndicator, pos.x,
+					g2.drawImage(yellowIndicator, pos.x - (int) (ICEtizen.AVATAR_OFFSET_X * zoom_factor)
+							- zoomCorrectionXOffset,
 							(int) (pos.y - ICEtizen.AVATAR_OFFSET_Y
 									* zoom_factor)
 									- zoomCorrectionYOffset - 10, this);
@@ -565,16 +620,15 @@ MouseMotionListener, KeyListener {
 		updateWorld();
 	}
 
-	public void paintComponent(Graphics g) {
-		super.paintComponent(g);
-		// show the viewport along with the minimap to the user
-		g.drawImage(viewport, 0, 0, null);
-
-		// Update yell
-		updateYell(g);
-
-		g.drawImage(minimap.getImage(), ICEWORLD_VIEWPORT_SIZE.width
-				- Minimap.MINIMAP_SIZE.width - 10, 10, null);
+	public void showView() {
+		Graphics2D g2map = (Graphics2D) mapPanel.getGraphics();
+		if(g2map == null) 
+			return;
+		g2map.drawImage(viewport,0,0,null);
 	}
 
+	public void paintComponent(Graphics g) {
+		
+	}
+	
 }

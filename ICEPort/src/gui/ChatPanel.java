@@ -15,7 +15,7 @@ public class ChatPanel extends JPanel{
 	
 	private static JTextField field;
 	JButton sendButton;
-	ButtonGroup buttonGroup;
+	public ButtonGroup buttonGroup;
 	JRadioButton talk, yell;
 	JPanel buttonPanel;
 	
@@ -28,11 +28,13 @@ public class ChatPanel extends JPanel{
 		talk = new JRadioButton("Talk");
 		yell = new JRadioButton("Yell");
 		
-		/*
+		talk.setActionCommand("talk");
+		yell.setActionCommand("yell");
+		
 		buttonGroup = new ButtonGroup();
+		talk.setSelected(true);
 		buttonGroup.add(talk);
 		buttonGroup.add(yell);
-		*/
 		
 		buttonPanel = new JPanel();
 		buttonPanel.add(talk);
@@ -41,10 +43,15 @@ public class ChatPanel extends JPanel{
 		add(field, BorderLayout.CENTER);
 		add(sendButton, BorderLayout.EAST);
 		
+		addListeners();
+		
+	}
+	
+	private void addListeners() {
 		sendButton.addActionListener(new ChatController());
 	}
 
-	public static String getMessage() {
+	public String getMessage() {
 		return field.getText();
 	}
 

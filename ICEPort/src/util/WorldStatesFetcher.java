@@ -16,6 +16,8 @@ import objects.ICEtizen;
 
 import org.json.simple.parser.JSONParser;
 
+import core.Application;
+
 public class WorldStatesFetcher {
 	
 	 HashMap<String, ICEtizen> icetizens = new HashMap<String, ICEtizen>();
@@ -404,9 +406,6 @@ public class WorldStatesFetcher {
 			
 		}
 		
-		
-		// get controller user
-		//icetizens.get();
 	}
 	
 	public HashMap<String,ICEtizen> getLoggedinUserMap() {

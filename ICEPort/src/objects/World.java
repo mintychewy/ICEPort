@@ -58,13 +58,16 @@ public class World {
 	}
 
 	public void loadResources() {
+		
+	tile = ImageLoader.loadImageFromLocal("images/l-tile.png");
+			/*
 		URL url = this.getClass().getResource("/images/l-tile.png");
 		try {
 			tile = ImageIO.read(new File(url.toString().substring(5)));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+*/
 	}
 
 	/*

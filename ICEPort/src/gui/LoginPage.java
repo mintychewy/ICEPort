@@ -14,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.TreeSet;
 
@@ -84,7 +85,7 @@ class ImagePanel extends JPanel {
 	public ImagePanel() {
 
 
-		filePath = (ClassLoader.getSystemClassLoader().getResource("logs/log.txt").toString()).substring(5);
+		
 		setOpaque(true);
 		try {
 			image = ImageIO.read(getClass().getResource("/images/loginbg.png"));
@@ -132,6 +133,10 @@ class ImagePanel extends JPanel {
 				TreeSet<String> usernameList = new TreeSet<String>();
 				BufferedReader reader;
 				try {
+					
+					System.out.println("PATH: "+getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
+					filePath = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() +"log.txt";
+				
 					reader = new BufferedReader(new FileReader(filePath));
 
 					String line;
@@ -213,8 +218,11 @@ class ImagePanel extends JPanel {
 						// add username to the history
 						try {
 							//LogFile.write(username);
+							filePath = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() +"log.txt";
 
 							FileWriter writer = new FileWriter(filePath, true);
+							
+							
 							writer.write(username+"\n");
 							writer.close();
 						} catch (IOException e1) {

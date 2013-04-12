@@ -18,7 +18,7 @@ public class ApplicationMainFrame extends JFrame{
 	public JPanel bottomPanel;
 	public final Dimension mainFrameDimension = new Dimension(900,750);
 	final static String VERSION = "0.1a";
-	
+	public ChatPanel chat;
 	public JButton logoutButton, sendButton, soundButton, zoomInButton, zoomOutButton, setZoomButton; 
 	
 	
@@ -36,8 +36,8 @@ public class ApplicationMainFrame extends JFrame{
 		
 		initGUI();
 		
-		// setResizable(true) for debugging purpose
-		//setResizable(false);
+	
+		setResizable(false);
 		
 		
 		// start playing BGM
@@ -67,7 +67,7 @@ public class ApplicationMainFrame extends JFrame{
 		bottomPanel.setLayout(new GridLayout(2,1,0,0));
 		
 		// Add the chat panel
-		ChatPanel chat = new ChatPanel();
+		chat = new ChatPanel();
 		bottomPanel.add(chat);
 		
 		// Add Additional Controls Panel

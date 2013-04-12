@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
@@ -15,7 +16,11 @@ public class ImageLoader {
 
 		URL url = ClassLoader.getSystemClassLoader().getResource(path);
 		try {
-			image = ImageIO.read(new File(url.toString().substring(5)));
+			System.out.println("READING FROM PATH: "+url.toString());
+			//image = ImageIO.read(new File(url.toString()));
+			
+			image = ImageIO.read(ClassLoader.getSystemClassLoader().getResourceAsStream(path));
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}	
