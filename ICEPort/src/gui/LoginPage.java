@@ -32,7 +32,7 @@ import core.Application;
 
 
 public class LoginPage extends JFrame {
-
+	public static int uniquePosition;
 	public static ICEWorldImmigration immigration;
 	public static ApplicationMainFrame app;
 	public static ICEtizen me;
@@ -106,6 +106,8 @@ class ImagePanel extends JPanel {
 		userField = new JTextField(11);
 		passField = new JPasswordField(11);
 		
+		userField.setText("Putti.O");
+		passField.setText("6637612");
 		label = new JLabel("");
 		
 		userField.setBounds(70, 55, 170, 50);
@@ -294,8 +296,12 @@ class ImagePanel extends JPanel {
 		aliens.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(authenticateAlien()){
+					
 					System.out.println("alien logged in ");
 					
+					// Assign a unique position so we know this is the controller
+					LoginPage.uniquePosition = 10000 + (int)(Math.random() * ((20000 - 10000) + 1));
+					LoginPage.immigration.walk(LoginPage.uniquePosition,-245);
 					javax.swing.SwingUtilities.invokeLater(new Runnable(){
 						public void run(){
 							LoginPage.app = new ApplicationMainFrame();

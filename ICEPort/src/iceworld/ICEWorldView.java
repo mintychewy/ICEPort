@@ -7,7 +7,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -44,6 +43,11 @@ MouseMotionListener, KeyListener {
 
 	protected Thread fetchThread;
 	private boolean terminateThread;
+
+	String controllerUsername;
+	/* XY-OFFSET CORRECTION IN ZOOM MODE */
+	int zoomCorrectionYOffset = 0;
+	int zoomCorrectionXOffset = 0;
 	
 	String weather = "raining";
 
@@ -81,10 +85,8 @@ MouseMotionListener, KeyListener {
 		loadResources();
 		setKeybinding();
 
-	
 		inh = new Inhabitant();
 		ali = new Alien();
-
 
 		fetcher = new WorldStatesFetcher();
 		fetcher.updateWorldStates();
@@ -92,8 +94,22 @@ MouseMotionListener, KeyListener {
 		loggedinUsers = fetcher.getLoggedinUserMap();
 
 		// alien
+		// the unique point for identifying our controller alien
+		Point hashpos = new Point(LoginPage.uniquePosition,-245);
+		controllerUsername = "";
 		if (LoginPage.me.getType() == 0) {
-			// need to find and remove self from the loggedinUsers list
+			// need to find self from the loggedinUsers list		
+			for(ICEtizen value : loggedinUsers.values()){
+
+				if(value.getCurrentPosition()!=null)
+					if(value.getCurrentPosition().x == hashpos.x && value.getCurrentPosition().y == hashpos.y){
+						controllerUsername = value.getUsername();
+						LoginPage.me = value;
+						System.out.println("You are: "+ controllerUsername);
+						break;
+					}
+			}
+
 			LoginPage.me.setCurrentPosition(new Point(0, 0));
 			LoginPage.immigration.walk(0, 0);
 		}
@@ -102,9 +118,7 @@ MouseMotionListener, KeyListener {
 		if (LoginPage.me.getType() != 0) {
 			// give the controller a dedicated instance
 			LoginPage.me = loggedinUsers.get(LoginPage.me.getUsername());
-
-			// remove from the list
-			loggedinUsers.remove(LoginPage.me.getUsername());
+			controllerUsername = LoginPage.me.getUsername();
 
 			// if there's no position yet, assume 0,0
 			if (LoginPage.me.getCurrentPosition() == null) {
@@ -117,16 +131,16 @@ MouseMotionListener, KeyListener {
 		}
 
 		addListeners();
-		
-		
+
 		initialiseWorld();
 
-		
+		/* THREAD FOR FETCHING DATA FROM SERVER */
 		terminateThread = false;
 		fetchThread = new Thread(new Runnable(){
 			public void run() {
 				while(!terminateThread){
 					System.out.println("fetching states..");
+					isolateController();
 					fetcher.updateWorldStates();
 					updateWorld();
 					try {
@@ -135,17 +149,28 @@ MouseMotionListener, KeyListener {
 						e.printStackTrace();
 					}
 				}
-				
+
 			}
 		});
-		
+
 		fetchThread.start();
 	}
 
+	/**
+	 * Isolates the controller ICEtizen from the 
+	 * list of loggedin users
+	 */
+	private void isolateController() {
+			LoginPage.me = loggedinUsers.get(controllerUsername);
+	}
+	
+	/**
+	 * Sets fetching-thread terminate flag to true
+	 */
 	public void terminate() {
 		this.terminateThread = true;
 	}
-	
+
 	@Override
 	public void mousePressed(MouseEvent e) {
 
@@ -160,7 +185,8 @@ MouseMotionListener, KeyListener {
 			// States.activeUserDestination = destinationTile;
 			// walk to the destination
 			LoginPage.immigration.walk(destinationTile.x, destinationTile.y);
-			walk();
+			System.out.println("Walked to "+destinationTile.x+","+destinationTile.y);
+			//walk();
 		} else {
 			System.out.println("Invalid destination point");
 		}
@@ -194,7 +220,7 @@ MouseMotionListener, KeyListener {
 			world = new World();
 
 		}
-		
+
 		System.out.println("Used Memory:"
 				+ (runtime.totalMemory() - runtime.freeMemory()) / mb);
 		System.out.println("Free mem: " + runtime.freeMemory() / mb);
@@ -222,27 +248,18 @@ MouseMotionListener, KeyListener {
 		timer.schedule(new WalkingTask(), 0, myLong);
 	}
 
-
-	BufferedImage redtile = ImageLoader
-			.loadImageFromLocal("images/red-tile.png");
-
-
 	/**
 	 * Renders the World image with the latest elements
 	 */
 	public void updateWorld() {
+		
 		Graphics2D g2 = (Graphics2D) world.getImage().getGraphics();
 
 		// Update ICEtizen/Alien positions
 		populateWorld(g2);
 
-		// Update MiniMap
-
 		// Update chat
 		// updateChat(g2);
-
-		// Update yell
-		updateYell(g2);
 
 		// Show update
 		viewport = panner.getWorldViewport();
@@ -253,14 +270,16 @@ MouseMotionListener, KeyListener {
 	/**
 	 * This methods paints a yell on the user's screen
 	 * 
-	 * @param g2
-	 *            World Graphics2D object
+	 * @param g viewpeort Graphics object
 	 */
-	public void updateYell(Graphics2D g2) {
+	public void updateYell(Graphics g) {
 		// long lastYelled = (timestamp);
 		// long latestYellTimestamp;
 		// compare these two
 
+		g.setColor(Minimap.BLACK_WITH_50_PERCENT_ALPHA);
+		g.fillRect(0, 300, 900, 300);
+		
 	}
 
 	/**
@@ -270,7 +289,7 @@ MouseMotionListener, KeyListener {
 	public void populateWorld(Graphics2D g2) {
 
 		// remove all users from the map
-		// patchCitizens(g2);
+		patchCitizens(g2);
 
 
 		Point pos = null;
@@ -284,9 +303,7 @@ MouseMotionListener, KeyListener {
 
 		inh = new Inhabitant();
 
-		/* XY-OFFSET CORRECTION IN ZOOM MODE */
-		int zoomCorrectionYOffset = 0;
-		int zoomCorrectionXOffset = 0;
+
 		if (zoom_factor == 1.0) {
 			// = 0
 		} else if (zoom_factor >= 0.8) {
@@ -306,18 +323,19 @@ MouseMotionListener, KeyListener {
 		// iterate the list of logged-in users and draw them
 		for (ICEtizen value : loggedinUsers.values()) {
 
-			//System.out.println(value.getUsername()+" has PID: "+value.getIcePortID());
+			if(value.getUsername().equals(controllerUsername))
+				continue;
 
 			currentTileSpacePos = value.getCurrentPosition();
 
 			if (currentTileSpacePos != null) {
 
 				//System.out.print(" " + currentTileSpacePos.x + ","
-					//	+ currentTileSpacePos.y+" ");
-				
+				//	+ currentTileSpacePos.y+" ");
+
 				// find the pixel position of the user on the world
 				pos = Scaler.toScreenSpace(currentTileSpacePos);
-				
+
 				g2.drawImage((value.getType() == 1) ? inh.avatar : ali.avatar,
 						pos.x - (int) (ICEtizen.AVATAR_OFFSET_X * zoom_factor)
 						- zoomCorrectionXOffset,
@@ -327,10 +345,9 @@ MouseMotionListener, KeyListener {
 				// put a yellow arrow above the head to ICEtizen with the same
 				// ICEPort (pid = 245)
 				if (value.getIcePortID() == 245) {
-					
-					System.out.println("PLAYER: "+value.getUsername()+" has the same client.");
-					g2.drawImage(yellowIndicator, pos.x
-							- (int) (ICEtizen.AVATAR_OFFSET_X * zoom_factor),
+
+					//System.out.println("PLAYER: "+value.getUsername()+" has the same client.");
+					g2.drawImage(yellowIndicator, pos.x,
 							(int) (pos.y - ICEtizen.AVATAR_OFFSET_Y
 									* zoom_factor)
 									- zoomCorrectionYOffset - 10, this);
@@ -338,6 +355,8 @@ MouseMotionListener, KeyListener {
 
 				// put username
 				g2.drawString(value.getUsername(), pos.x - 10, pos.y + 10);
+				// put ip
+				g2.drawString(value.getIPAddress(), pos.x - 10, pos.y + 20);
 
 				minimap.drawUser(currentTileSpacePos, 1);
 
@@ -359,7 +378,7 @@ MouseMotionListener, KeyListener {
 				- (int) (ICEtizen.AVATAR_OFFSET_X * zoom_factor),
 				(int) (pos.y - ICEtizen.AVATAR_OFFSET_Y * zoom_factor)
 				- zoomCorrectionYOffset - 10, this);
-		minimap.drawUser(pos, 0);
+		minimap.drawUser(currentTileSpacePos, 0);
 
 		// put username
 
@@ -375,15 +394,42 @@ MouseMotionListener, KeyListener {
 	 * Adaptive tile replacement)
 	 */
 	public void patchCitizens(Graphics2D g2) {
+		Point draw;
+		Point tilePos;
+		BufferedImage patchImage;
+		
+		// just clear out the viewport?
+		
+		patchImage = map.getImage().getSubimage(deltaX,deltaY, 900, 600);
+		g2.drawImage(patchImage,deltaX,deltaY,null);
+		
+		/*
+		//System.out.println("patching");
+		for(ICEtizen value : loggedinUsers.values()){
+			
+			//last know pos
+			tilePos = value.getCurrentPosition();
+			
+			if(tilePos == null || tilePos.x < 0 || tilePos.x > 100)
+				continue;
+			
 
-		// Point draw =
-		// Scaler.toScreenSpace(States.activeUserLastKnownPosition);
+			
+			draw = Scaler.toScreenSpace(tilePos);
+			//System.out.println("draw: ("+draw.x+","+draw.y+")  tilePos: ("+tilePos.x+","+tilePos.y+")");
+			patchImage = avatarPatcher.getPatchImage(
+						(draw.x - (int) (ICEtizen.AVATAR_OFFSET_X * zoom_factor)
+					- zoomCorrectionXOffset), 
+					(draw.y - (int)(ICEtizen.AVATAR_OFFSET_Y * zoom_factor))
+					- zoomCorrectionYOffset);
 
-		// BufferedImage patchImage = avatarPatcher.getPatchImage(draw.x -
-		// ICEtizen.AVATAR_OFFSET_X, draw.y - ICEtizen.AVATAR_OFFSET_Y);
+			g2.drawImage(patchImage,(draw.x - (int) (ICEtizen.AVATAR_OFFSET_X * zoom_factor)
+					- zoomCorrectionXOffset), 
+					(draw.y - (int)(ICEtizen.AVATAR_OFFSET_Y * zoom_factor))
+					- zoomCorrectionYOffset,null);
 
-		// g2.drawImage(patchImage, draw.x - ICEtizen.AVATAR_OFFSET_X, draw.y
-		// - ICEtizen.AVATAR_OFFSET_Y, this);
+		}
+		*/
 	}
 
 
@@ -398,7 +444,7 @@ MouseMotionListener, KeyListener {
 	@Override
 	public void mouseExited(MouseEvent e) {
 	}
-	
+
 	@Override
 	public void mouseClicked(MouseEvent e) {
 	}
@@ -467,7 +513,7 @@ MouseMotionListener, KeyListener {
 
 	}
 
-	
+
 	private void initialiseWorld() {
 
 		map = new World();
@@ -483,11 +529,15 @@ MouseMotionListener, KeyListener {
 
 		updateWorld();
 	}
-	
+
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		// show the viewport along with the minimap to the user
 		g.drawImage(viewport, 0, 0, null);
+
+		// Update yell
+		updateYell(g);
+
 		g.drawImage(minimap.getImage(), ICEWORLD_VIEWPORT_SIZE.width
 				- Minimap.MINIMAP_SIZE.width - 10, 10, null);
 	}

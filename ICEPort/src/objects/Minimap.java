@@ -16,7 +16,7 @@ public class Minimap {
 	private BufferedImage mapImage;
 	private final int POSITION_DOT_STROKE_SIZE = 14;
 	private final int POSITION_DOT_SIZE = 10;
-	private final Color BLACK_WITH_50_PERCENT_ALPHA = new Color(0f,0f,0f,0.5f);
+	public static final Color BLACK_WITH_50_PERCENT_ALPHA = new Color(0f,0f,0f,0.5f);
 
 	// public static 
 	public final static Dimension MINIMAP_SIZE = new Dimension(270,180);
@@ -56,7 +56,6 @@ public class Minimap {
 		if(mode == 0){
 			g.setColor(Color.WHITE);
 			g.fillOval(drawPos.x- POSITION_DOT_STROKE_SIZE/2, drawPos.y- POSITION_DOT_STROKE_SIZE/2, POSITION_DOT_STROKE_SIZE, POSITION_DOT_STROKE_SIZE);
-
 		}
 
 		g.setColor(Color.RED);
