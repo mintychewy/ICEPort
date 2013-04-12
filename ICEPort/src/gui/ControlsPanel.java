@@ -10,7 +10,14 @@ public class ControlsPanel extends JPanel {
 	
 	JTextField zoomLevelField;
 	JButton zoomInButton, zoomOutButton, setZoomButton, soundCtrlButton, logoutButton;
+	JButton sendFileButton;
 	public ControlsPanel(){
+
+		sendFileButton = new JButton("Send File");
+		add(sendFileButton);
+		
+		
+		
 		zoomInButton = new JButton("Zoom In");
 		zoomOutButton = new JButton("Zoom Out");
 		zoomLevelField = new JTextField();
@@ -27,6 +34,9 @@ public class ControlsPanel extends JPanel {
 	}
 	
 	public void addListeners(){
+		
+		sendFileButton.addActionListener(new FTPButtonListener());
+		
 		setZoomButton.addActionListener(new ControlsPaneListener());
 		logoutButton.addActionListener(new ControlsPaneListener());
 		zoomInButton.addActionListener(new ControlsPaneListener());

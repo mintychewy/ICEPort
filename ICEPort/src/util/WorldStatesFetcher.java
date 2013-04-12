@@ -394,8 +394,6 @@ public class WorldStatesFetcher {
 			// if icetizen is not an alien 
 			// fetch his/her looks 
 			if(icetizen.getType() == 1) {
-				System.out.println(icetizen.getUsername()+" is not an alien. Giving him clothes..");
-				System.out.println("His uid is :"+ icetizen.getuid());
 				icetizen.setIcetizenLook(looks.get(icetizen.uid));
 			} else {
 				icetizen.setIcetizenLook(null);
