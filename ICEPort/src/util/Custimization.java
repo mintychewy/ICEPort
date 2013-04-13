@@ -88,12 +88,20 @@ public class Custimization {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
+			//	System.out.println(avatar.bodyURL);
+				//System.out.println(avatar.headURL);
+				//System.out.println(avatar.weaponURL);
+				//System.out.println(avatar.shirtURL);
 				IcetizenLook look=new IcetizenLook();
-				look.gidB=avatar.bodyURL ;//avatar.b.get(avatar.bodyCount);
-				look.gidH=avatar.headURL;//avatar.h.get(avatar.headCount);
-				look.gidW=avatar.weaponURL;  //avatar.w.get(avatar.weaponCount);
-				look.gidS=avatar.shirtURL;//avatar.s.get(avatar.shirtCount);
+				look.gidB=avatar.bodyURL ;
+				look.gidH=avatar.headURL;
+				look.gidW=avatar.weaponURL;
+				look.gidS=avatar.shirtURL;
+			//	System.out.println(look.gidB);
 				LoginPage.immigration.customization(look);
+
+				
+				
 				
 			}
 		});

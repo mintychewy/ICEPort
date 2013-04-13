@@ -19,7 +19,7 @@ public class AvatarLoader extends JPanel {
 	LinkedList<String> w = new LinkedList<String>();
 	String bodyURL,shirtURL,weaponURL,headURL,bgURL; 
 	int numShirt, numBody, numHead, numWeapon;
-	
+	String bodyPath,weaponPath,headPath,shirtPath;
 	
 	int shirtCount = 0, weaponCount = 0, bodyCount = 0, headCount = 0;
 	static BufferedImage head, body, weapon, shirt, background;
@@ -27,6 +27,8 @@ public class AvatarLoader extends JPanel {
 	public AvatarLoader(String x){
 		list=x;
 	}
+	 
+	
 
 	public void addToLinkedList(String list) {
 		String sList = list;
@@ -36,7 +38,7 @@ public class AvatarLoader extends JPanel {
 		// add number of body
 		numBody = 0;
 		while (bList.indexOf("B") != -1) {
-			String bodyPath = bList.substring(bList.indexOf("B"),
+			bodyPath = bList.substring(bList.indexOf("B"),
 					bList.indexOf("B") + 4);
 			if (bList.length() >= 4) {
 				bList = bList.substring(bList.indexOf("B") + 4);
@@ -49,7 +51,7 @@ public class AvatarLoader extends JPanel {
 		// add number of head
 		numHead = 0;
 		while (hList.indexOf("H") != -1) {
-			String headPath = hList.substring(hList.indexOf("H"),
+			headPath = hList.substring(hList.indexOf("H"),
 					hList.indexOf("H") + 4);
 			if (hList.length() >= 4) {
 				hList = hList.substring(hList.indexOf("H") + 4);
@@ -63,7 +65,7 @@ public class AvatarLoader extends JPanel {
 		// add number of shirt
 		numShirt = 0;
 		while (sList.indexOf("S") != -1) {
-			String shirtPath = sList.substring(sList.indexOf("S"),
+			 shirtPath = sList.substring(sList.indexOf("S"),
 					sList.indexOf("S") + 4);
 			if (sList.length() >= 4) {
 				sList = sList.substring(sList.indexOf("S") + 4);
@@ -78,7 +80,7 @@ public class AvatarLoader extends JPanel {
 		// add number of weapon
 		numWeapon = 0;
 		while (wList.indexOf("W") != -1) {
-			String weaponPath = wList.substring(wList.indexOf("W"),
+			weaponPath = wList.substring(wList.indexOf("W"),
 					wList.indexOf("W") + 4);
 			if (wList.length() >= 4) {
 				wList = wList.substring(wList.indexOf("W") + 4);
@@ -206,7 +208,7 @@ public class AvatarLoader extends JPanel {
 		
 		
 		addToLinkedList(list);
-		String shirtURL = s.get(shirtCount);
+		shirtURL = s.get(shirtCount);
 		//System.out.print(s.get(shirtCount));
 		bodyURL =  b.get(bodyCount);
 		headURL =  h.get(headCount) ;
