@@ -17,9 +17,16 @@ import javax.swing.border.TitledBorder;
 
 public class Custimization {
 	static AvatarLoader avatar;
+	static String list;
 	public static JPanel getAvatar(){
+		try {
+			list = ICEWorldPeek.getData("gresources&uid=0").substring(20,ICEWorldPeek.getData("gresources&uid=0").length()-2);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		avatar=new AvatarLoader();
+		avatar=new AvatarLoader(list);
 		avatar.setPreferredSize(new Dimension(500,500));
 		avatar.setVisible(true);
 	     return avatar; 
@@ -30,8 +37,6 @@ public class Custimization {
 		JFrame customise=new JFrame("customize");
 		customise.setSize(1000, 600);
 		customise.setLayout(new GridLayout(1,2,50,10));
-
-		
 		TitledBorder idHeader = new TitledBorder("id");
 		TitledBorder lookHeader = new TitledBorder("your look");
 		JPanel id=new JPanel();
@@ -45,7 +50,7 @@ public class Custimization {
 		JButton check1=new JButton("next");
 		check1.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				avatar.headCount=(avatar.headCount+1)%4;
+				avatar.headCount=(avatar.headCount+1)%avatar.numHead;
 				avatar.repaint();
 			}
 		});
@@ -54,7 +59,7 @@ public class Custimization {
 		JButton check2=new JButton("next");
 		check2.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				avatar.bodyCount=(avatar.bodyCount+1)%4;
+				avatar.bodyCount=(avatar.bodyCount+1)%avatar.numBody;
 				avatar.repaint();
 			}
 		});
@@ -62,7 +67,7 @@ public class Custimization {
 		JButton check3=new JButton("next");
 		check3.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				avatar.shirtCount=(avatar.shirtCount+1)%4;
+				avatar.shirtCount=(avatar.shirtCount+1)%avatar.numShirt;
 				avatar.repaint();
 			}
 		});
@@ -70,7 +75,7 @@ public class Custimization {
 		JButton check4=new JButton("next");
 		check4.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				avatar.weaponCount=(avatar.weaponCount+1)%4;
+				avatar.weaponCount=(avatar.weaponCount+1)%avatar.numWeapon;
 				avatar.repaint();
 			}
 		});
