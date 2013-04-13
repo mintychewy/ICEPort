@@ -17,7 +17,7 @@ public class AvatarLoader extends JPanel {
 	LinkedList<String> b = new LinkedList<String>();
 	LinkedList<String> h = new LinkedList<String>();
 	LinkedList<String> w = new LinkedList<String>();
-	
+	String bodyURL,shirtURL,weaponURL,headURL,bgURL; 
 	int numShirt, numBody, numHead, numWeapon;
 	
 	
@@ -208,10 +208,10 @@ public class AvatarLoader extends JPanel {
 		addToLinkedList(list);
 		String shirtURL = s.get(shirtCount);
 		//System.out.print(s.get(shirtCount));
-		String bodyURL =  b.get(bodyCount);
-		String headURL =  h.get(headCount) ;
-		String weaponURL = w.get(weaponCount) ;
-		String bgURL = "";
+		bodyURL =  b.get(bodyCount);
+		headURL =  h.get(headCount) ;
+		weaponURL = w.get(weaponCount) ;
+		bgURL = "";
 		loadBufferedImage(headURL, bodyURL, shirtURL, weaponURL, bgURL);
 		g.drawImage(background, 80, 50, this);
 		g.drawImage(body, 80, 50, this);

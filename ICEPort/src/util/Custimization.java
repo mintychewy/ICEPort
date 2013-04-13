@@ -2,6 +2,9 @@ package util;
 
 
 
+import gui.LoginPage;
+import iceworld.given.IcetizenLook;
+
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -79,6 +82,22 @@ public class Custimization {
 				avatar.repaint();
 			}
 		});
+		
+		JButton confirm=new JButton("confirm");
+		confirm.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				IcetizenLook look=new IcetizenLook();
+				look.gidB=avatar.bodyURL ;//avatar.b.get(avatar.bodyCount);
+				look.gidH=avatar.headURL;//avatar.h.get(avatar.headCount);
+				look.gidW=avatar.weaponURL;  //avatar.w.get(avatar.weaponCount);
+				look.gidS=avatar.shirtURL;//avatar.s.get(avatar.shirtCount);
+				LoginPage.immigration.customization(look);
+				
+			}
+		});
+		
 		id.add(new JLabel("head"));
 		id.add(check1);
 		id.add(new JLabel("body"));
@@ -87,6 +106,7 @@ public class Custimization {
 		id.add(check3);
 		id.add(new JLabel("weapon"));
 		id.add(check4);
+		id.add(confirm);
 		customise.setVisible(true);
 		return customise;
 	}
