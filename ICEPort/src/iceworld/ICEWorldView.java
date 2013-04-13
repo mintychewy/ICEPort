@@ -61,8 +61,11 @@ MouseMotionListener, KeyListener {
 	public static int deltaX = 0;
 	public static int deltaY = 0;
 	
+	// Privilege "instant" yell/talk/walk for controller ICEtizen 
 	public static String instantYellMessage = "";
 	public static String instantTalkMessage = "";
+	
+	public static Point controllersLocalPosition;
 
 	// states fetching interval (default: 2000ms)
 	public static int REFRESH_INTERVAL = 2000;
@@ -167,6 +170,10 @@ MouseMotionListener, KeyListener {
 			}
 		}
 
+
+		controllersLocalPosition = LoginPage.me.currentPosition;
+		
+		
 		addListeners();
 
 		
@@ -204,7 +211,7 @@ MouseMotionListener, KeyListener {
 	 * list of loggedin users
 	 */
 	private void isolateController() {
-			LoginPage.me = loggedinUsers.get(controllerUsername);
+			//LoginPage.me = loggedinUsers.get(controllerUsername);
 	}
 	
 	/**
@@ -243,19 +250,19 @@ MouseMotionListener, KeyListener {
 	@Override
 	public void mousePressed(MouseEvent e) {
 
+		/* INVOKE WALKING FOR THE CONTROLLER ICETIZEN */
+		
 		// converts mouseclick position into a tile position
 		Point destinationTile = Scaler.toTileSpaceFromViewport(e.getPoint());
-
 		System.out.println("Heading to: " + destinationTile.toString());
-
+		
 		// check whether if it is a valid destination
 		if (!world.isFallingIntoTartarus(destinationTile)) {
-			// set destination
-			// States.activeUserDestination = destinationTile;
-			// walk to the destination
+
+			LoginPage.me.setCurrentPosition(destinationTile);
 			LoginPage.immigration.walk(destinationTile.x, destinationTile.y);
-			System.out.println("Walked to "+destinationTile.x+","+destinationTile.y);
-			//walk();
+			
+			walkMyself();
 		} else {
 			System.out.println("Invalid destination point");
 		}
@@ -311,7 +318,7 @@ MouseMotionListener, KeyListener {
 
 	Timer timer;
 
-	public void walk() {
+	public void walkMyself() {
 		long myLong = 100;
 		timer = new Timer();
 		timer.schedule(new WalkingTask(), 0, myLong);
@@ -335,7 +342,7 @@ MouseMotionListener, KeyListener {
 
 		Graphics2D g2Viewport = (Graphics2D) viewport.getGraphics();
 
-		updateYell(g2Viewport);
+		//updateYell(g2Viewport);
 		
 		g2Viewport.drawImage(minimap.getImage(), ICEWORLD_VIEWPORT_SIZE.width
 				- Minimap.MINIMAP_SIZE.width - 10, 10, null);
@@ -383,9 +390,6 @@ MouseMotionListener, KeyListener {
 		Point miniMapPos = null;
 		// clear minimap
 		minimap = new Minimap();
-
-		inh = new Inhabitant();
-
 
 		if (zoom_factor == 1.0) {
 			// = 0
@@ -448,7 +452,8 @@ MouseMotionListener, KeyListener {
 		}
 
 		// update the controller user
-		currentTileSpacePos = LoginPage.me.getCurrentPosition();
+		//currentTileSpacePos = LoginPage.me.getCurrentPosition();
+		currentTileSpacePos = controllersLocalPosition;
 		pos = Scaler.toScreenSpace(currentTileSpacePos);
 
 		g2.drawImage((LoginPage.me.getType() == 1) ? inh.avatar : ali.avatar,
@@ -472,10 +477,6 @@ MouseMotionListener, KeyListener {
 
 		// put username
 
-		// TODO Handle walk. If position changed then walk
-		Point lastKnownPosition = null;
-		// schedule a walk for every users
-		//
 	}
 
 	/**

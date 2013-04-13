@@ -1,9 +1,12 @@
 package iceworld;
 
 import gui.ApplicationMainFrame;
+import gui.LoginPage;
 
 import java.awt.Point;
 import java.util.TimerTask;
+
+import core.Application;
 
 public class WalkingTask extends TimerTask{
 	
@@ -15,15 +18,16 @@ public class WalkingTask extends TimerTask{
 	
 	@Override
 	public void run() {
+		//System.out.println("Destination: "+LoginPage.me.getCurrentPosition().toString());
+		//System.out.println("Position: "+Application.app.view.controllersLocalPosition.toString());
+		userLastKnownPosition.x = Application.app.view.controllersLocalPosition.x;
+		userLastKnownPosition.y = Application.app.view.controllersLocalPosition.y;
+		//States.activeUserLastKnownPosition.x = Application.app.view.controllersLocalPosition.x;
+		//States.activeUserLastKnownPosition.y = Application.app.view.controllersLocalPosition.y;
 		
-		States.activeUserLastKnownPosition.x = States.currentPost.x;
-		States.activeUserLastKnownPosition.y = States.currentPost.y;
-		
-		//System.out.println("CurrentPosition: "+States.currentPost.toString());
-
 		// end walking if destination is reached
-		if(States.activeUserDestination.x == States.currentPost.x &&
-		   States.activeUserDestination.y == States.currentPost.y){
+		if(LoginPage.me.getCurrentPosition().x == Application.app.view.controllersLocalPosition.x &&
+		   LoginPage.me.getCurrentPosition().y == Application.app.view.controllersLocalPosition.y){
 			System.out.println("Destination Reached");
 			cancel();
 		}
@@ -31,14 +35,14 @@ public class WalkingTask extends TimerTask{
 		
 		// move in the x-axis 
 		
-		if(States.activeUserDestination.x > States.currentPost.x){
+		if(LoginPage.me.getCurrentPosition().x > Application.app.view.controllersLocalPosition.x){
 			// walk left
-			States.currentPost.x += 1;
+			Application.app.view.controllersLocalPosition.x += 1;
 			
 
-		}else if(States.activeUserDestination.x < States.currentPost.x){
+		}else if(LoginPage.me.getCurrentPosition().x < Application.app.view.controllersLocalPosition.x){
 			// walk right
-			States.currentPost.x -= 1;
+			Application.app.view.controllersLocalPosition.x -= 1;
 		}else{
 			// no need to walk in the x-axis anymore
 		}
@@ -46,12 +50,12 @@ public class WalkingTask extends TimerTask{
 		
 		// move the in y-axis
 		
-		if(States.activeUserDestination.y > States.currentPost.y){
+		if(LoginPage.me.getCurrentPosition().y > Application.app.view.controllersLocalPosition.y){
 			// walk down
-			States.currentPost.y += 1;
-		}else if(States.activeUserDestination.y < States.currentPost.y){
+			Application.app.view.controllersLocalPosition.y += 1;
+		}else if(LoginPage.me.getCurrentPosition().y < Application.app.view.controllersLocalPosition.y){
 			// walk up
-			States.currentPost.y -= 1;
+			Application.app.view.controllersLocalPosition.y -= 1;
 		}else{
 			// no need to walk in the y-axis anymore
 		}

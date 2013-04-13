@@ -49,7 +49,7 @@ public class Customisation extends JDialog {
 
 		JButton check2 = new JButton("next");
 		check2.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			public void actiosnPerformed(ActionEvent e) {
 				avatar.bodyCount = (avatar.bodyCount + 1) % 4;
 				avatar.repaint();
 			}
