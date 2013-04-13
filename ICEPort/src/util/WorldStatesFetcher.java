@@ -323,7 +323,9 @@ public class WorldStatesFetcher {
 		IcetizenLook look;
 		while(uidItr.hasNext()){
 			int key = (Integer) uidItr.next();
+			/*
 				try {
+					
 					rawLook = ICEWorldPeek.getLooks(key+"");
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -335,6 +337,8 @@ public class WorldStatesFetcher {
 				look.gidH = rawLook.substring(rawLook.indexOf("H")+4,rawLook.indexOf("S")-3);
 				look.gidS = rawLook.substring(rawLook.indexOf("S")+4,rawLook.indexOf("W")-3);
 				look.gidW = rawLook.substring(rawLook.indexOf("W")+4,rawLook.lastIndexOf("]")-2);
+			*/
+			look = null;
 				looks.put(key, look);
 		}
 		

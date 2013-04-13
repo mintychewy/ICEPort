@@ -10,13 +10,14 @@ import util.Scaler;
 
 import core.Application;
 
-public class WalkingTask extends TimerTask{
+public class SmoothWalk extends TimerTask{
 	
 	Point userLastKnownPosition;
 	Point destPosition;
+	
 	public WalkingTask(){
 		userLastKnownPosition = new Point();
-		destPosition = LoginPage.me.getCurrentPosition();
+		destPosition = Scaler.toScreenSpace(LoginPage.me.getCurrentPosition());
 	}
 	
 	@Override

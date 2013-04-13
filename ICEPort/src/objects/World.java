@@ -105,9 +105,10 @@ public class World {
 				g.drawImage(newTile, x, y, null);
 				// Tile coord label
 				
+				/*
 				g.drawString(a + "," + b, x + TILE_WIDTH / 2, y
 					+ TILE_HEIGHT / 2);
-				
+				*/
 			}
 
 	}

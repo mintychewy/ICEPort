@@ -41,6 +41,8 @@ public class ChatController implements ActionListener {
 			LoginPage.app.view.updateWorld();
 
 		}
+		
+		LoginPage.app.view.requestFocus(true);
 
 	}
 
