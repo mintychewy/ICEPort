@@ -20,6 +20,7 @@ public class YellingTaskOthers extends TimerTask {
 	public void run() {
 		LoginPage.app.view.yellImageList.remove(bf);
 		cancel();
+		LoginPage.app.view.updateWorld();
 	}
 
 }

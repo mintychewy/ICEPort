@@ -57,7 +57,7 @@ MouseMotionListener, KeyListener {
 	ArrayList<Timer> timerList;
 
 	LinkedList<BufferedImage> yellImageList;
-
+	LinkedList<BufferedImage> talkImageList;
 
 	HashMap<String,Point> lastKnownPositionList;
 
@@ -117,7 +117,8 @@ MouseMotionListener, KeyListener {
 		setPreferredSize(ICEWORLD_VIEWPORT_SIZE);
 
 		yellImageList = new LinkedList<BufferedImage>();
-
+		talkImageList = new LinkedList<BufferedImage>();
+		
 		mapPanel = new JPanel();
 		mapPanel.setPreferredSize(new Dimension(900,600));
 		mapPanel.setBounds(0,0,900,600);
@@ -290,8 +291,9 @@ MouseMotionListener, KeyListener {
 
 					}
 
-
-					/* TALKING-YELLING SCHEDULER */
+					// SCHEDULERS
+					BufferedImage bf;
+					/* YELLING SCHEDULER */
 					System.out.println("yellList size: "+actionFetcher.yellList.size());
 					for(Actions act : actionFetcher.yellList) {
 						if(act.getUsername().equals(controllerUsername))
@@ -301,7 +303,7 @@ MouseMotionListener, KeyListener {
 
 						System.out.println("This guy yelled! ==>" + act.getUsername());
 
-						BufferedImage bf = new BufferedImage(900,600,BufferedImage.TYPE_INT_ARGB);
+						bf = new BufferedImage(900,600,BufferedImage.TYPE_INT_ARGB);
 
 						Graphics2D g2bf = bf.createGraphics();
 
@@ -317,6 +319,28 @@ MouseMotionListener, KeyListener {
 						yellImageList.add(bf);
 						new Timer().schedule(new YellingTaskOthers(bf), 5000, 1);
 
+					}
+					
+					/* TALKING SCHEDULER */
+					System.out.println("talkList size: "+actionFetcher.talkList.size());
+					for(Actions act : actionFetcher.talkList) {
+						if(act.getUsername().equals(controllerUsername))
+							continue;
+						if(act.getDetails() == null || act.getDetails().length() <= 0)
+							continue;
+						
+						System.out.println("This guy talked! ==>" + act.getUsername());
+						
+						bf = new BufferedImage(900,600,BufferedImage.TYPE_INT_ARGB);
+						
+						Graphics2D g2bf = bf.createGraphics();
+						g2bf.setColor(Color.black);
+						g2bf.drawString(act.getDetails(), 100, 200);
+						
+						talkImageList.add(bf);
+						new Timer().schedule(new TalkingTaskOthers(bf), 5000, 1);
+	
+						 
 					}
 
 					updateWorld();
@@ -360,8 +384,21 @@ MouseMotionListener, KeyListener {
 			public void run() {
 				while(!terminateThread){
 					System.out.println("fetching states..");
-					isolateController();
+					isolateController();	
+					fetcher.updateWorldStates();
+					actionFetcher.fetchActions();
+					System.out.println("YELL LIST SIZE: "+actionFetcher.yellList.size());
+					try {
+						ActionFetcher.from = Long.parseLong((ICEWorldPeek.getData("time")).substring(20,30));
+					} catch (NumberFormatException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 
+					/* WALKING SCHEDULER */
 					// check whether if a (non-active) ICEtizen needs 
 					// to be a scheduled a walk
 					for(ICEtizen value : loggedinUsers.values()) {
@@ -370,20 +407,58 @@ MouseMotionListener, KeyListener {
 
 						String key = value.getUsername();
 						Point lastKnownPosition = lastKnownPositionList.get(key);
+						if(lastKnownPosition == null)
+							continue;
 						Point dest = value.getCurrentPosition();
 						if(!dest.equals(lastKnownPosition)){
+
+							System.out.println(key+" needs walking.");
 							//timerTemp = new Timer();
 
+							System.out.println("LastknownPosition: "+ lastKnownPosition.toString());
+
 							new Timer().schedule(new WalkingTaskOthers(key,lastKnownPosition, dest), 0, 100);
+
 
 							//timerTemp.schedule(new WalkingTaskOthers(key,lastKnownPosition, dest), 0, 100);
 
 							//timerList.add(timerTemp);
+
+
+
 						}
+
 					}
 
 
-					fetcher.updateWorldStates();
+					/* TALKING-YELLING SCHEDULER */
+					System.out.println("yellList size: "+actionFetcher.yellList.size());
+					for(Actions act : actionFetcher.yellList) {
+						if(act.getUsername().equals(controllerUsername))
+							continue;
+						if(act.getDetails() == null || act.getDetails().length() <= 0)
+							continue;
+
+						System.out.println("This guy yelled! ==>" + act.getUsername());
+
+						BufferedImage bf = new BufferedImage(900,600,BufferedImage.TYPE_INT_ARGB);
+
+						Graphics2D g2bf = bf.createGraphics();
+
+						g2bf.setColor(Minimap.BLACK_WITH_50_PERCENT_ALPHA);
+						g2bf.fillRect(0, 300, 900, 300);
+
+
+						Font font = new Font ("Arial", Font.PLAIN, (act.getDetails().length() <= 5)?200:100);
+						g2bf.setFont(font);
+						g2bf.setColor(YellingTaskOthers.SKY_BLUE);
+						g2bf.drawString(act.getDetails(), 10, (act.getDetails().length() <=5)?530:500);							
+						
+						yellImageList.add(bf);
+						new Timer().schedule(new YellingTaskOthers(bf), 5000, 1);
+
+					}
+
 					updateWorld();
 					try {
 						Thread.sleep(REFRESH_INTERVAL);
@@ -394,6 +469,7 @@ MouseMotionListener, KeyListener {
 
 			}
 		});
+
 
 	}
 
@@ -526,6 +602,16 @@ MouseMotionListener, KeyListener {
 
 			g2.drawString(instantTalkMessage, drawPos.x, drawPos.y-100);
 		}	
+		
+		
+
+		for(BufferedImage talkImg : talkImageList) {
+			System.out.println("Drawing talk from someone");
+			
+			g2.drawImage(talkImg, 100,100,null);
+		}
+
+		
 	}
 
 
@@ -539,7 +625,7 @@ MouseMotionListener, KeyListener {
 		// long latestYellTimestamp;
 		// compare these two
 
-		/*
+		/* 
 		g.setColor(Minimap.BLACK_WITH_50_PERCENT_ALPHA);
 		g.fillRect(0, 300, 900, 300);
 		// check if instantYellMessage != null

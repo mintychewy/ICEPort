@@ -3,11 +3,15 @@ package iceworld;
 import gui.LoginPage;
 
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.util.Timer;
 
 import javax.swing.ButtonModel;
+
+import objects.Minimap;
 
 public class ChatController implements ActionListener {
 	
@@ -37,6 +41,23 @@ public class ChatController implements ActionListener {
 
 			ICEWorldView.instantYellMessage = msg;
 			LoginPage.immigration.yell(msg);
+			
+			BufferedImage bf = new BufferedImage(900,600,BufferedImage.TYPE_INT_ARGB);
+
+			Graphics2D g2bf = bf.createGraphics();
+
+			g2bf.setColor(Minimap.BLACK_WITH_50_PERCENT_ALPHA);
+			g2bf.fillRect(0, 300, 900, 300);
+
+
+			Font font = new Font ("Arial", Font.PLAIN, (msg.length() <= 5)?200:100);
+			g2bf.setFont(font);
+			g2bf.setColor(YellingTaskOthers.SKY_BLUE);
+			g2bf.drawString(msg, 10, (msg.length() <=5)?530:500);							
+			
+			LoginPage.app.view.yellImageList.add(bf);
+			new Timer().schedule(new YellingTaskOthers(bf), 5000, 1);
+			
 			LoginPage.app.view.updateWorld();
 
 		}else if(btn.getActionCommand().equals("talk")){
