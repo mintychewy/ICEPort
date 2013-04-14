@@ -18,6 +18,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import objects.ICEtizen;
+
 
 
 // CAN I DELETE THE PROJECT?yep
@@ -28,19 +30,24 @@ public class FTPButtonListener implements ActionListener {
 	// JDesktopPane desktop;
 	JButton sendButton;
 	JPanel centerPanel;
-	JTextField path;
+	JTextField path, username;
 	JDialog choose;
 
-	String filename;
-
+	String filename, user;
+	ICEtizen use;
+	
 	public void actionPerformed(ActionEvent e) {
 
 		JPanel pan = new JPanel();
-		pan.setLayout(new GridLayout(3, 1));
+		pan.setLayout(new GridLayout(4, 1));
 
 		JButton chooseF = new JButton("Choose File");
 		// setLayout(new BorderLayout());
 
+		path = new JTextField();
+		pan.add(path);
+		filename = path.getText();
+		
 		centerPanel = new JPanel();
 		// add(centerPanel, BorderLayout.CENTER);
 		centerPanel.add(chooseF);
@@ -48,10 +55,12 @@ public class FTPButtonListener implements ActionListener {
 		chooseF.addActionListener(cf);
 		pan.add(chooseF);
 
-		path = new JTextField();
-		pan.add(path);
-		filename = path.getText();
-
+		
+		username = new JTextField();
+		pan.add(username);
+		username.setText("Please enter username.");
+		user = username.getText();
+		
 		JButton ok = new JButton("OK");
 		// setLayout(new BorderLayout());
 		centerPanel = new JPanel();
@@ -60,6 +69,8 @@ public class FTPButtonListener implements ActionListener {
 		OKEvent con = new OKEvent();
 		ok.addActionListener(con);
 		pan.add(ok);
+		
+		
 
 		choose = new JDialog();
 
@@ -73,11 +84,13 @@ public class FTPButtonListener implements ActionListener {
 	public class chooseFileEvent implements ActionListener {
 
 		@Override
-		public void actionPerformed(ActionEvent arg0) {
+		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-
+			System.out.print("yoooooooooooooooooooooooooooooooo");
 			FileChooser a = new FileChooser();
 			path.setText(a.FileChooser());
+			
+			
 
 		}
 
@@ -88,16 +101,29 @@ public class FTPButtonListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-
+			//username.equals(use);
+			//System.out.print(path.getText());
+			System.out.print("yooooooooohhhhhhhhhhhhhhhhhoooooooooooooo");
+			 use= LoginPage.app.view.loggedinUsers.get(user);
+			 System.out.print("heyyy");
+			 //System.out.println("Is listening port null? "+(use.getListeningPort() == null));
 			try {
-				new FileServer(8799, path.getText());
+				
+				System.out.println("is path null?" +( path.getText() == null));
+				new FileServer(use.getListeningPort(), path.getText());
+				
+				System.out.print("heloooo");
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			choose.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+			choose.dispose();
+			
+			//hmmm... now login again please 
 		}
+		
 
 	}
+	
+	
 }
