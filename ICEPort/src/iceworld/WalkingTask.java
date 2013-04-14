@@ -31,7 +31,6 @@ public class WalkingTask extends TimerTask{
 		// end walking if destination is reached
 		if(destPosition.x == Application.app.view.controllersLocalPosition.x &&
 		   destPosition.y == Application.app.view.controllersLocalPosition.y){
-			System.out.println("Destination Reached");
 			cancel();
 		}
 		

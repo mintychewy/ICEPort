@@ -38,7 +38,6 @@ public class WalkingTaskOthers extends TimerTask{
 		// end walking if destination is reached
 		if(destPosition.x == LoginPage.app.view.lastKnownPositionList.get(key).x &&
 		   destPosition.y == LoginPage.app.view.lastKnownPositionList.get(key).y){
-			System.out.println("Destination Reached");
 			cancel();
 		}
 		

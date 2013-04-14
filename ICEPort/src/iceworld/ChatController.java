@@ -2,12 +2,16 @@ package iceworld;
 
 import gui.LoginPage;
 
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Timer;
 
 import javax.swing.ButtonModel;
 
 public class ChatController implements ActionListener {
+	
+	public static Font chatFont = new Font("Arial", Font.PLAIN, (int)(100*ICEWorldView.zoom_factor));
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -38,6 +42,8 @@ public class ChatController implements ActionListener {
 			
 			ICEWorldView.instantTalkMessage = msg;
 			LoginPage.immigration.talk(msg);
+			new Timer().schedule(new SelfChat(), 5000);
+
 			LoginPage.app.view.updateWorld();
 
 		}

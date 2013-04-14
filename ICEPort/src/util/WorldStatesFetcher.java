@@ -19,24 +19,24 @@ import org.json.simple.parser.JSONParser;
 import core.Application;
 
 public class WorldStatesFetcher {
-	
-	 HashMap<String, ICEtizen> icetizens = new HashMap<String, ICEtizen>();
-	 
-	 LinkedList<String> username = new LinkedList<String>();
-	 LinkedList<Integer> type = new LinkedList<Integer>();
-	 LinkedList<String> ip = new LinkedList<String>();
-	 LinkedList<String> port = new LinkedList<String>();
-	 LinkedList<Integer> pid = new LinkedList<Integer>();
-	 LinkedList<Point> position = new LinkedList<Point>();
-	 LinkedList<String> timestamp = new LinkedList<String>();
-	 LinkedList<Integer> uids = new LinkedList<Integer>();
-	 HashMap<Integer,IcetizenLook> looks = new HashMap<Integer, IcetizenLook>();
-	 
-	 long lastChangeWeather = 0;
-     String conditionWeather = "undefined";
-	
+
+	HashMap<String, ICEtizen> icetizens = new HashMap<String, ICEtizen>();
+
+	LinkedList<String> username = new LinkedList<String>();
+	LinkedList<Integer> type = new LinkedList<Integer>();
+	LinkedList<String> ip = new LinkedList<String>();
+	LinkedList<String> port = new LinkedList<String>();
+	LinkedList<Integer> pid = new LinkedList<Integer>();
+	LinkedList<Point> position = new LinkedList<Point>();
+	LinkedList<String> timestamp = new LinkedList<String>();
+	LinkedList<Integer> uids = new LinkedList<Integer>();
+	HashMap<Integer,IcetizenLook> looks = new HashMap<Integer, IcetizenLook>();
+
+	long lastChangeWeather = 0;
+	String conditionWeather = "undefined";
+
 	public WorldStatesFetcher(){}
-	
+
 	/**
 	 * This method fetches the raw states from the ICEWorld Server
 	 * and process + store them into LinkedLists according to each 
@@ -47,11 +47,11 @@ public class WorldStatesFetcher {
 	 * 
 	 */
 	public void updateWorldStates() {
-	
-		
+
+
 		// checks whether if the ICEWorld can be reached
 		// if not, update nothing and prints the error
-		
+
 		if(!ICEWorldPeek.isReachable(ICEWorldPeek.BASE_URL)){
 			JDialog dialog = new JDialog();
 			dialog.add(new JLabel("ICEWorld Server cannot be reached!"));
@@ -61,37 +61,37 @@ public class WorldStatesFetcher {
 			dialog.setVisible(true);
 			return ;
 		}
-			
-		
-	//////////////////////////////////////////////////////////////
-	// STATES													//
-	//////////////////////////////////////////////////////////////
-		// fetch and print out the raw states (for debugging)
+
+
+		//////////////////////////////////////////////////////////////
+		// STATES													//
+		//////////////////////////////////////////////////////////////
+		// fetch the raw states 
 		String out = null;
 		try {
 			out = ICEWorldPeek.getData("states");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		// create a new parser / keyfinders
 		JSONParser parser = new JSONParser();
 		KeyFinder finder = new KeyFinder();
-		
+
 		// "username" finder
 		KeyFinder usernameFinder = new KeyFinder();
 		usernameFinder.setMatchKey("username");
-		
+
 		// "type" finder
 		KeyFinder typeFinder = new KeyFinder();
 		typeFinder.setMatchKey("type");
-		
+
 		// 
-		
+
 		/*
 		// XXX I don't think we need this
 		int status = 0;
-	
+
 		finder.setMatchKey("status");
 		try {
 			parser.parse(out, finder, true);
@@ -103,8 +103,8 @@ public class WorldStatesFetcher {
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		} 
-		*/
-	
+		 */
+
 
 		// Find the value of usernames
 
@@ -222,7 +222,7 @@ public class WorldStatesFetcher {
 						int y = Integer.parseInt(usernm.substring(usernm.indexOf(',')+1,usernm.lastIndexOf(')')));
 						pt = new Point(x,y);
 					}
-					
+
 
 					position.add(pt);
 				}
@@ -233,8 +233,8 @@ public class WorldStatesFetcher {
 			pe.printStackTrace();
 		}
 
-		 //Find the value of the time of the position
-		
+		//Find the value of the time of the position
+
 		finder.setMatchKey("timestamp");
 		try {
 			while (!finder.isEnd()) {
@@ -253,8 +253,8 @@ public class WorldStatesFetcher {
 		} catch (Exception pe) {
 			pe.printStackTrace();
 		}
-			  
-		 
+
+
 
 		// Find the value of the weather: condition
 		finder.setMatchKey("condition");
@@ -283,49 +283,49 @@ public class WorldStatesFetcher {
 		} catch (Exception pe) {
 			pe.printStackTrace();
 		}
-		
 
-		
+
+
 		int startIndex = 0;
 		int endIndex = 0;
 		String tmpString = "";
 		int uid = -1;
 		while(out.indexOf("user") != -1){
-			
+
 			tmpString = out.substring(out.indexOf("user")-10,out.indexOf("user"));
 			String intValue = tmpString.replaceAll("[a-zA-Z\"}{,:]", "");
 			out = out.substring(out.indexOf("user")+10);
 			uids.add(Integer.parseInt(intValue));
-		}
-		
+		}	
+
 		//////////////////////////////////////////////////////////////
 		// Looks													//
 		//////////////////////////////////////////////////////////////
-		
+
 		// key is uid
 		looks = new HashMap<Integer, IcetizenLook>();
-		
+
 		Iterator uidItr = uids.iterator();
 		String rawLook = null;
 		// for each key in the list, fetch the looks
-		
-		
+
+
 		/*
 		ExecutorService pool = Executors.newFixedThreadPool(10);
-		
+
 		for (int k = 0; k < uids.size(); k++) {
 		    pool.submit(new GetLooksTask(uids.get(k)));
 		}
-		
+
 		pool.shutdown();
 		pool.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
-		*/
+		 */
 		IcetizenLook look;
 		while(uidItr.hasNext()){
 			int key = (Integer) uidItr.next();
 			/*
 				try {
-					
+
 					rawLook = ICEWorldPeek.getLooks(key+"");
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -337,16 +337,16 @@ public class WorldStatesFetcher {
 				look.gidH = rawLook.substring(rawLook.indexOf("H")+4,rawLook.indexOf("S")-3);
 				look.gidS = rawLook.substring(rawLook.indexOf("S")+4,rawLook.indexOf("W")-3);
 				look.gidW = rawLook.substring(rawLook.indexOf("W")+4,rawLook.lastIndexOf("]")-2);
-			*/
+			 */
 			look = null;
-				looks.put(key, look);
+			looks.put(key, look);
 		}
-		
-		
+
+
 		appendData();
-	
+
 	}
-	
+
 	/*
 	class GetLooksTask implements Runnable {
 		int key;
@@ -357,16 +357,16 @@ public class WorldStatesFetcher {
 		public void run() {
 			try {
 				String rawLook = ICEWorldPeek.getLooks(key+"");
-				
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
+
 		}
-		
+
 	}
-	*/
-	
+	 */
+
 	/**
 	 * This method creates a new ICEtizen, assigns values 
 	 * to their attributes, and adds the ICEtizen object
@@ -376,26 +376,26 @@ public class WorldStatesFetcher {
 	 * updateWorldStates() method
 	 */
 	private void appendData(){
-		
+
 		while(!username.isEmpty()){
-			
+
 			// creating a new ICEtizen
 			ICEtizen icetizen = new ICEtizen();
-	
+
 			icetizen.setUsername(username.getFirst());
-	
+
 			icetizen.setType(type.poll());
-			
+
 			icetizen.setIcePortID(pid.poll());
 			icetizen.setuid(uids.poll());
-			
+
 			icetizen.setIPAddress(ip.poll());
-			
+
 			icetizen.setListeningPort(Integer.parseInt(port.poll()));
-			
+
 			icetizen.setCurrentPosition(position.poll());
-			
-		
+
+
 			// if icetizen is not an alien 
 			// fetch his/her looks 
 			if(icetizen.getType() == 1) {
@@ -403,17 +403,18 @@ public class WorldStatesFetcher {
 			} else {
 				icetizen.setIcetizenLook(null);
 			}
-			
+
 
 			// add to the currently logged-in user list
 			icetizens.put(username.poll(), icetizen);
-			
+
 		}
-		
+
+
 	}
-	
+
 	public HashMap<String,ICEtizen> getLoggedinUserMap() {
 		return this.icetizens;
 	}
-	
+
 }

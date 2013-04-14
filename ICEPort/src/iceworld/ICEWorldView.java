@@ -28,6 +28,9 @@ import objects.ICEtizen;
 import objects.Inhabitant;
 import objects.Minimap;
 import objects.World;
+import util.ActionFetcher;
+import util.Actions;
+import util.ICEWorldPeek;
 import util.ImageLoader;
 import util.Patcher;
 import util.Scaler;
@@ -39,6 +42,8 @@ MouseMotionListener, KeyListener {
 	// username is used as a key in the users HashMap
 	String controllerUsername;
 
+	ActionFetcher actionFetcher;
+	
 	public String weather = "sunny";
 
 	/* LAYERS */
@@ -46,10 +51,10 @@ MouseMotionListener, KeyListener {
 
 	JPanel mapPanel;
 	AnimationTestPanel testPanel;
-	
 
+	Timer timerTemp;
 	ArrayList<Timer> timerList;
-	
+
 	HashMap<String,Point> lastKnownPositionList;
 
 	private static final long serialVersionUID = 5658988277615488303L;
@@ -66,8 +71,8 @@ MouseMotionListener, KeyListener {
 	public static int deltaY = 0;
 
 	// Privilege "instant" yell/talk/walk for controller ICEtizen 
-	public static String instantYellMessage = "";
-	public static String instantTalkMessage = "";
+	public static String instantYellMessage;
+	public static String instantTalkMessage;
 
 	public static Point controllersLocalPosition;
 
@@ -83,7 +88,7 @@ MouseMotionListener, KeyListener {
 	WorldStatesFetcher fetcher;
 
 	// HashMap of logged-in ICEtizens (String = username is the key)
-	HashMap<String, ICEtizen> loggedinUsers;
+	public HashMap<String, ICEtizen> loggedinUsers;
 	// Controller user
 
 	Minimap minimap;
@@ -124,7 +129,7 @@ MouseMotionListener, KeyListener {
 		/*////////////////////////////////////////*/
 
 
-		 timerList = new ArrayList<Timer>();
+		timerList = new ArrayList<Timer>();
 
 		loadResources();
 		setKeybinding();
@@ -137,9 +142,9 @@ MouseMotionListener, KeyListener {
 
 		loggedinUsers = fetcher.getLoggedinUserMap();
 
-		
+
 		lastKnownPositionList = new HashMap<String,Point>();
-		
+
 		// alien
 		// the unique point for identifying our controller alien
 		Point hashpos = new Point(LoginPage.uniquePosition,-245);
@@ -149,14 +154,14 @@ MouseMotionListener, KeyListener {
 			for(ICEtizen value : loggedinUsers.values()){
 
 				if(value.getCurrentPosition()!=null)
-						lastKnownPositionList.put(value.getUsername(), value.getCurrentPosition());
-					// 
-					
-					if(value.getCurrentPosition().x == hashpos.x && value.getCurrentPosition().y == hashpos.y){
-						controllerUsername = value.getUsername();
-						LoginPage.me = value;
-						System.out.println("You are: "+ controllerUsername);
-					}
+					lastKnownPositionList.put(value.getUsername(), value.getCurrentPosition());
+				// 
+
+				if(value.getCurrentPosition().x == hashpos.x && value.getCurrentPosition().y == hashpos.y){
+					controllerUsername = value.getUsername();
+					LoginPage.me = value;
+					System.out.println("You are: "+ controllerUsername);
+				}
 			}
 
 			LoginPage.me.setCurrentPosition(new Point(0, 0));
@@ -185,30 +190,45 @@ MouseMotionListener, KeyListener {
 
 		addListeners();
 
-		
-		
+		timer = new Timer();
+
 		// set initial lastKnownPositions
 		for(ICEtizen value : loggedinUsers.values()) {
 			if(value.getUsername().equals(controllerUsername))
 				continue;
-			
+
 			String key = value.getUsername();
 			if(value.getCurrentPosition() == null){
 				System.out.println("user: "+value.getUsername()+" has NULL position");
 				continue ;
 			}
-			
+
 			this.lastKnownPositionList.put(key, value.getCurrentPosition());
-			
+
 		}
 		///
-		
-		
+
+
 
 		initialiseWorld();
 
-
-		
+		actionFetcher = new ActionFetcher();
+		try {
+			ActionFetcher.from = Long.parseLong((ICEWorldPeek.getData("time")).substring(20,30));
+		} catch (NumberFormatException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		/*
+		actionFetcher.fetchActions();
+		System.out.println("FETCHED.. yellList Size = "+actionFetcher.yellList.size());
+		for(String t : actionFetcher.talkList.values()){
+			System.out.println(t);
+		}
+		*/
 
 		/* THREAD FOR FETCHING DATA FROM SERVER */
 		terminateThread = false;
@@ -218,32 +238,59 @@ MouseMotionListener, KeyListener {
 					System.out.println("fetching states..");
 					isolateController();	
 					fetcher.updateWorldStates();
+					actionFetcher.fetchActions();
+					System.out.println("YELL LIST SIZE: "+actionFetcher.yellList.size());
+					try {
+						ActionFetcher.from = Long.parseLong((ICEWorldPeek.getData("time")).substring(20,30));
+					} catch (NumberFormatException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 					
-					
-			
+					/* WALKING SCHEDULER */
 					// check whether if a (non-active) ICEtizen needs 
 					// to be a scheduled a walk
 					for(ICEtizen value : loggedinUsers.values()) {
 						if(value.getUsername().equals(controllerUsername))
 							continue;
-						
+
 						String key = value.getUsername();
 						Point lastKnownPosition = lastKnownPositionList.get(key);
+						if(lastKnownPosition == null)
+							continue;
 						Point dest = value.getCurrentPosition();
 						if(!dest.equals(lastKnownPosition)){
 
 							System.out.println(key+" needs walking.");
-							Timer timerTemp = new Timer();
-							
+							//timerTemp = new Timer();
+
 							System.out.println("LastknownPosition: "+ lastKnownPosition.toString());
-							
-							timerTemp.schedule(new WalkingTaskOthers(key,lastKnownPosition, dest), 0, 100);
-							
+
+							new Timer().schedule(new WalkingTaskOthers(key,lastKnownPosition, dest), 0, 100);
+
+
+							//timerTemp.schedule(new WalkingTaskOthers(key,lastKnownPosition, dest), 0, 100);
+
 							//timerList.add(timerTemp);
+
+
+
 						}
+
 					}
-					
-					
+
+
+					/* TALKING-YELLING SCHEDULER */
+					System.out.println("yellList size: "+actionFetcher.yellList.size());
+					for(Actions act : actionFetcher.yellList) {
+						if(act.getUsername().equals(controllerUsername))
+							continue;
+						
+						System.out.println("This guy yelled! ==>" + act.getUsername());
+					}
 					
 					updateWorld();
 					try {
@@ -287,28 +334,28 @@ MouseMotionListener, KeyListener {
 				while(!terminateThread){
 					System.out.println("fetching states..");
 					isolateController();
-					
+
 					// check whether if a (non-active) ICEtizen needs 
 					// to be a scheduled a walk
 					for(ICEtizen value : loggedinUsers.values()) {
 						if(value.getUsername().equals(controllerUsername))
 							continue;
-						
+
 						String key = value.getUsername();
 						Point lastKnownPosition = lastKnownPositionList.get(key);
 						Point dest = value.getCurrentPosition();
 						if(!dest.equals(lastKnownPosition)){
-							Timer timerTemp = new Timer();
-							
-							
-							timerTemp.schedule(new WalkingTaskOthers(key,lastKnownPosition, dest), 0, 100);
-					
-							timerList.add(timerTemp);
+							//timerTemp = new Timer();
+
+							new Timer().schedule(new WalkingTaskOthers(key,lastKnownPosition, dest), 0, 100);
+
+							//timerTemp.schedule(new WalkingTaskOthers(key,lastKnownPosition, dest), 0, 100);
+
+							//timerList.add(timerTemp);
 						}
 					}
-					
-					
-					
+
+
 					fetcher.updateWorldStates();
 					updateWorld();
 					try {
@@ -326,22 +373,25 @@ MouseMotionListener, KeyListener {
 	@Override
 	public void mousePressed(MouseEvent e) {
 
+		this.requestFocus(true);
 		/* INVOKE WALKING FOR THE CONTROLLER ICETIZEN */
 
 		// converts mouseclick position into a tile position
 		Point destinationTile = Scaler.toTileSpaceFromViewport(e.getPoint());
 		System.out.println("Heading to: " + destinationTile.toString());
 
-
 		// check whether if it is a valid destination
 		if (!world.isFallingIntoTartarus(destinationTile)) {
 
 			LoginPage.me.setCurrentPosition(destinationTile);
+
+			//if(timer != null)
+			timer.cancel();
+			walkMyself();
+
+			// schedule a task first then report
 			LoginPage.immigration.walk(destinationTile.x, destinationTile.y);
 
-			if(timer != null)
-				timer.cancel();
-			walkMyself();
 		} else {
 			System.out.println("Invalid destination point");
 		}
@@ -416,14 +466,14 @@ MouseMotionListener, KeyListener {
 		for(ICEtizen value : loggedinUsers.values()){
 			if(value.getUsername().equals(controllerUsername))
 				continue;
-			
+
 			// walk(value.getCurrentPosition(),);
 		}
 		// Update ICEtizen/Alien positions
 		populateWorld(g2);
 
 		// Update chat
-		// updateChat(g2);
+		updateChat(g2);
 
 		// Show update
 		viewport = panner.getWorldViewport();
@@ -439,7 +489,20 @@ MouseMotionListener, KeyListener {
 	}
 
 
-	/**
+	private void updateChat(Graphics2D g2) {
+
+		if(instantTalkMessage != null) {
+			Point drawPos = Scaler.toScreenSpace(controllersLocalPosition);
+			System.out.println("Instant Talk Message is not NULL");
+			g2.setFont(ChatController.chatFont);
+			g2.setColor(Color.black);
+
+			g2.drawString(instantTalkMessage, drawPos.x, drawPos.y-100);
+		}	
+	}
+
+
+	/**p
 	 * This methods paints a yell on the user's screen
 	 * 
 	 * @param g viewpeort Graphics object
@@ -451,7 +514,7 @@ MouseMotionListener, KeyListener {
 
 		g.setColor(Minimap.BLACK_WITH_50_PERCENT_ALPHA);
 		g.fillRect(0, 300, 900, 300);
-
+		// check if instantYellMessage != null
 		Font font = new Font ("Arial", Font.PLAIN, (instantYellMessage.length() <= 5)?200:100);
 		g.setFont(font);
 		g.setColor(Color.YELLOW);
@@ -495,13 +558,13 @@ MouseMotionListener, KeyListener {
 			zoomCorrectionXOffset = (int) ((1.0 / zoom_factor) * 1);
 		}
 
-	
-		
+
+
 
 		for(ICEtizen value : loggedinUsers.values()) {
 			if(value.getUsername().equals(controllerUsername))
 				continue ;
-			
+
 			currentTileSpacePos = lastKnownPositionList.get(value.getUsername());
 			if(currentTileSpacePos != null) {
 				pos = Scaler.toScreenSpace(currentTileSpacePos);
@@ -522,7 +585,7 @@ MouseMotionListener, KeyListener {
 									* zoom_factor)
 									- zoomCorrectionYOffset - 10, this);
 				}
-				
+
 				// put username
 				g2.drawString(value.getUsername(), pos.x - 10, pos.y + 10);
 				// put ip
@@ -532,9 +595,9 @@ MouseMotionListener, KeyListener {
 
 			}
 		}
-	
+
 		/*
-		
+
 		// iterate the list of logged-in users and draw them
 		for (ICEtizen value : loggedinUsers.values()) {
 
@@ -565,7 +628,7 @@ MouseMotionListener, KeyListener {
 					g2.drawImage(yellowIndicator, pos.x - (int) (ICEtizen.AVATAR_OFFSET_X * zoom_factor)
 							- zoomCorrectionXOffset,
 							(int) (pos.y - ICEtizen.AVATAR_OFFSET_Y
-									* zoom_factor)
+		 * zoom_factor)
 									- zoomCorrectionYOffset - 10, this);
 				}
 
@@ -579,9 +642,9 @@ MouseMotionListener, KeyListener {
 			}
 		}
 
-		*/
-		
-		
+		 */
+
+
 		// update the controller user
 		//currentTileSpacePos = LoginPage.me.getCurrentPosition();
 
