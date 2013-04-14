@@ -12,9 +12,10 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-public class RefreshRateWindow extends JDialog {
+public class TalkVisibleDurationAdjustmentWindow extends JDialog {
 
-	public RefreshRateWindow() {
+	
+	public TalkVisibleDurationAdjustmentWindow() {
 		createGUI();
 		pack();
 	}
@@ -25,7 +26,7 @@ public class RefreshRateWindow extends JDialog {
 		JPanel container = new JPanel();
 
 		container.setLayout(new GridLayout(1,2,5,5));
-		JLabel label = new JLabel("Set refresh interval (in seconds)");
+		JLabel label = new JLabel("Set chat bubble visible duration (in seconds)");
 		container.add(label);
 		JSlider slider = new JSlider(JSlider.HORIZONTAL,
 				1, 10, 1);
@@ -38,18 +39,8 @@ public class RefreshRateWindow extends JDialog {
 
 				if (!source.getValueIsAdjusting()) {
 
-					ICEWorldView.REFRESH_INTERVAL = ((JSlider) e.getSource()).getValue() * 1000;
-					System.out.println(""+ICEWorldView.REFRESH_INTERVAL);
-					// kill the existing fetcher thread
-					LoginPage.app.view.terminate();
-					
-					while(LoginPage.app.view.fetchThread.getState() != Thread.State.TERMINATED){
-						//wait until thread is terminated
-					}
-					LoginPage.app.view.createNewFetchingThread();
-
-					LoginPage.app.view.fetchThread.start();
-					
+					ICEWorldView.TALK_VISIBLE_DURATION = ((JSlider) e.getSource()).getValue() * 1000;
+					System.out.println("TALK_VISIBLE_DURATION updated to: "+ICEWorldView.TALK_VISIBLE_DURATION);
 				}
 
 
@@ -66,5 +57,5 @@ public class RefreshRateWindow extends JDialog {
 		container.add(slider);
 		this.add(container);
 	}
-
+	
 }

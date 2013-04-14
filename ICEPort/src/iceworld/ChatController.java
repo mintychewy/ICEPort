@@ -75,7 +75,7 @@ public class ChatController implements ActionListener {
 			g2bf.drawString(msg, 100, 200);
 
 			LoginPage.app.view.talkImageList.add(bf);
-			new Timer().schedule(new TalkingTaskOthers(bf), 5000, 1);
+			new Timer().schedule(new TalkingTaskOthers(bf), ICEWorldView.TALK_VISIBLE_DURATION, 1);
 
 			LoginPage.immigration.talk(msg);
 

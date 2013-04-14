@@ -632,7 +632,7 @@ MouseMotionListener, KeyListener {
 
 						talkImageList.add(bf);
 						new Timer()
-						.schedule(new TalkingTaskOthers(bf), 5000, 1);
+						.schedule(new TalkingTaskOthers(bf), TALK_VISIBLE_DURATION, 1);
 
 					}
 
@@ -726,6 +726,9 @@ MouseMotionListener, KeyListener {
 	public static int REFRESH_INTERVAL = 2000;
 	public Thread fetchThread;
 	private boolean terminateThread;
+	
+	// chat bubble visible duration (default: 5000ms)
+	public static int TALK_VISIBLE_DURATION = 5000;
 
 	Inhabitant inh;
 	Alien ali;
