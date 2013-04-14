@@ -33,7 +33,7 @@ public class WorldStatesFetcher {
 	HashMap<Integer,IcetizenLook> looks = new HashMap<Integer, IcetizenLook>();
 
 	long lastChangeWeather = 0;
-	String conditionWeather = "undefined";
+	public String conditionWeather = "undefined";
 
 	public WorldStatesFetcher(){}
 

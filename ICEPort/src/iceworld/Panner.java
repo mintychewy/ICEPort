@@ -16,7 +16,7 @@ public class Panner {
 	private final int RIGHT = 3;
 
 	public Panner(BufferedImage fullImage) {
-		DELTA_INC = (int)(300*ICEWorldView.zoom_factor);
+		DELTA_INC = (int)(100*ICEWorldView.zoom_factor);
 		this.fullImage = fullImage;
 	}
 
