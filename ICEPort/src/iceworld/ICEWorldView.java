@@ -17,6 +17,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Timer;
 
 import javax.swing.JLayeredPane;
@@ -43,7 +44,7 @@ MouseMotionListener, KeyListener {
 	String controllerUsername;
 
 	ActionFetcher actionFetcher;
-	
+
 	public String weather = "sunny";
 
 	/* LAYERS */
@@ -55,11 +56,15 @@ MouseMotionListener, KeyListener {
 	Timer timerTemp;
 	ArrayList<Timer> timerList;
 
+	LinkedList<BufferedImage> yellImageList;
+
+
 	HashMap<String,Point> lastKnownPositionList;
 
 	private static final long serialVersionUID = 5658988277615488303L;
 	public final static Dimension ICEWORLD_VIEWPORT_SIZE = new Dimension(900,600);
 
+	public int yellIndex = 0;
 	// zooming factor
 	// default being 1.0 (i.e., 1.0*100 = 100 %)
 	public static double zoom_factor = 1.0;
@@ -111,6 +116,7 @@ MouseMotionListener, KeyListener {
 
 		setPreferredSize(ICEWORLD_VIEWPORT_SIZE);
 
+		yellImageList = new LinkedList<BufferedImage>();
 
 		mapPanel = new JPanel();
 		mapPanel.setPreferredSize(new Dimension(900,600));
@@ -157,6 +163,8 @@ MouseMotionListener, KeyListener {
 					lastKnownPositionList.put(value.getUsername(), value.getCurrentPosition());
 				// 
 
+				if(value.getCurrentPosition() == null)
+					continue;
 				if(value.getCurrentPosition().x == hashpos.x && value.getCurrentPosition().y == hashpos.y){
 					controllerUsername = value.getUsername();
 					LoginPage.me = value;
@@ -228,7 +236,7 @@ MouseMotionListener, KeyListener {
 		for(String t : actionFetcher.talkList.values()){
 			System.out.println(t);
 		}
-		*/
+		 */
 
 		/* THREAD FOR FETCHING DATA FROM SERVER */
 		terminateThread = false;
@@ -249,7 +257,7 @@ MouseMotionListener, KeyListener {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					
+
 					/* WALKING SCHEDULER */
 					// check whether if a (non-active) ICEtizen needs 
 					// to be a scheduled a walk
@@ -288,10 +296,29 @@ MouseMotionListener, KeyListener {
 					for(Actions act : actionFetcher.yellList) {
 						if(act.getUsername().equals(controllerUsername))
 							continue;
-						
+						if(act.getDetails() == null || act.getDetails().length() <= 0)
+							continue;
+
 						System.out.println("This guy yelled! ==>" + act.getUsername());
+
+						BufferedImage bf = new BufferedImage(900,600,BufferedImage.TYPE_INT_ARGB);
+
+						Graphics2D g2bf = bf.createGraphics();
+
+						g2bf.setColor(Minimap.BLACK_WITH_50_PERCENT_ALPHA);
+						g2bf.fillRect(0, 300, 900, 300);
+
+
+						Font font = new Font ("Arial", Font.PLAIN, (act.getDetails().length() <= 5)?200:100);
+						g2bf.setFont(font);
+						g2bf.setColor(YellingTaskOthers.SKY_BLUE);
+						g2bf.drawString(act.getDetails(), 10, (act.getDetails().length() <=5)?530:500);							
+						
+						yellImageList.add(bf);
+						new Timer().schedule(new YellingTaskOthers(bf), 5000, 1);
+
 					}
-					
+
 					updateWorld();
 					try {
 						Thread.sleep(REFRESH_INTERVAL);
@@ -480,7 +507,7 @@ MouseMotionListener, KeyListener {
 
 		Graphics2D g2Viewport = (Graphics2D) viewport.getGraphics();
 
-		//updateYell(g2Viewport);
+		updateYell(g2Viewport);
 
 		g2Viewport.drawImage(minimap.getImage(), ICEWORLD_VIEWPORT_SIZE.width
 				- Minimap.MINIMAP_SIZE.width - 10, 10, null);
@@ -505,20 +532,30 @@ MouseMotionListener, KeyListener {
 	/**p
 	 * This methods paints a yell on the user's screen
 	 * 
-	 * @param g viewpeort Graphics object
+	 * @param g viewport Graphics object
 	 */
 	public void updateYell(Graphics g) {
 		// long lastYelled = (timestamp);
 		// long latestYellTimestamp;
 		// compare these two
 
+		/*
 		g.setColor(Minimap.BLACK_WITH_50_PERCENT_ALPHA);
 		g.fillRect(0, 300, 900, 300);
 		// check if instantYellMessage != null
+		if(instantYellMessage == null || instantYellMessage.length() <= 0) return ;
 		Font font = new Font ("Arial", Font.PLAIN, (instantYellMessage.length() <= 5)?200:100);
 		g.setFont(font);
-		g.setColor(Color.YELLOW);
+		g.setColor(YellingTaskOthers.SKY_BLUE);
 		g.drawString(instantYellMessage, 10, (instantYellMessage.length() <=5)?530:500);
+		 */
+
+		for(BufferedImage yellImg : yellImageList) {
+			System.out.println("Drawing yell from someone");
+			
+			g.drawImage(yellImg, 0,0,null);
+		}
+
 
 
 	}

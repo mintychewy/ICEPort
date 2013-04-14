@@ -123,19 +123,11 @@ public class ActionFetcher {
 		
 		HashMap<String,ICEtizen> tempList = new HashMap<String,ICEtizen>();
 		
-		ICEtizen test = new ICEtizen();
-		test.setuid(28);
-		test.setUsername("Putti.O");
-		tempList.put("Putti.O",test);
 		
-		for(ICEtizen value : tempList.values()){
-			uidAndUsernameList.put(value.getuid(),value.getUsername());
-		}
-		/*
 		for(ICEtizen value : Application.app.view.loggedinUsers.values()){
 			uidAndUsernameList.put(value.getuid(),value.getUsername());
 		}
-		*/
+		
 		
 		LinkedList<Actions> actionList = new LinkedList<Actions>();
 

@@ -16,15 +16,19 @@ public class ChatController implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		ButtonModel btn = LoginPage.app.chat.buttonGroup.getSelection();
-		
 		System.out.println(""+btn.getActionCommand());
 		String msg = LoginPage.app.chat.getMessage();
-		
+		LoginPage.app.chat.clearTextField();
+
 		
 		// TODO report talking to the server
 		
 		// yell case
 		if(btn.getActionCommand().equals("yell")){
+			
+			if(msg == null || msg.length() <= 0){
+				return;
+			}
 			if(msg.length() > 10){
 				msg = msg.substring(0,10);
 			}
@@ -36,6 +40,9 @@ public class ChatController implements ActionListener {
 			LoginPage.app.view.updateWorld();
 
 		}else if(btn.getActionCommand().equals("talk")){
+			if(msg == null || msg.length() <= 0){
+				return;
+			}
 			if(msg.length() > 100){
 				msg = msg.substring(0,100);
 			}

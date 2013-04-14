@@ -55,6 +55,9 @@ public class ChatPanel extends JPanel{
 		return field.getText();
 	}
 
+	public void clearTextField() {
+		field.setText("");
+	}
 	public void setMessage(String message) {
 		field.setText(message);
 	}
