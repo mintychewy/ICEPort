@@ -75,10 +75,6 @@ MouseMotionListener, KeyListener {
 	public static int deltaX = 0;
 	public static int deltaY = 0;
 
-	// Privilege "instant" yell/talk/walk for controller ICEtizen 
-	public static String instantYellMessage;
-	public static String instantTalkMessage;
-
 	public static Point controllersLocalPosition;
 
 	// states fetching interval (default: 2000ms)
@@ -430,8 +426,9 @@ MouseMotionListener, KeyListener {
 
 					}
 
-
-					/* TALKING-YELLING SCHEDULER */
+					// SCHEDULERS
+					BufferedImage bf;
+					/* YELLING SCHEDULER */
 					System.out.println("yellList size: "+actionFetcher.yellList.size());
 					for(Actions act : actionFetcher.yellList) {
 						if(act.getUsername().equals(controllerUsername))
@@ -441,7 +438,7 @@ MouseMotionListener, KeyListener {
 
 						System.out.println("This guy yelled! ==>" + act.getUsername());
 
-						BufferedImage bf = new BufferedImage(900,600,BufferedImage.TYPE_INT_ARGB);
+						bf = new BufferedImage(900,600,BufferedImage.TYPE_INT_ARGB);
 
 						Graphics2D g2bf = bf.createGraphics();
 
@@ -458,6 +455,28 @@ MouseMotionListener, KeyListener {
 						new Timer().schedule(new YellingTaskOthers(bf), 5000, 1);
 
 					}
+					
+					/* TALKING SCHEDULER */
+					System.out.println("talkList size: "+actionFetcher.talkList.size());
+					for(Actions act : actionFetcher.talkList) {
+						if(act.getUsername().equals(controllerUsername))
+							continue;
+						if(act.getDetails() == null || act.getDetails().length() <= 0)
+							continue;
+						
+						System.out.println("This guy talked! ==>" + act.getUsername());
+						
+						bf = new BufferedImage(900,600,BufferedImage.TYPE_INT_ARGB);
+						
+						Graphics2D g2bf = bf.createGraphics();
+						g2bf.setColor(Color.black);
+						g2bf.drawString(act.getDetails(), 100, 200);
+						
+						talkImageList.add(bf);
+						new Timer().schedule(new TalkingTaskOthers(bf), 5000, 1);
+	
+						 
+					}
 
 					updateWorld();
 					try {
@@ -469,7 +488,6 @@ MouseMotionListener, KeyListener {
 
 			}
 		});
-
 
 	}
 
@@ -593,17 +611,6 @@ MouseMotionListener, KeyListener {
 
 
 	private void updateChat(Graphics2D g2) {
-
-		if(instantTalkMessage != null) {
-			Point drawPos = Scaler.toScreenSpace(controllersLocalPosition);
-			System.out.println("Instant Talk Message is not NULL");
-			g2.setFont(ChatController.chatFont);
-			g2.setColor(Color.black);
-
-			g2.drawString(instantTalkMessage, drawPos.x, drawPos.y-100);
-		}	
-		
-		
 
 		for(BufferedImage talkImg : talkImageList) {
 			System.out.println("Drawing talk from someone");
