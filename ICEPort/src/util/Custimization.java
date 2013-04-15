@@ -1,8 +1,10 @@
-package gui;
+package util;
 
+
+
+import gui.LoginPage;
 import iceworld.given.IcetizenLook;
-import util.AvatarLoader;
-import util.ICEWorldPeek;
+import iceworld.given.MyIcetizen;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -10,21 +12,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
-import util.AvatarLoader;
 
-public class Customisation extends JDialog {
-
-	private static final long serialVersionUID = -7468630185489471323L;
+public class Custimization {
 	static AvatarLoader avatar;
-	JPanel id;
-	JPanel look;
-	
 	static String list;
 	public static JPanel getAvatar(){
 		try {
