@@ -37,6 +37,7 @@ import util.WorldStatesFetcher;
 
 public class ICEWorldView extends JPanel implements MouseListener,
 MouseMotionListener, KeyListener {
+	
 
 	public ICEWorldView() {
 
@@ -690,6 +691,7 @@ MouseMotionListener, KeyListener {
 
 	public void paintComponent(Graphics g) {
 	}
+	
 
 	// username is used as a KEY for every HashMaps
 	String controllerUsername;
@@ -699,46 +701,53 @@ MouseMotionListener, KeyListener {
 	public String weather = "sunny";
 
 	Timer timer;
+	
+	public HashMap<String, ICEtizen> loggedinUsers;
+	HashMap<String, Point> lastKnownPositionList;
 
 	LinkedList<BufferedImage> yellImageList;
 	LinkedList<BufferedImage> talkImageList;
 
-	HashMap<String, Point> lastKnownPositionList;
 
-	private static final long serialVersionUID = 5658988277615488303L;
-	public final static Dimension ICEWORLD_VIEWPORT_SIZE = new Dimension(900,
-			600);
-
-	public int yellIndex = 0;
-	// zooming factor
-	// default being 1.0 (i.e., 1.0*100 = 100 %)
-	public static double zoom_factor = 1.0;
-	/* XY-OFFSET CORRECTION IN ZOOM MODE */
-	int zoomCorrectionYOffset = 0;
-	int zoomCorrectionXOffset = 0;
-	// camera panning position
-	public static int deltaX = 0;
-	public static int deltaY = 0;
-
-	public static Point controllersLocalPosition;
+	
 
 	// states fetching interval (default: 2000ms)
 	public static int REFRESH_INTERVAL = 2000;
-	public Thread fetchThread;
-	private boolean terminateThread;
-	
 	// chat bubble visible duration (default: 5000ms)
 	public static int TALK_VISIBLE_DURATION = 5000;
+	
+	public final static Dimension ICEWORLD_VIEWPORT_SIZE = new Dimension(900,600);
+	// zooming factor
+	// default being 1.0 (i.e., 1.0*100 = 100 %)
+	public static double zoom_factor = 1.0;
+	// camera panning position
+	public static int deltaX = 0;
+	public static int deltaY = 0;
+	// controller ICEtizen's position
+	public static Point controllersLocalPosition;
+	
+	/* PRIVATE */
+	private static final long serialVersionUID = 5658988277615488303L;
 
+
+	/* XY-OFFSET CORRECTION IN ZOOM MODE */
+	int zoomCorrectionYOffset = 0;
+	int zoomCorrectionXOffset = 0;
+	
+
+	public Thread fetchThread;
+	private boolean terminateThread;
+
+	/* IMAGE RESOURCES */
 	Inhabitant inh;
 	Alien ali;
+	Image yellowIndicator, redIndicator;
 
+	
 	// responsible for fetching everything from the server
 	WorldStatesFetcher fetcher;
 
-	// HashMap of logged-in ICEtizens (String = username is the key)
-	public HashMap<String, ICEtizen> loggedinUsers;
-	// Controller user
+	
 
 	Minimap minimap;
 	// The current representation of ICEWorld
@@ -754,7 +763,6 @@ MouseMotionListener, KeyListener {
 	Patcher avatarPatcher;
 	BufferedImage viewport;
 
-	Image yellowIndicator, redIndicator;
 
 
 }
