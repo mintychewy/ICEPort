@@ -377,6 +377,7 @@ public class WorldStatesFetcher {
 	 */
 	private void appendData(){
 
+		icetizens = new HashMap<String, ICEtizen>();
 		while(!username.isEmpty()){
 
 			// creating a new ICEtizen

@@ -37,7 +37,7 @@ public class ActionFetcher {
 		// Actions													//
 		//////////////////////////////////////////////////////////////
 
-		System.out.println("Now fetching actions.. from "+from);
+		//System.out.println("Now fetching actions.. from "+from);
 
 		// fetch raw actions
 		String out = null;

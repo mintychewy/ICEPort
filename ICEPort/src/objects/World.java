@@ -113,6 +113,11 @@ public class World {
 
 	}
 
+	/** 
+	 * Checks whether if the point is out of the isometric map range 
+	 * @param p Tilespace point
+	 * @return true if out of range, false otherwise
+	 */
 	public boolean isFallingIntoTartarus(Point p) {
 		if (p.x < 0 || p.x > NUM_TILES - 1 || p.y < 0 || p.y > NUM_TILES - 1)
 			return true;

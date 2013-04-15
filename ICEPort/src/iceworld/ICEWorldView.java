@@ -17,6 +17,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Set;
 import java.util.Timer;
 
 import javax.swing.JPanel;
@@ -70,11 +71,6 @@ MouseMotionListener, KeyListener {
 			// need to find self from the loggedinUsers list
 			for (ICEtizen value : loggedinUsers.values()) {
 
-				if (value.getCurrentPosition() != null)
-					lastKnownPositionList.put(value.getUsername(),
-							value.getCurrentPosition());
-
-
 				if (value.getCurrentPosition() == null)
 					continue;
 				if (value.getCurrentPosition().x == hashpos.x
@@ -112,24 +108,25 @@ MouseMotionListener, KeyListener {
 
 		addListeners();
 
+		initialiseWorld();
 
 		// set initial lastKnownPositions
 		for (ICEtizen value : loggedinUsers.values()) {
 			if (value.getUsername().equals(controllerUsername))
 				continue;
-
-			String key = value.getUsername();
-			if (value.getCurrentPosition() == null) {
-				System.out.println("user: " + value.getUsername()
-						+ " has NULL position");
-				continue;
+			
+			Point p = value.getCurrentPosition();
+			if (value.getCurrentPosition() != null){
+				
+				boolean isOutOfBound = world.isFallingIntoTartarus(p);
+				
+				if(!isOutOfBound)
+					lastKnownPositionList.put(value.getUsername(), value.getCurrentPosition());
 			}
-
-			this.lastKnownPositionList.put(key, value.getCurrentPosition());
+				
 
 		}
 
-		initialiseWorld();
 
 		// initial actions fetch
 		actionFetcher = new ActionFetcher();
@@ -142,6 +139,18 @@ MouseMotionListener, KeyListener {
 
 		createNewFetchingThread();
 		fetchThread.start();
+		
+		
+		/* GET RUNTIME MEMORY INFO FOR DEBUGGING */
+		Runtime runtime = Runtime.getRuntime();
+		int mb = 1024 * 1024;
+		System.gc();
+
+		
+		System.out.println("Used Memory:"
+				+ (runtime.totalMemory() - runtime.freeMemory()) / mb);
+		System.out.println("Free mem: " + runtime.freeMemory() / mb);
+
 	}
 
 	public void zoomChanged() {
@@ -284,8 +293,10 @@ MouseMotionListener, KeyListener {
 					.get(value.getUsername());
 
 			if (currentTileSpacePos != null) {
-
-				System.out.println(value.getUsername()+" position: "+value.getCurrentPosition().x+","+value.getCurrentPosition().y);
+				if(world.isFallingIntoTartarus(currentTileSpacePos)){
+					continue;
+				}
+				//System.out.println(value.getUsername()+" : "+value.getCurrentPosition().x+","+value.getCurrentPosition().y);
 
 				pos = Scaler.toScreenSpace(currentTileSpacePos);
 				g2.drawImage((value.getType() == 1) ? inh.avatar : ali.avatar,
@@ -527,18 +538,32 @@ MouseMotionListener, KeyListener {
 
 						if(!lastKnownPositionList.containsKey(user)) {
 							if(pos != null)
-								lastKnownPositionList.put(user, pos);
+								if(!world.isFallingIntoTartarus(pos))	
+									lastKnownPositionList.put(user, pos);
 						}		
 					}
+					
+					for(ICEtizen asdf : fetcher.getLoggedinUserMap().values()) {
+						System.out.println(asdf.getUsername());
+					}
+
 					// If there is a logged-out user, 
 					// remove it from the lastKnownPositionList
 					for(ICEtizen itz : loggedinUsers.values()) {
 						user = itz.getUsername();
+						
+						
 						if(!fetcher.getLoggedinUserMap().containsKey(user)) {
+							System.out.println(user+" logged-out");
 							// remove the node
 							lastKnownPositionList.put(user, null);
 							lastKnownPositionList.remove(user);
+							System.out.println("lastknownposition loggedout: "+lastKnownPositionList.containsKey(user));
+							HashMap<String,Point> temp = new HashMap<String, Point>();
+							temp.putAll(lastKnownPositionList);
+							lastKnownPositionList = temp;
 						}
+						System.out.println(user+ " is still logged-in");
 					}
 
 
@@ -578,8 +603,8 @@ MouseMotionListener, KeyListener {
 					// SCHEDULERS
 					BufferedImage bf;
 					/* YELLING SCHEDULER */
-					System.out.println("yellList size: "
-							+ actionFetcher.yellList.size());
+					//System.out.println("yellList size: "
+					//		+ actionFetcher.yellList.size());
 					for (Actions act : actionFetcher.yellList) {
 						if (act.getUsername().equals(controllerUsername))
 							continue;
@@ -612,8 +637,8 @@ MouseMotionListener, KeyListener {
 					}
 
 					/* TALKING SCHEDULER */
-					System.out.println("talkList size: "
-							+ actionFetcher.talkList.size());
+					//System.out.println("talkList size: "
+					//		+ actionFetcher.talkList.size());
 					for (Actions act : actionFetcher.talkList) {
 						if (act.getUsername().equals(controllerUsername))
 							continue;

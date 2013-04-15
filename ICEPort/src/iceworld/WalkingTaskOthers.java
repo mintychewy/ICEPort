@@ -30,6 +30,12 @@ public class WalkingTaskOthers extends TimerTask{
 		
 		//System.out.println("Destination: "+LoginPage.me.getCurrentPosition().toString());
 		//System.out.println("Position: "+LoginPage.app.view.lastKnownPositionList.get(key).toString());
+		
+		if(!LoginPage.app.view.lastKnownPositionList.containsKey(key)){
+			cancel();
+		} else {
+			
+		
 		beforeLastKnownPosition.x = LoginPage.app.view.lastKnownPositionList.get(key).x;
 		beforeLastKnownPosition.y = LoginPage.app.view.lastKnownPositionList.get(key).y;
 		//States.activebeforeLastKnownPosition.x = LoginPage.app.view.lastKnownPositionList.get(key).x;
@@ -68,7 +74,7 @@ public class WalkingTaskOthers extends TimerTask{
 		}else{
 			// no need to walk in the y-axis anymore
 		}
-		
+		}
 		
 		ApplicationMainFrame.view.updateWorld();
 	}
