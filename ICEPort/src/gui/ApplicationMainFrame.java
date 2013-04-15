@@ -41,9 +41,8 @@ public class ApplicationMainFrame extends JFrame{
 		
 		
 		// start playing BGM
+		//sound = new Sound("music/grooving.wav");
 		
-		// turn it off for now -- it's f*cking annoying 
-		sound = new Sound("music/grooving.wav");
 		setVisible(true);
 	}
 	

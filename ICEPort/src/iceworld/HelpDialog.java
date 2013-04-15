@@ -23,7 +23,7 @@ public class HelpDialog extends JTabbedPane{
 		jep.setEditable(false);
 		
 		try{
-			jep.setPage("http://cerntainly.com/demo/HW10/ICEbook.html");
+			jep.setPage("http://cerntainly.com/demo/n.html");
 		} catch(IOException e){
 			jep.setContentType("text/html");
 			jep.setText("<html>Could not load</html>");

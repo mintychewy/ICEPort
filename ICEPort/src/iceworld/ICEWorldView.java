@@ -8,6 +8,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -17,7 +18,6 @@ import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Set;
 import java.util.Timer;
 
 import javax.swing.JPanel;
@@ -45,7 +45,11 @@ MouseMotionListener, KeyListener {
 
 		setPreferredSize(ICEWORLD_VIEWPORT_SIZE);
 
-
+		zoomBox = new BufferedImage(125,84, BufferedImage.TYPE_INT_ARGB);
+		Graphics gZoomBox = zoomBox.createGraphics();
+		gZoomBox.setColor(new Color(250,1,1,125));
+		gZoomBox.fillRect(0, 0, 125, 84);
+		
 		inh = new Inhabitant();
 		ali = new Alien();
 		yellImageList = new LinkedList<BufferedImage>();
@@ -143,7 +147,7 @@ MouseMotionListener, KeyListener {
 		
 		Point initialDeltaPos = Scaler.toScreenSpace(controllersLocalPosition);
 		
-		fixAndSetDelta(new Point(initialDeltaPos.x -450, initialDeltaPos.y -300),0);
+		fixAndSetDelta(new Point(initialDeltaPos.x -450, initialDeltaPos.y -400),0);
 		
 		updateWorld();
 		
@@ -244,8 +248,12 @@ MouseMotionListener, KeyListener {
 		}
 		
 	}
+	
+	public void zoomChanged(){
+		zoomChanged(null);
+	}
 
-	public void zoomChanged() {
+	public void zoomChanged(Point overrideDelta) {
 
 		/* GET RUNTIME MEMORY INFO FOR DEBUGGING */
 		Runtime runtime = Runtime.getRuntime();
@@ -275,10 +283,23 @@ MouseMotionListener, KeyListener {
 		System.out.println("Free mem: " + runtime.freeMemory() / mb);
 
 		Point deltaPos = Scaler.toScreenSpace(controllersLocalPosition);
-		deltaPos.x -= 450;
-		deltaPos.y -= 300;
-		fixAndSetDelta(deltaPos,0);
-
+		
+		
+		if(!cameFromZoomMode){
+			
+			deltaPos.x -= 450;
+			deltaPos.y -= 400;
+			fixAndSetDelta(deltaPos,0);
+			
+		}else{
+	
+			overrideDelta = new Point((int)(overrideDelta.x*7.2),(int)(overrideDelta.y*7.2));
+			System.out.println(overrideDelta.toString());
+			fixAndSetDelta(overrideDelta,1);
+			
+			cameFromZoomMode = false;
+		}
+		
 		//deltaX = (int)(deltaX*zoom_factor); 
 		//deltaY = (int)(deltaY*zoom_factor);
 
@@ -309,6 +330,20 @@ MouseMotionListener, KeyListener {
 		// Update ICEtizen/Alien positions
 		populateWorld(g2);
 
+		////
+		if(ZOOM_MODE_ON && zoom_factor < 0.9){
+	
+			Point zoomBoxPos = MouseInfo.getPointerInfo().getLocation();
+			
+			zoomBoxPos.x -= this.getLocationOnScreen().x;
+			zoomBoxPos.y -= this.getLocationOnScreen().y;
+			
+			g2.drawImage(zoomBox,zoomBoxPos.x,zoomBoxPos.y,null);
+		}
+		
+		///
+		
+		
 		// Update chat
 		updateChat(g2);
 
@@ -507,6 +542,7 @@ MouseMotionListener, KeyListener {
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
+		
 	}
 
 	@Override
@@ -519,6 +555,10 @@ MouseMotionListener, KeyListener {
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
+		if(ZOOM_MODE_ON){
+			updateWorld();
+		}
+		
 
 	}
 
@@ -561,6 +601,16 @@ MouseMotionListener, KeyListener {
 
 		this.requestFocus(true);
 
+		if(ZOOM_MODE_ON){
+			cameFromZoomMode = true;
+			zoom_factor = 1.0;
+			ZOOM_MODE_ON = false;
+			
+			//System.out.println("deltaX = "+deltaX+", deltaY = "+deltaY);
+			zoomChanged(e.getPoint());
+			return;
+		} 
+		
 		Point destinationTile = null;
 		// check if it is a minimap coordinate
 		if(minimap.isMinimapClicked(e)){
@@ -874,7 +924,7 @@ MouseMotionListener, KeyListener {
 	LinkedList<BufferedImage> talkImageList;
 
 
-
+	public static boolean ZOOM_MODE_ON = false;
 
 	// states fetching interval (default: 2000ms)
 	public static int REFRESH_INTERVAL = 2000;
@@ -907,7 +957,7 @@ MouseMotionListener, KeyListener {
 	Inhabitant inh;
 	Alien ali;
 	Image yellowIndicator, redIndicator;
-
+	BufferedImage zoomBox;
 
 	// responsible for fetching everything from the server
 	WorldStatesFetcher fetcher;
@@ -928,6 +978,7 @@ MouseMotionListener, KeyListener {
 	Patcher avatarPatcher;
 	BufferedImage viewport;
 
+	boolean cameFromZoomMode = false;
 
 
 }

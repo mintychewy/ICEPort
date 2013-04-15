@@ -19,6 +19,7 @@ public class ControlsPaneListener implements ActionListener {
 				System.out.println("Logout OK");
 				LoginPage.app.view.terminate();
 				LoginPage.app.dispose();
+			
 				Application.login.setVisible(true);
 				
 			}
@@ -43,6 +44,15 @@ public class ControlsPaneListener implements ActionListener {
 			LoginPage.app.view.requestFocus();
 		}else if(btn.getText().equals("Specify Zoom")){
 			ZoomAdjustmentWindow zoomAdjustmentWindow = new ZoomAdjustmentWindow();
+		}else if(btn.getText().equals("Zoom-to-Area")){
+			LoginPage.app.view.ZOOM_MODE_ON = true;
+			System.out.println("ZOOM_MODE_ON = "+LoginPage.app.view.ZOOM_MODE_ON);
+			
+			if(LoginPage.app.view.zoom_factor != 0.13888889){
+				LoginPage.app.view.zoom_factor = 0.13888889;
+				LoginPage.app.view.zoomChanged();
+			}
+			LoginPage.app.view.requestFocus(true);
 		}
 	}
 	
