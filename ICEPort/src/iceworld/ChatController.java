@@ -40,19 +40,19 @@ public class ChatController implements ActionListener {
 
 			msg = msg.toUpperCase();
 
-			BufferedImage bf = new BufferedImage(900, 600,
+			BufferedImage bf = new BufferedImage(900, 300,
 					BufferedImage.TYPE_INT_ARGB);
 
 			Graphics2D g2bf = bf.createGraphics();
 
 			g2bf.setColor(Minimap.BLACK_WITH_50_PERCENT_ALPHA);
-			g2bf.fillRect(0, 300, 900, 300);
+			g2bf.fillRect(0, 0, 900, 300);
 
 			Font font = new Font("Arial", Font.PLAIN, (msg.length() <= 5) ? 200
 					: 100);
 			g2bf.setFont(font);
 			g2bf.setColor(YellingTaskOthers.SKY_BLUE);
-			g2bf.drawString(msg, 10, (msg.length() <= 5) ? 530 : 500);
+			g2bf.drawString(msg, 10, (msg.length() <= 5) ? 230 : 200);
 
 			LoginPage.app.view.yellImageList.add(bf);
 			new Timer().schedule(new YellingTaskOthers(bf), 5000, 1);
@@ -67,15 +67,48 @@ public class ChatController implements ActionListener {
 				msg = msg.substring(0, 100);
 			}
 
-			BufferedImage bf = new BufferedImage(900, 600,
+
+			int lineAmount = (int) Math.ceil(msg.length()/25.0);
+			System.out.println("lineAmount = "+lineAmount);
+			
+			
+			BufferedImage bf = new BufferedImage(310, lineAmount*25,
 					BufferedImage.TYPE_INT_ARGB);
 
 			Graphics2D g2bf = bf.createGraphics();
-			g2bf.setColor(Color.black);
-			g2bf.drawString(msg, 100, 200);
+			g2bf.setFont(TalkingTaskOthers.TALKING_FONT);
+			
+			// draw a chat bubble
+			g2bf.setColor(Color.DARK_GRAY);
+			g2bf.fillRect(0, 0, 310, lineAmount*25);
+			
+			g2bf.setColor(YellingTaskOthers.SKY_BLUE);
+			
+			if(lineAmount == 1){
+				// already formatted
+				g2bf.drawString(msg, 5, 22);
 
-			LoginPage.app.view.talkImageList.add(bf);
-			new Timer().schedule(new TalkingTaskOthers(bf), ICEWorldView.TALK_VISIBLE_DURATION, 1);
+			}else if(lineAmount ==2){
+				g2bf.drawString(msg.substring(0,25), 5, 24*1);
+				g2bf.drawString(msg.substring(25), 5, 24*2);
+				
+			
+			}else if(lineAmount ==3){
+				g2bf.drawString(msg.substring(0,25), 5, 24*1);
+				g2bf.drawString(msg.substring(25,50), 5, 24*2);
+				g2bf.drawString(msg.substring(50), 5, 24*3);
+
+			}else if(lineAmount ==4){
+				g2bf.drawString(msg.substring(0,25), 5, 24*1);
+				g2bf.drawString(msg.substring(25,50), 5, 24*2);
+				g2bf.drawString(msg.substring(50,75), 5, 24*3);
+				g2bf.drawString(msg.substring(75), 5, 24*4);
+
+			}
+
+			TalkObject to = new TalkObject(bf,LoginPage.me.getUsername());
+			LoginPage.app.view.talkImageList.add(to);
+			new Timer().schedule(new TalkingTaskOthers(to), ICEWorldView.TALK_VISIBLE_DURATION, 1);
 
 			LoginPage.immigration.talk(msg);
 
