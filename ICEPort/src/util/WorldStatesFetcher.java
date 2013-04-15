@@ -1,7 +1,6 @@
 
 package util;
 
-import gui.LoginPage;
 import iceworld.given.IcetizenLook;
 
 import java.awt.Dimension;
@@ -15,6 +14,8 @@ import javax.swing.JLabel;
 import objects.ICEtizen;
 
 import org.json.simple.parser.JSONParser;
+
+import core.Application;
 
 public class WorldStatesFetcher {
 
@@ -355,6 +356,13 @@ public class WorldStatesFetcher {
 
 			
 			if(FIRST_TIME_FETCH){
+			
+				
+				// KEY is UID
+				int KEY = -1;
+				String rawLook ="";
+				
+				
 				IcetizenLook defaultLooks = new IcetizenLook();
 				defaultLooks.gidB = "B102";
 				defaultLooks.gidH = "H015";
@@ -362,9 +370,35 @@ public class WorldStatesFetcher {
 				defaultLooks.gidW = "W045";
 				
 				// if icetizen is not an alien 
-				// give him/her default looks 
+				// fetch him/her looks
 				if(icetizen.getType() == 1) {
-					//System.out.println("Setting defaultLooks for: "+icetizen.getUsername());
+					
+					KEY = icetizen.getuid();
+					
+					try {
+						rawLook = ICEWorldPeek.getLooks(KEY+"");
+					} catch (Exception e){
+						e.printStackTrace();
+					}
+					
+					// {"status":1,"data":[{"B":null,"H":null,"S":null,"W":null}]}
+					// null will become "ul"
+					String gidB = rawLook.substring(rawLook.indexOf("B")+4,rawLook.indexOf("H")-3);
+					String gidH = rawLook.substring(rawLook.indexOf("H")+4,rawLook.indexOf("S")-3);
+					String gidS = rawLook.substring(rawLook.indexOf("S")+4,rawLook.indexOf("W")-3);
+					String gidW = rawLook.substring(rawLook.indexOf("W")+4,rawLook.lastIndexOf("]")-2);
+							
+					if(gidB.equals("ul") || gidH.equals("ul") || gidS.equals("ul") || gidW.equals("ul")){
+						
+					} else{
+						defaultLooks.gidB = gidB;
+						defaultLooks.gidH =	gidH;
+						defaultLooks.gidS = gidS;
+						defaultLooks.gidW = gidW;
+					 
+					}
+					
+					
 					icetizen.setIcetizenLook(defaultLooks);
 		
 					System.out.println("Is this thing null? "+(looks == null));
