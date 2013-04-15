@@ -8,15 +8,20 @@ import javax.sound.sampled.*;
 public class Sound // Holds one audio file
 {
 	static Clip clip;
-
-	public Sound(String filename)
-	{	        
+	AudioInputStream audioInputStream;
+	Line line1;
+	public Sound(String filename){
+		/*
 	        try {
 		        URL url = this.getClass().getClassLoader().getResource(filename);
 		        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(url);
 				clip = AudioSystem.getClip();
 		        clip.open(audioInputStream);
-		        clip.start();
+		     
+		       clip.start();
+		        
+		       
+		        
 			} catch (LineUnavailableException e) {
 				e.printStackTrace();
 			} catch (UnsupportedAudioFileException e) {
@@ -24,6 +29,48 @@ public class Sound // Holds one audio file
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+	*/
+		URL url = this.getClass().getClassLoader().getResource(filename);
+        
+		try {
+			audioInputStream = AudioSystem.getAudioInputStream(url);
+		} catch (UnsupportedAudioFileException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		AudioFormat af=audioInputStream.getFormat();
+		try {
+			clip=AudioSystem.getClip();
+		} catch (LineUnavailableException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		DataLine.Info info=new DataLine.Info(Clip.class, af);
+		
+		try {
+			line1 = AudioSystem.getLine(info);
+		} catch (LineUnavailableException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if(!line1.isOpen()){
+			try {
+				clip.open(audioInputStream);
+			} catch (LineUnavailableException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			clip.loop(Clip.LOOP_CONTINUOUSLY);
+			clip.start();
+			
+		}
+		
 	}
 
 	public void playSound()

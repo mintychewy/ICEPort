@@ -43,8 +43,11 @@ public class ApplicationMainFrame extends JFrame{
 		// start playing BGM
 		
 		// turn it off for now -- it's f*cking annoying 
+		
 		sound = new Sound("music/grooving.wav");
+		
 		setVisible(true);
+		
 	}
 	
 	public void initGUI(){
