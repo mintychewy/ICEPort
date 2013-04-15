@@ -47,6 +47,7 @@ MouseMotionListener, KeyListener {
 
 		setPreferredSize(ICEWORLD_VIEWPORT_SIZE);
 
+		// create a red zoom-box 
 		zoomBox = new BufferedImage(125,84, BufferedImage.TYPE_INT_ARGB);
 		Graphics gZoomBox = zoomBox.createGraphics();
 		gZoomBox.setColor(new Color(250,1,1,125));
@@ -54,11 +55,16 @@ MouseMotionListener, KeyListener {
 		
 		inh = new Inhabitant();
 		ali = new Alien();
+		
+
+		LoginPage.me.avatar = inh.avatar;
+		
 		yellImageList = new LinkedList<BufferedImage>();
 		talkImageList = new LinkedList<BufferedImage>();
 		timer = new Timer();
-
+	
 		loadResources();
+		
 		setKeybinding();
 
 
@@ -428,7 +434,6 @@ MouseMotionListener, KeyListener {
 				continue;
 
 
-
 			currentTileSpacePos = lastKnownPositionList
 					.get(value.getUsername());
 
@@ -462,8 +467,14 @@ MouseMotionListener, KeyListener {
 				g2.drawString(value.getUsername(), pos.x - 10, pos.y + 10);
 				// put ip
 				g2.drawString(value.getIPAddress(), pos.x - 10, pos.y + 20);
+				
+				if(value.getIcePortID() == 245){
+					minimap.drawUser(currentTileSpacePos, 2);
 
-				minimap.drawUser(currentTileSpacePos, 1);
+				}else{
+					minimap.drawUser(currentTileSpacePos, 1);
+
+				}
 
 			}
 		}
@@ -480,7 +491,7 @@ MouseMotionListener, KeyListener {
 		 * pos = controllersLocalPosition; System.out.println(pos.toString());
 		 */
 
-		g2.drawImage((LoginPage.me.getType() == 1) ? inh.avatar : ali.avatar,
+		g2.drawImage((LoginPage.me.getType() == 1) ? LoginPage.me.avatar : ali.avatar,
 				pos.x - (int) (ICEtizen.AVATAR_OFFSET_X * zoom_factor)
 				- zoomCorrectionXOffset, pos.y
 				- (int) (ICEtizen.AVATAR_OFFSET_Y * zoom_factor)

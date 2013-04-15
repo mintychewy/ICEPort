@@ -80,10 +80,17 @@ public class Minimap {
 			g.setColor(Color.WHITE);
 			g.fillOval(drawPos.x- POSITION_DOT_STROKE_SIZE/2, drawPos.y- POSITION_DOT_STROKE_SIZE/2, POSITION_DOT_STROKE_SIZE, POSITION_DOT_STROKE_SIZE);
 		}
+		
+		if(mode == 2){
+			g.setColor(Color.YELLOW);
 
-		g.setColor(Color.RED);
+		} else {
+			g.setColor(Color.RED);
+		}
+		
 		g.fillOval(drawPos.x- POSITION_DOT_SIZE/2, drawPos.y- POSITION_DOT_SIZE/2, POSITION_DOT_SIZE,  POSITION_DOT_SIZE);
 
+	
 	}
 
 
