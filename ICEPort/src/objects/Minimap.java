@@ -43,6 +43,11 @@ public class Minimap {
 
 		g.setColor(Color.black);
 		g.fillRect(0, 0, MINIMAP_SIZE.width, MINIMAP_SIZE.height);
+		g.setColor(Color.DARK_GRAY);
+		
+		Point p = Scaler.toTileSpace(new Point(ICEWorldView.deltaX, ICEWorldView.deltaY));
+		p = Scaler.toMiniMapPoint(p, 1);
+		g.fillRect(p.x, p.y, 37,25);
 	}
 
 

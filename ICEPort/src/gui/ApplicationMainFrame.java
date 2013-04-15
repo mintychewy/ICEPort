@@ -16,7 +16,7 @@ import util.Sound;
 public class ApplicationMainFrame extends JFrame{
 	public static ICEWorldView view;
 	public JPanel bottomPanel;
-	public final Dimension mainFrameDimension = new Dimension(900,750);
+	public final Dimension mainFrameDimension = new Dimension(900,710);
 	final static String VERSION = "0.1a";
 	public ChatPanel chat;
 	public JButton logoutButton, sendButton, soundButton, zoomInButton, zoomOutButton, setZoomButton; 

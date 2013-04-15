@@ -17,7 +17,11 @@ public class AvatarLoader extends JPanel {
 	LinkedList<String> b = new LinkedList<String>();
 	LinkedList<String> h = new LinkedList<String>();
 	LinkedList<String> w = new LinkedList<String>();
-	String bodyURL,shirtURL,weaponURL,headURL,bgURL; 
+	public String bodyURL;
+	public String shirtURL;
+	public String weaponURL;
+	public String headURL;
+	String bgURL; 
 	public int numShirt;
 	public int numBody;
 	public int numHead;
