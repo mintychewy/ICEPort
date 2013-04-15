@@ -138,6 +138,15 @@ MouseMotionListener, KeyListener {
 			e1.printStackTrace();
 		}
 
+		// default position -- controller user at the
+		// centre of the viewport
+		
+		Point initialDeltaPos = Scaler.toScreenSpace(controllersLocalPosition);
+		
+		fixAndSetDelta(new Point(initialDeltaPos.x -450, initialDeltaPos.y -300),0);
+		
+		updateWorld();
+		
 		createNewFetchingThread();
 		fetchThread.start();
 
@@ -153,6 +162,87 @@ MouseMotionListener, KeyListener {
 				+ (runtime.totalMemory() - runtime.freeMemory()) / mb);
 		System.out.println("Free mem: " + runtime.freeMemory() / mb);
 
+	}
+	
+	/**
+	 * Checks whether if the input point is a legal
+	 * delta position. If it is not, the method will
+	 * automatically fix and set the deltas
+	 * 
+	 * @param p Point to validate for delta eligibility 
+	 * @param mode 1 - No need to consider up/left directions
+	 *        mode 0 - All directions must be considered
+	 * 
+	 */
+	public void fixAndSetDelta(Point p, int mode) {
+		
+		int x = p.x;
+		int y = p.y;
+		
+	
+		if(mode == 0){
+			
+			// Y doesn't exceed lower bound
+			if( y + ICEWORLD_VIEWPORT_SIZE.height <= World.WORLD_SIZE.height){
+				if( y >= 0 ){
+					// Y doesn't exceed upper bound
+					deltaY = y;
+				} else {
+					// Y exceeds upper bound
+					deltaY = 0;
+				}
+			}else{
+			// Y exceeds Upper bound
+				deltaY = World.WORLD_SIZE.height - ICEWORLD_VIEWPORT_SIZE.height;				
+				
+			}
+			
+			// X doesn't exceed right bound
+			if( x + ICEWORLD_VIEWPORT_SIZE.width <= World.WORLD_SIZE.width){
+				
+				if( x >= 0 ){
+					// X doesn't exceed left bound
+					deltaX = x;
+				} else {
+					// X exceeds left bound
+					deltaX = 0;
+				}
+				
+				
+			}else{
+			
+			// X exceeds right bound
+				deltaX = World.WORLD_SIZE.width - ICEWORLD_VIEWPORT_SIZE.width;
+				
+			}
+			
+			
+			
+		}else if (mode == 1){
+
+			// Y doesn't exceed lower bound
+			if(y + ICEWORLD_VIEWPORT_SIZE.height <= World.WORLD_SIZE.height){
+				deltaY = y;
+				
+				// X does not exceed right bound
+				if(x + ICEWORLD_VIEWPORT_SIZE.width <= World.WORLD_SIZE.width){
+					deltaX = x;
+				}else { // X exceeds right bound
+					deltaX = World.WORLD_SIZE.width - ICEWORLD_VIEWPORT_SIZE.width;
+
+				}
+			} else { // Y exceeds lower bound 
+				deltaY = World.WORLD_SIZE.height - ICEWORLD_VIEWPORT_SIZE.height;
+				if(x + ICEWORLD_VIEWPORT_SIZE.width <= World.WORLD_SIZE.width){
+					deltaX = x;
+				}else {
+					deltaX = World.WORLD_SIZE.width - ICEWORLD_VIEWPORT_SIZE.width;
+
+				}
+			}
+			
+		}
+		
 	}
 
 	public void zoomChanged() {
@@ -184,8 +274,10 @@ MouseMotionListener, KeyListener {
 				+ (runtime.totalMemory() - runtime.freeMemory()) / mb);
 		System.out.println("Free mem: " + runtime.freeMemory() / mb);
 
-		deltaX = 0;
-		deltaY = 0;
+		Point deltaPos = Scaler.toScreenSpace(controllersLocalPosition);
+		deltaPos.x -= 450;
+		deltaPos.y -= 300;
+		fixAndSetDelta(deltaPos,0);
 
 		//deltaX = (int)(deltaX*zoom_factor); 
 		//deltaY = (int)(deltaY*zoom_factor);
@@ -478,7 +570,8 @@ MouseMotionListener, KeyListener {
 			int y = panDelta.y;
 
 			/* VALIDATING DELTA CHANGE */
-
+			fixAndSetDelta(panDelta,1);
+			/*
 
 			if(y + ICEWORLD_VIEWPORT_SIZE.height <= World.WORLD_SIZE.height){
 				deltaY = y;
@@ -497,7 +590,7 @@ MouseMotionListener, KeyListener {
 
 				}
 			}
-
+			*/
 
 
 
