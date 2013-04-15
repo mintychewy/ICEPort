@@ -62,7 +62,6 @@ public class WalkingTask extends TimerTask{
 			// no need to walk in the y-axis anymore
 		}
 		
-		
-		ApplicationMainFrame.view.updateWorld();
+		LoginPage.app.view.updateWorld();
 	}
 }

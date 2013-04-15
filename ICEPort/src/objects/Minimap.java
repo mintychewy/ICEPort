@@ -1,5 +1,7 @@
 package objects;
 
+import iceworld.ICEWorldView;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -17,6 +19,7 @@ public class Minimap {
 	private final int POSITION_DOT_STROKE_SIZE = 14;
 	private final int POSITION_DOT_SIZE = 10;
 	public static final Color BLACK_WITH_50_PERCENT_ALPHA = new Color(0f,0f,0f,0.5f);
+	//public static final Color BLACK_WITH_50_PERCENT_ALPHA = new Color(0f,0f,0f);
 
 	// public static 
 	public final static Dimension MINIMAP_SIZE = new Dimension(270,180);
@@ -38,12 +41,27 @@ public class Minimap {
 		mapImage = new BufferedImage(MINIMAP_SIZE.width, MINIMAP_SIZE.height, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = mapImage.createGraphics();	
 
-		g.setColor(BLACK_WITH_50_PERCENT_ALPHA);
+		g.setColor(Color.black);
 		g.fillRect(0, 0, MINIMAP_SIZE.width, MINIMAP_SIZE.height);
 	}
 
 
+	public Point panUser(Point pos) {
 
+		int leftBound = 900 - MINIMAP_SIZE.width - 10;
+		int rightBound = 900 - 10;
+		int topBound = 10;
+		int bottomBound = MINIMAP_SIZE.height + 10;
+		
+		int x = (int)((pos.x - leftBound)*24*ICEWorldView.zoom_factor);
+		int y = (int)((pos.y - topBound)*24*ICEWorldView.zoom_factor);
+		
+		System.out.println(Scaler.toTileSpace(new Point(x,y)));
+		System.out.println(x+","+y);
+		
+		return Scaler.toTileSpace(new Point(x,y));
+	}
+	
 	public void drawUser(Point pos, int mode){
 		//renderMap();
 
@@ -65,7 +83,18 @@ public class Minimap {
 
 
 	public boolean isMinimapClicked(MouseEvent e){
-		//
+
+		int leftBound = 900 - MINIMAP_SIZE.width - 10;
+		int rightBound = 900 - 10;
+		int topBound = 10;
+		int bottomBound = MINIMAP_SIZE.height + 10;
+				
+		int x = e.getX();
+		int y = e.getY();
+		
+		if( x > leftBound && x < rightBound && y > topBound && y < bottomBound)
+			return true;
+		
 		return false;
 	}
 

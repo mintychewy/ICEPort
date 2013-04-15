@@ -38,7 +38,8 @@ import util.WorldStatesFetcher;
 
 public class ICEWorldView extends JPanel implements MouseListener,
 MouseMotionListener, KeyListener {
-	
+
+
 
 	public ICEWorldView() {
 
@@ -114,16 +115,16 @@ MouseMotionListener, KeyListener {
 		for (ICEtizen value : loggedinUsers.values()) {
 			if (value.getUsername().equals(controllerUsername))
 				continue;
-			
+
 			Point p = value.getCurrentPosition();
 			if (value.getCurrentPosition() != null){
-				
+
 				boolean isOutOfBound = world.isFallingIntoTartarus(p);
-				
+
 				if(!isOutOfBound)
 					lastKnownPositionList.put(value.getUsername(), value.getCurrentPosition());
 			}
-				
+
 
 		}
 
@@ -139,14 +140,15 @@ MouseMotionListener, KeyListener {
 
 		createNewFetchingThread();
 		fetchThread.start();
-		
-		
+
+
+
 		/* GET RUNTIME MEMORY INFO FOR DEBUGGING */
 		Runtime runtime = Runtime.getRuntime();
 		int mb = 1024 * 1024;
 		System.gc();
 
-		
+
 		System.out.println("Used Memory:"
 				+ (runtime.totalMemory() - runtime.freeMemory()) / mb);
 		System.out.println("Free mem: " + runtime.freeMemory() / mb);
@@ -184,10 +186,10 @@ MouseMotionListener, KeyListener {
 
 		deltaX = 0;
 		deltaY = 0;
-		/*
-		 * Still breaks panner deltaX = (int)(deltaX*zoom_factor); deltaY =
-		 * (int)(deltaY*zoom_factor);
-		 */
+
+		//deltaX = (int)(deltaX*zoom_factor); 
+		//deltaY = (int)(deltaY*zoom_factor);
+
 		panner = new Panner(world.getImage());
 
 		/* UPDATE SIZE OF AVATAR IMAGES */
@@ -374,6 +376,9 @@ MouseMotionListener, KeyListener {
 
 		// just clear out the viewport?
 
+
+		//System.out.println("Going to get subimage from: "+ deltaX +","+deltaY);
+
 		patchImage = map.getImage().getSubimage(deltaX, deltaY, 900, 600);
 		g2.drawImage(patchImage, deltaX, deltaY, null);
 
@@ -464,29 +469,72 @@ MouseMotionListener, KeyListener {
 
 		this.requestFocus(true);
 
-		/* INVOKES WALKING FOR THE CONTROLLER ICETIZEN */
+		Point destinationTile = null;
+		// check if it is a minimap coordinate
+		if(minimap.isMinimapClicked(e)){
+			Point panDelta = Scaler.toScreenSpace(minimap.panUser(e.getPoint()));
 
-		// converts mouseclick position into a tile position
-		Point destinationTile = Scaler.toTileSpaceFromViewport(e.getPoint());
-		System.out.println("Heading to: " + destinationTile.toString());
+			int x = panDelta.x;
+			int y = panDelta.y;
 
-		// check whether if it is a valid destination
-		if (!world.isFallingIntoTartarus(destinationTile)) {
+			/* VALIDATING DELTA CHANGE */
 
-			// set intended destination
-			LoginPage.me.setCurrentPosition(destinationTile);
 
-			// stops the current walking path 
-			timer.cancel();
-			// sets a new walking path
-			walkMyself();
+			if(y + ICEWORLD_VIEWPORT_SIZE.height <= World.WORLD_SIZE.height){
+				deltaY = y;
+				if(x + ICEWORLD_VIEWPORT_SIZE.width <= World.WORLD_SIZE.width){
+					deltaX = x;
+				}else {
+					deltaX = World.WORLD_SIZE.width - ICEWORLD_VIEWPORT_SIZE.width;
 
-			// reports walking to the server
-			LoginPage.immigration.walk(destinationTile.x, destinationTile.y);
+				}
+			} else {
+				deltaY = World.WORLD_SIZE.height - ICEWORLD_VIEWPORT_SIZE.height;
+				if(x + ICEWORLD_VIEWPORT_SIZE.width <= World.WORLD_SIZE.width){
+					deltaX = x;
+				}else {
+					deltaX = World.WORLD_SIZE.width - ICEWORLD_VIEWPORT_SIZE.width;
 
+				}
+			}
+
+
+
+
+
+			updateWorld();
 		} else {
-			System.out.println("Invalid destination point");
+
+			/* INVOKES WALKING FOR THE CONTROLLER ICETIZEN */
+
+			// converts mouseclick position into a tile position
+
+			destinationTile = Scaler.toTileSpaceFromViewport(e.getPoint());
+
+			System.out.println("Heading to: " + destinationTile.toString());
+
+			// check whether if it is a valid destination
+			if (!world.isFallingIntoTartarus(destinationTile)) {
+
+				// set intended destination
+				LoginPage.me.setCurrentPosition(destinationTile);
+
+				// stops the current walking path 
+				timer.cancel();
+				// sets a new walking path
+				walkMyself();
+
+				// reports walking to the server
+				LoginPage.immigration.walk(destinationTile.x, destinationTile.y);
+
+			} else {
+				System.out.println("Invalid destination point");
+			}
+
 		}
+
+
+
 
 	}
 
@@ -542,28 +590,22 @@ MouseMotionListener, KeyListener {
 									lastKnownPositionList.put(user, pos);
 						}		
 					}
-					
-					for(ICEtizen asdf : fetcher.getLoggedinUserMap().values()) {
-						System.out.println(asdf.getUsername());
-					}
+
 
 					// If there is a logged-out user, 
 					// remove it from the lastKnownPositionList
 					for(ICEtizen itz : loggedinUsers.values()) {
 						user = itz.getUsername();
-						
-						
+
+
 						if(!fetcher.getLoggedinUserMap().containsKey(user)) {
-							System.out.println(user+" logged-out");
 							// remove the node
 							lastKnownPositionList.put(user, null);
 							lastKnownPositionList.remove(user);
-							System.out.println("lastknownposition loggedout: "+lastKnownPositionList.containsKey(user));
 							HashMap<String,Point> temp = new HashMap<String, Point>();
 							temp.putAll(lastKnownPositionList);
 							lastKnownPositionList = temp;
 						}
-						System.out.println(user+ " is still logged-in");
 					}
 
 
@@ -606,14 +648,18 @@ MouseMotionListener, KeyListener {
 					//System.out.println("yellList size: "
 					//		+ actionFetcher.yellList.size());
 					for (Actions act : actionFetcher.yellList) {
-						if (act.getUsername().equals(controllerUsername))
-							continue;
+						String uName = act.getUsername();
+
+						if(uName != null){
+							if (act.getUsername().equals(controllerUsername))
+								continue;
+						}
 						if (act.getDetails() == null
 								|| act.getDetails().length() <= 0)
 							continue;
 
 						System.out.println("This guy yelled! ==>"
-								+ act.getUsername());
+								+ uName);
 
 						bf = new BufferedImage(900, 600,
 								BufferedImage.TYPE_INT_ARGB);
@@ -640,6 +686,7 @@ MouseMotionListener, KeyListener {
 					//System.out.println("talkList size: "
 					//		+ actionFetcher.talkList.size());
 					for (Actions act : actionFetcher.talkList) {
+
 						if (act.getUsername().equals(controllerUsername))
 							continue;
 						if (act.getDetails() == null
@@ -716,7 +763,7 @@ MouseMotionListener, KeyListener {
 
 	public void paintComponent(Graphics g) {
 	}
-	
+
 
 	// username is used as a KEY for every HashMaps
 	String controllerUsername;
@@ -726,7 +773,7 @@ MouseMotionListener, KeyListener {
 	public String weather = "sunny";
 
 	Timer timer;
-	
+
 	public HashMap<String, ICEtizen> loggedinUsers;
 	HashMap<String, Point> lastKnownPositionList;
 
@@ -734,13 +781,13 @@ MouseMotionListener, KeyListener {
 	LinkedList<BufferedImage> talkImageList;
 
 
-	
+
 
 	// states fetching interval (default: 2000ms)
 	public static int REFRESH_INTERVAL = 2000;
 	// chat bubble visible duration (default: 5000ms)
 	public static int TALK_VISIBLE_DURATION = 5000;
-	
+
 	public final static Dimension ICEWORLD_VIEWPORT_SIZE = new Dimension(900,600);
 	// zooming factor
 	// default being 1.0 (i.e., 1.0*100 = 100 %)
@@ -750,7 +797,7 @@ MouseMotionListener, KeyListener {
 	public static int deltaY = 0;
 	// controller ICEtizen's position
 	public static Point controllersLocalPosition;
-	
+
 	/* PRIVATE */
 	private static final long serialVersionUID = 5658988277615488303L;
 
@@ -758,7 +805,7 @@ MouseMotionListener, KeyListener {
 	/* XY-OFFSET CORRECTION IN ZOOM MODE */
 	int zoomCorrectionYOffset = 0;
 	int zoomCorrectionXOffset = 0;
-	
+
 
 	public Thread fetchThread;
 	private boolean terminateThread;
@@ -768,11 +815,11 @@ MouseMotionListener, KeyListener {
 	Alien ali;
 	Image yellowIndicator, redIndicator;
 
-	
+
 	// responsible for fetching everything from the server
 	WorldStatesFetcher fetcher;
 
-	
+
 
 	Minimap minimap;
 	// The current representation of ICEWorld

@@ -36,7 +36,7 @@ public class ControlsPanel extends JPanel {
 	public void addListeners(){
 		
 		sendFileButton.addActionListener(new FTPButtonListener());
-		soundCtrlButton.addActionListener(new SoundButtonListener());
+		//soundCtrlButton.addActionListener(new SoundButtonListener());
 		setZoomButton.addActionListener(new ControlsPaneListener());
 		logoutButton.addActionListener(new ControlsPaneListener());
 		zoomInButton.addActionListener(new ControlsPaneListener());

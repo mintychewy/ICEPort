@@ -1,5 +1,6 @@
 package iceworld;
 
+import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
@@ -43,6 +44,7 @@ public class Panner {
 		return viewport;
 	}
 
+	
 	public void pan(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_UP) {
 			if (isDeltaInBound(DELTA_INC, UP))
