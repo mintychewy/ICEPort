@@ -5,6 +5,8 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 
+import util.AvatarLoader;
+
 import iceworld.ICEWorldView;
 import iceworld.given.*;
 
@@ -26,7 +28,7 @@ public class ICEtizen implements MyIcetizen {
 	public String destinationSpecifyTimestamp;
 	public Point currentPosition;
 	// AtomicReference<Object> cache = new AtomicReference<Object>();
-	public Image avatar;
+	public BufferedImage avatar;
 	public IcetizenLook look;
 	// used for loading avatar
 	BufferedImage avatarImage;
@@ -44,16 +46,27 @@ public class ICEtizen implements MyIcetizen {
 	public Integer type;
 
 	public ICEtizen(){
+		
 		AVATAR_OFFSET_X = (int)(48*ICEWorldView.zoom_factor);
 		AVATAR_OFFSET_Y = (int)(115*ICEWorldView.zoom_factor);
 		
+		
 		// set the default looks
 		look = new IcetizenLook();
+		
+		/*
 		look.gidB = "B001";
-		look.gidS = "S001";
-		look.gidH = "H001";
-		look.gidW = "W001";
+		look.gidS = "S019";
+		look.gidH = "H015";
+		look.gidW = "W045";
+		
+		avatar = AvatarLoader.loadAvatar(look);
+		*/
 
+	}
+	
+	public void updateAvatarImage() {
+		avatar = AvatarLoader.loadAvatar(look);
 	}
 
 	@Override
@@ -84,7 +97,17 @@ public class ICEtizen implements MyIcetizen {
 
 	@Override
 	public void setIcetizenLook(IcetizenLook newLook) {
+		System.out.println("Set New Looks");
+
 		this.look = newLook;
+
+		if(look != null){
+			System.out.println("Reloading new looks:" );
+			System.out.println(look.gidB+" "+look.gidW);
+			avatar = AvatarLoader.loadAvatar(look);
+
+		}
+
 	}
 
 

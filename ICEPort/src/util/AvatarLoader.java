@@ -10,6 +10,9 @@ import java.util.LinkedList;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+import iceworld.ICEWorldView;
+import iceworld.given.*;;
+
 public class AvatarLoader extends JPanel {
 	static String list;
 	static AvatarLoader loader;
@@ -102,13 +105,33 @@ public class AvatarLoader extends JPanel {
 		}
 
 	}
+	
+	public static BufferedImage loadAvatar(IcetizenLook l){
+		BufferedImage full = new BufferedImage(500,500,BufferedImage.TYPE_INT_ARGB);
+		Graphics g = full.createGraphics();
+
+		BufferedImage bi = loadImageFromLocal("images/body/" +l.gidB+ ".png", l.gidB);
+		g.drawImage(bi,0,0,null);
+		bi = loadImageFromLocal("images/head/" + l.gidH +".png", l.gidH);
+		g.drawImage(bi,0,0,null);
+		bi = loadImageFromLocal("images/shirt/"+l.gidS+".png", l.gidS);
+		g.drawImage(bi,0,0,null);
+		bi = loadImageFromLocal("images/weapon/"+l.gidW+".png", l.gidW);
+		g.drawImage(bi,0,0,null);
+
+		full = Scaler.scaleBufferedImage(full, 0.25*ICEWorldView.zoom_factor);
+		return full;
+		
+	}
+	
+	
 
 	public static void loadBufferedImage(String H, String B, String S,
 			String W, String BG) {
 		loader = new AvatarLoader(list);
 		//load head
 		try{
-		head = loader.loadImageFromLocal( "/images/head/" + H+ ".png");
+		head = loader.loadImageFromLocal("images/head/" + H+ ".png",H);
 		}catch(IllegalArgumentException e){
 			String result = null;
 			try {
@@ -124,7 +147,7 @@ public class AvatarLoader extends JPanel {
 		}
 		//load body
 		try{
-			body = loader.loadImageFromLocal("/images/body/" + B+ ".png");
+			body = loader.loadImageFromLocal("images/body/" + B+ ".png",B);
 			}catch(IllegalArgumentException e){
 				String result = null;
 				try {
@@ -141,8 +164,9 @@ public class AvatarLoader extends JPanel {
 		
 	//load weapon
 		try{
-			weapon = loader.loadImageFromLocal("/images/weapon/" + W + ".png");
+			weapon = loader.loadImageFromLocal("images/weapon/" + W + ".png",W);
 			}catch(IllegalArgumentException e){
+				System.out.println("WEAPON NOT FOUND IN LOCAL DATABSE");
 				String result = null;
 				try {
 					result = ICEWorldPeek.getData("gurl&gid="+W).substring(27+17);
@@ -158,7 +182,7 @@ public class AvatarLoader extends JPanel {
 		//load shirt
 
 		try{
-			shirt = loader.loadImageFromLocal("/images/shirt/" +S + ".png");
+			shirt = loader.loadImageFromLocal("images/shirt/" +S + ".png",S);
 			}catch(IllegalArgumentException e){
 				String result = null;
 				try {
@@ -172,22 +196,35 @@ public class AvatarLoader extends JPanel {
 			shirt=loader.loadImageFromRemote(link);
 				
 			}	
-		background = loader.loadImageFromLocal(BG);
+		background = loader.loadImageFromLocal(BG,BG);
 
 	}
 	
-	public BufferedImage loadImageFromLocal(String path){
+	public static BufferedImage loadImageFromLocal(String path, String originalFilename){
 		BufferedImage img=null;
 		try {
-			img=ImageIO.read(getClass().getResource(path));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			img=ImageIO.read(ClassLoader.getSystemClassLoader().getResource(path));
+		} catch (Exception e) {
+			System.out.println("Error loading image from LOCAL DATABASE");
+
+			try {
+				String result = ICEWorldPeek.getData("gurl&gid="+originalFilename).substring(27+17);
+				result = result.replaceAll("\\\\","");
+				//http://iceworld.sls-atl.com/graphics\/weapon\/waterpistol.png
+				
+				String link = "http://iceworld.sls-atl.com/"+result.substring(1,result.length()-3);
+				img = loadImageFromRemote(link);
+
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+						
 		}
 		return img;
 	}
 	
-	public BufferedImage loadImageFromRemote(String uri){
+	public static BufferedImage loadImageFromRemote(String uri){
 		BufferedImage image = null;
 
 		try {
@@ -229,7 +266,7 @@ public class AvatarLoader extends JPanel {
 		g.drawImage(body, 80, 50, this);
 		g.drawImage(head, 80, 40, this);
 		g.drawImage(shirt, 80, 50, this);
-		g.drawImage(weapon, 70, 50, this);
+		g.drawImage(weapon, 80, 50, this);
 	}
 
 }

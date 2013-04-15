@@ -149,12 +149,11 @@ public class Customisation extends JDialog {
 				look.gidH = avatar.headURL;
 				look.gidW = avatar.weaponURL;
 				look.gidS = avatar.shirtURL;
-				System.out.println(look.gidB);
 				//report to ICEWorld immigration
 				LoginPage.immigration.customization(look);
 				//get the look  refreshed
 
-				LoginPage.app.view.setCustomise(look);
+				LoginPage.me.setIcetizenLook(look);
 				LoginPage.app.view.updateWorld();
 				
 			}

@@ -47,7 +47,7 @@ public class Minimap {
 		
 		Point p = Scaler.toTileSpace(new Point(ICEWorldView.deltaX, ICEWorldView.deltaY));
 		p = Scaler.toMiniMapPoint(p, 1);
-		g.fillRect(p.x, p.y, 37,25);
+		g.fillRect(p.x, p.y, (int)(37*(1/ICEWorldView.zoom_factor)),(int)(25*(1/ICEWorldView.zoom_factor)));
 	}
 
 

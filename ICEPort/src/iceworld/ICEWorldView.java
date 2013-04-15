@@ -19,11 +19,14 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Timer;
 
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
+
+import core.Application;
 
 import objects.Alien;
 import objects.ICEtizen;
@@ -41,23 +44,86 @@ import util.WorldStatesFetcher;
 public class ICEWorldView extends JPanel implements MouseListener,
 MouseMotionListener, KeyListener {
 
+	HashMap<String, IcetizenLook> looksList;
+	HashMap<String, BufferedImage> avatarList;
+	
+	/*
+	public void fetchLooks() {
+		
+		HashMap<Integer,String> uidAndUsernameList = new HashMap<Integer, String>();
+		
+		for(ICEtizen value : Application.app.view.loggedinUsers.values()){
+			uidAndUsernameList.put(value.getuid(),value.getUsername());
+		}
+		
+		// key is uid
+		looks = new HashMap<Integer, IcetizenLook>();
+
+		
+		String rawLook = null;
+		// for each key in the list, fetch the looks
+
+		IcetizenLook look;
+		
+		for(ICEtizen value : loggedinUsers.values()){
+			if(value.getType() == 0){
+				// alien -- do nothing
+				continue;
+			}
+			
+			value.getuid();
+			value.setIcetizenLook(look);
+			
+		}
+		
+		while(uidItr.hasNext()){
+			int key = (Integer) uidItr.next();
+			
+				try {
+
+					rawLook = ICEWorldPeek.getLooks(key+"");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				// {"status":1,"data":[{"B":null,"H":null,"S":null,"W":null}]}
+				// null will become "ul"
+				look = new IcetizenLook();
+				look.gidB = rawLook.substring(rawLook.indexOf("B")+4,rawLook.indexOf("H")-3);
+				look.gidH = rawLook.substring(rawLook.indexOf("H")+4,rawLook.indexOf("S")-3);
+				look.gidS = rawLook.substring(rawLook.indexOf("S")+4,rawLook.indexOf("W")-3);
+				look.gidW = rawLook.substring(rawLook.indexOf("W")+4,rawLook.lastIndexOf("]")-2);
+			 
+			looks.put(key, look);
+			
+		}
+		*/
+
+		/*
+		ExecutorService pool = Executors.newFixedThreadPool(10);
+
+		for (int k = 0; k < uids.size(); k++) {
+		    pool.submit(new GetLooksTask(uids.get(k)));
+		}
+
+		pool.shutdown();
+		pool.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
+		 */
 
 
 	public ICEWorldView() {
 
+		looksList = new HashMap<String, IcetizenLook>();
+		avatarList = new HashMap<String, BufferedImage>();
+		
 		setPreferredSize(ICEWORLD_VIEWPORT_SIZE);
-
+		
 		// create a red zoom-box 
 		zoomBox = new BufferedImage(125,84, BufferedImage.TYPE_INT_ARGB);
 		Graphics gZoomBox = zoomBox.createGraphics();
 		gZoomBox.setColor(new Color(250,1,1,125));
 		gZoomBox.fillRect(0, 0, 125, 84);
 		
-		inh = new Inhabitant();
 		ali = new Alien();
-		
-
-		LoginPage.me.avatar = inh.avatar;
 		
 		yellImageList = new LinkedList<BufferedImage>();
 		talkImageList = new LinkedList<BufferedImage>();
@@ -73,6 +139,16 @@ MouseMotionListener, KeyListener {
 		fetcher.updateWorldStates();
 
 		loggedinUsers = fetcher.getLoggedinUserMap();
+		looksList = fetcher.looks;
+	
+		for(ICEtizen a : loggedinUsers.values()){
+			if(a.getType() == 0){
+				continue ;
+			}
+			
+			avatarList.put(a.getUsername(), a.avatar);
+
+		}
 
 		lastKnownPositionList = new HashMap<String, Point>();
 
@@ -314,9 +390,15 @@ MouseMotionListener, KeyListener {
 		panner = new Panner(world.getImage());
 
 		/* UPDATE SIZE OF AVATAR IMAGES */
-		inh = new Inhabitant();
 		ali = new Alien();
-
+		
+		for(ICEtizen a : loggedinUsers.values()) {
+			a.setIcetizenLook(looksList.get(a.getUsername()));
+			avatarList.put(a.getUsername(),a.avatar);
+		}
+		
+		LoginPage.me.updateAvatarImage();
+		
 		updateWorld();
 	}
 
@@ -444,7 +526,8 @@ MouseMotionListener, KeyListener {
 				//System.out.println(value.getUsername()+" : "+value.getCurrentPosition().x+","+value.getCurrentPosition().y);
 
 				pos = Scaler.toScreenSpace(currentTileSpacePos);
-				g2.drawImage((value.getType() == 1) ? inh.avatar : ali.avatar,
+				
+				g2.drawImage((value.getType() == 1) ? avatarList.get(value.getUsername())/*value.avatar*/ : ali.avatar,
 						pos.x - (int) (ICEtizen.AVATAR_OFFSET_X * zoom_factor)
 						- zoomCorrectionXOffset,
 						(int) (pos.y - ICEtizen.AVATAR_OFFSET_Y * zoom_factor)
@@ -743,7 +826,8 @@ MouseMotionListener, KeyListener {
 					System.out.println("fetching states..");
 					fetcher.updateWorldStates();
 					actionFetcher.fetchActions();
-
+					
+					
 					String user;
 					Point pos;
 					// If there is a new character logged in, 
@@ -753,9 +837,25 @@ MouseMotionListener, KeyListener {
 						pos  = itz.getCurrentPosition();
 
 						if(!lastKnownPositionList.containsKey(user)) {
-							if(pos != null)
-								if(!world.isFallingIntoTartarus(pos))	
+							if(pos != null){
+								if(!world.isFallingIntoTartarus(pos))	{
 									lastKnownPositionList.put(user, pos);
+									// fetch the looks for the user
+									// then add it to the looks list
+									IcetizenLook defaultLooks = new IcetizenLook();
+									defaultLooks.gidB = "B102";
+									defaultLooks.gidH = "H015";
+									defaultLooks.gidS = "S019";
+									defaultLooks.gidW = "W045";
+									
+									itz.setIcetizenLook(defaultLooks);
+									avatarList.put(user,itz.avatar);
+									
+									
+									
+								}
+								
+							}
 						}		
 					}
 
@@ -773,12 +873,23 @@ MouseMotionListener, KeyListener {
 							HashMap<String,Point> temp = new HashMap<String, Point>();
 							temp.putAll(lastKnownPositionList);
 							lastKnownPositionList = temp;
+							
+							// remove from the looks list
+					
+							
 						}
 					}
 
 
 					loggedinUsers = fetcher.getLoggedinUserMap();
-
+					
+					
+					for(ICEtizen value : loggedinUsers.values()) {
+						if(value.getType() == 0){
+							continue;
+						}
+						
+					}
 
 					try {
 						ActionFetcher.from = Long.parseLong((ICEWorldPeek

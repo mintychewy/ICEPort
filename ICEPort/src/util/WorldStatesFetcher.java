@@ -1,12 +1,12 @@
 
 package util;
 
+import gui.LoginPage;
 import iceworld.given.IcetizenLook;
 
 import java.awt.Dimension;
 import java.awt.Point;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 
 import javax.swing.JDialog;
@@ -16,10 +16,10 @@ import objects.ICEtizen;
 
 import org.json.simple.parser.JSONParser;
 
-import core.Application;
-
 public class WorldStatesFetcher {
 
+	public static boolean FIRST_TIME_FETCH = true;
+	
 	HashMap<String, ICEtizen> icetizens = new HashMap<String, ICEtizen>();
 
 	LinkedList<String> username = new LinkedList<String>();
@@ -30,7 +30,6 @@ public class WorldStatesFetcher {
 	LinkedList<Point> position = new LinkedList<Point>();
 	LinkedList<String> timestamp = new LinkedList<String>();
 	LinkedList<Integer> uids = new LinkedList<Integer>();
-	HashMap<Integer,IcetizenLook> looks = new HashMap<Integer, IcetizenLook>();
 
 	long lastChangeWeather = 0;
 	public String conditionWeather = "undefined";
@@ -298,50 +297,6 @@ public class WorldStatesFetcher {
 			uids.add(Integer.parseInt(intValue));
 		}	
 
-		//////////////////////////////////////////////////////////////
-		// Looks													//
-		//////////////////////////////////////////////////////////////
-
-		// key is uid
-		looks = new HashMap<Integer, IcetizenLook>();
-
-		Iterator uidItr = uids.iterator();
-		String rawLook = null;
-		// for each key in the list, fetch the looks
-
-
-		/*
-		ExecutorService pool = Executors.newFixedThreadPool(10);
-
-		for (int k = 0; k < uids.size(); k++) {
-		    pool.submit(new GetLooksTask(uids.get(k)));
-		}
-
-		pool.shutdown();
-		pool.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
-		 */
-		IcetizenLook look;
-		while(uidItr.hasNext()){
-			int key = (Integer) uidItr.next();
-			/*
-				try {
-
-					rawLook = ICEWorldPeek.getLooks(key+"");
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				// {"status":1,"data":[{"B":null,"H":null,"S":null,"W":null}]}
-				// null will become "ul"
-				look = new IcetizenLook();
-				look.gidB = rawLook.substring(rawLook.indexOf("B")+4,rawLook.indexOf("H")-3);
-				look.gidH = rawLook.substring(rawLook.indexOf("H")+4,rawLook.indexOf("S")-3);
-				look.gidS = rawLook.substring(rawLook.indexOf("S")+4,rawLook.indexOf("W")-3);
-				look.gidW = rawLook.substring(rawLook.indexOf("W")+4,rawLook.lastIndexOf("]")-2);
-			 */
-			look = null;
-			looks.put(key, look);
-		}
-
 
 		appendData();
 
@@ -377,6 +332,7 @@ public class WorldStatesFetcher {
 	 */
 	private void appendData(){
 
+		looks = new HashMap<String, IcetizenLook>();
 		icetizens = new HashMap<String, ICEtizen>();
 		while(!username.isEmpty()){
 
@@ -397,19 +353,35 @@ public class WorldStatesFetcher {
 			icetizen.setCurrentPosition(position.poll());
 
 
-			// if icetizen is not an alien 
-			// fetch his/her looks 
-			if(icetizen.getType() == 1) {
-				icetizen.setIcetizenLook(looks.get(icetizen.uid));
-			} else {
-				icetizen.setIcetizenLook(null);
-			}
+			
+			if(FIRST_TIME_FETCH){
+				IcetizenLook defaultLooks = new IcetizenLook();
+				defaultLooks.gidB = "B102";
+				defaultLooks.gidH = "H015";
+				defaultLooks.gidS = "S019";
+				defaultLooks.gidW = "W045";
+				
+				// if icetizen is not an alien 
+				// give him/her default looks 
+				if(icetizen.getType() == 1) {
+					//System.out.println("Setting defaultLooks for: "+icetizen.getUsername());
+					icetizen.setIcetizenLook(defaultLooks);
+		
+					System.out.println("Is this thing null? "+(looks == null));
+					looks.put(icetizen.getUsername(), defaultLooks);
+					System.out.println("From the fetcher "+icetizen.getIcetizenLook().gidB);
 
+				} else {
+					icetizen.setIcetizenLook(null);
+				}
+				
+
+			}
 
 			// add to the currently logged-in user list
 			icetizens.put(username.poll(), icetizen);
-
 		}
+		FIRST_TIME_FETCH = false;
 
 
 	}
@@ -417,5 +389,10 @@ public class WorldStatesFetcher {
 	public HashMap<String,ICEtizen> getLoggedinUserMap() {
 		return this.icetizens;
 	}
+	
+	public HashMap<String, IcetizenLook> getLooksMap() {
+		return this.looks;
+	}
+	public HashMap<String,IcetizenLook> looks;
 
 }
