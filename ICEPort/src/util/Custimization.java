@@ -4,6 +4,7 @@ package util;
 
 import gui.LoginPage;
 import iceworld.given.IcetizenLook;
+import iceworld.given.MyIcetizen;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -93,12 +94,18 @@ public class Custimization {
 				//System.out.println(avatar.weaponURL);
 				//System.out.println(avatar.shirtURL);
 				IcetizenLook look=new IcetizenLook();
-				look.gidB=avatar.bodyURL ;
-				look.gidH=avatar.headURL;
-				look.gidW=avatar.weaponURL;
-				look.gidS=avatar.shirtURL;
-			//	System.out.println(look.gidB);
+				look.gidB="B001";//avatar.bodyURL ;
+				look.gidH="H008";//avatar.headURL;
+				look.gidW="W045";//avatar.weaponURL;
+				look.gidS="S019";//avatar.shirtURL;
+				System.out.println(look.gidB);
+				//report to ICEWorld immigration
 				LoginPage.immigration.customization(look);
+				//get the look  refreshed
+				LoginPage.app.view.setCustomise(look);
+				
+				
+				
 
 				
 				

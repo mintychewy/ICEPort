@@ -18,10 +18,16 @@ public class AvatarLoader extends JPanel {
 	LinkedList<String> h = new LinkedList<String>();
 	LinkedList<String> w = new LinkedList<String>();
 	String bodyURL,shirtURL,weaponURL,headURL,bgURL; 
-	int numShirt, numBody, numHead, numWeapon;
+	public int numShirt;
+	public int numBody;
+	public int numHead;
+	public int numWeapon;
 	String bodyPath,weaponPath,headPath,shirtPath;
 	
-	int shirtCount = 0, weaponCount = 0, bodyCount = 0, headCount = 0;
+	public int shirtCount = 0;
+	public int weaponCount = 0;
+	public int bodyCount = 0;
+	public int headCount = 0;
 	static BufferedImage head, body, weapon, shirt, background;
 	//constructor
 	public AvatarLoader(String x){

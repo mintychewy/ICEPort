@@ -2,6 +2,8 @@ package iceworld;
 
 import gui.LoginPage;
 
+import iceworld.given.IcetizenLook;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -317,9 +319,18 @@ MouseMotionListener, KeyListener {
 		timer.schedule(new WalkingTask(), 0, myLong);
 	}
 
+	public void setCustomise(IcetizenLook look){
+		this.inh.look.gidB=look.gidB;
+		this.inh.look.gidH=look.gidH;
+		this.inh.look.gidS=look.gidS;
+		this.inh.look.gidW=look.gidW;
+		
+	}
+	
 	/**
 	 * Renders the World image with the latest elements
 	 */
+	
 	public void updateWorld() {
 		
 		Graphics2D g2 = (Graphics2D) world.getImage().getGraphics();
@@ -477,12 +488,15 @@ MouseMotionListener, KeyListener {
 		// schedule a walk for every users
 		//
 	}
+	
+	
 
 	/**
 	 * Puts empty tiles (from original map) in place of ICEtizens/Aliens This
 	 * avoids having to render a new world every time the world updates (aka.
 	 * Adaptive tile replacement)
 	 */
+	
 	public void patchCitizens(Graphics2D g2) {
 		Point draw;
 		Point tilePos;
