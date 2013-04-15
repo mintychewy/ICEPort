@@ -79,7 +79,7 @@ public class ChatController implements ActionListener {
 			g2bf.setFont(TalkingTaskOthers.TALKING_FONT);
 			
 			// draw a chat bubble
-			g2bf.setColor(Color.DARK_GRAY);
+			g2bf.setColor(Minimap.BLACK_WITH_50_PERCENT_ALPHA);
 			g2bf.fillRect(0, 0, 310, lineAmount*25);
 			
 			g2bf.setColor(YellingTaskOthers.SKY_BLUE);
@@ -114,6 +114,7 @@ public class ChatController implements ActionListener {
 
 			LoginPage.app.view.updateWorld();
 
+			
 		}
 
 		LoginPage.app.view.requestFocus(true);

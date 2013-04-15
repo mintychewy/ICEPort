@@ -63,6 +63,7 @@ public class CustomMenuBar extends JMenuBar{
 	}
 	
 	public void addListeners(){
+		talkDurationMenuItem.addActionListener(new MenuBarListener());
 		customiseAvatarMenuItem.addActionListener(new MenuBarListener());
 		userManualMenuItem.addActionListener(new MenuBarListener());
 		aboutMenuItem.addActionListener(new MenuBarListener());

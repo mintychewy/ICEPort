@@ -155,6 +155,7 @@ public class Customisation extends JDialog {
 
 				LoginPage.me.setIcetizenLook(look);
 				LoginPage.app.view.updateWorld();
+				dispose();
 				
 			}
 		});

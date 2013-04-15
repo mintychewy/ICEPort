@@ -19,6 +19,8 @@ public class MenuBarListener implements ActionListener {
 		if(source.getText().equals("Quit")){
 			
 			confirmDialog = new QuitConfirmationDialog();
+			confirmDialog.setLocation(Application.screenDimension.width/2, Application.screenDimension.height/2);
+
 			confirmDialog.setVisible(true);
 			
 		}
@@ -41,6 +43,10 @@ public class MenuBarListener implements ActionListener {
 			RefreshRateWindow rrwindow = new RefreshRateWindow();
 			rrwindow.setLocation(Application.screenDimension.width/2,Application.screenDimension.height/2);
 			rrwindow.setVisible(true);
+		}else if (source.getText().equals("Talk Duration")){
+			TalkVisibleDurationAdjustmentWindow tvdawindow = new TalkVisibleDurationAdjustmentWindow();
+			tvdawindow.setLocation(Application.screenDimension.width/2, Application.screenDimension.height/2);
+			tvdawindow.setVisible(true);
 		}
 		else{
 			System.out.println("do nothing");

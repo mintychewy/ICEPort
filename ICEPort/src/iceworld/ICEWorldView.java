@@ -46,39 +46,39 @@ MouseMotionListener, KeyListener {
 
 	HashMap<String, IcetizenLook> looksList;
 	HashMap<String, BufferedImage> avatarList;
-	
+
 	/*
 	public void fetchLooks() {
-		
+
 		HashMap<Integer,String> uidAndUsernameList = new HashMap<Integer, String>();
-		
+
 		for(ICEtizen value : Application.app.view.loggedinUsers.values()){
 			uidAndUsernameList.put(value.getuid(),value.getUsername());
 		}
-		
+
 		// key is uid
 		looks = new HashMap<Integer, IcetizenLook>();
 
-		
+
 		String rawLook = null;
 		// for each key in the list, fetch the looks
 
 		IcetizenLook look;
-		
+
 		for(ICEtizen value : loggedinUsers.values()){
 			if(value.getType() == 0){
 				// alien -- do nothing
 				continue;
 			}
-			
+
 			value.getuid();
 			value.setIcetizenLook(look);
-			
+
 		}
-		
+
 		while(uidItr.hasNext()){
 			int key = (Integer) uidItr.next();
-			
+
 				try {
 
 					rawLook = ICEWorldPeek.getLooks(key+"");
@@ -92,13 +92,13 @@ MouseMotionListener, KeyListener {
 				look.gidH = rawLook.substring(rawLook.indexOf("H")+4,rawLook.indexOf("S")-3);
 				look.gidS = rawLook.substring(rawLook.indexOf("S")+4,rawLook.indexOf("W")-3);
 				look.gidW = rawLook.substring(rawLook.indexOf("W")+4,rawLook.lastIndexOf("]")-2);
-			 
-			looks.put(key, look);
-			
-		}
-		*/
 
-		/*
+			looks.put(key, look);
+
+		}
+	 */
+
+	/*
 		ExecutorService pool = Executors.newFixedThreadPool(10);
 
 		for (int k = 0; k < uids.size(); k++) {
@@ -107,30 +107,30 @@ MouseMotionListener, KeyListener {
 
 		pool.shutdown();
 		pool.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
-		 */
+	 */
 
 
 	public ICEWorldView() {
 
 		looksList = new HashMap<String, IcetizenLook>();
 		avatarList = new HashMap<String, BufferedImage>();
-		
+
 		setPreferredSize(ICEWORLD_VIEWPORT_SIZE);
-		
+
 		// create a red zoom-box 
 		zoomBox = new BufferedImage(125,84, BufferedImage.TYPE_INT_ARGB);
 		Graphics gZoomBox = zoomBox.createGraphics();
 		gZoomBox.setColor(new Color(250,1,1,125));
 		gZoomBox.fillRect(0, 0, 125, 84);
-		
+
 		ali = new Alien();
-		
+
 		yellImageList = new LinkedList<BufferedImage>();
 		talkImageList = new LinkedList<TalkObject>();
 		timer = new Timer();
-	
+
 		loadResources();
-		
+
 		setKeybinding();
 
 
@@ -140,12 +140,12 @@ MouseMotionListener, KeyListener {
 
 		loggedinUsers = fetcher.getLoggedinUserMap();
 		looksList = fetcher.looks;
-	
+
 		for(ICEtizen a : loggedinUsers.values()){
 			if(a.getType() == 0){
 				continue ;
 			}
-			
+
 			avatarList.put(a.getUsername(), a.avatar);
 
 		}
@@ -228,13 +228,13 @@ MouseMotionListener, KeyListener {
 
 		// default position -- controller user at the
 		// centre of the viewport
-		
+
 		Point initialDeltaPos = Scaler.toScreenSpace(controllersLocalPosition);
-		
+
 		fixAndSetDelta(new Point(initialDeltaPos.x -450, initialDeltaPos.y -400),0);
-		
+
 		updateWorld();
-		
+
 		createNewFetchingThread();
 		fetchThread.start();
 
@@ -251,7 +251,7 @@ MouseMotionListener, KeyListener {
 		System.out.println("Free mem: " + runtime.freeMemory() / mb);
 
 	}
-	
+
 	/**
 	 * Checks whether if the input point is a legal
 	 * delta position. If it is not, the method will
@@ -263,13 +263,13 @@ MouseMotionListener, KeyListener {
 	 * 
 	 */
 	public void fixAndSetDelta(Point p, int mode) {
-		
+
 		int x = p.x;
 		int y = p.y;
-		
-	
+
+
 		if(mode == 0){
-			
+
 			// Y doesn't exceed lower bound
 			if( y + ICEWORLD_VIEWPORT_SIZE.height <= World.WORLD_SIZE.height){
 				if( y >= 0 ){
@@ -280,14 +280,14 @@ MouseMotionListener, KeyListener {
 					deltaY = 0;
 				}
 			}else{
-			// Y exceeds Upper bound
+				// Y exceeds Upper bound
 				deltaY = World.WORLD_SIZE.height - ICEWORLD_VIEWPORT_SIZE.height;				
-				
+
 			}
-			
+
 			// X doesn't exceed right bound
 			if( x + ICEWORLD_VIEWPORT_SIZE.width <= World.WORLD_SIZE.width){
-				
+
 				if( x >= 0 ){
 					// X doesn't exceed left bound
 					deltaX = x;
@@ -295,23 +295,23 @@ MouseMotionListener, KeyListener {
 					// X exceeds left bound
 					deltaX = 0;
 				}
-				
-				
+
+
 			}else{
-			
-			// X exceeds right bound
+
+				// X exceeds right bound
 				deltaX = World.WORLD_SIZE.width - ICEWORLD_VIEWPORT_SIZE.width;
-				
+
 			}
-			
-			
-			
+
+
+
 		}else if (mode == 1){
 
 			// Y doesn't exceed lower bound
 			if(y + ICEWORLD_VIEWPORT_SIZE.height <= World.WORLD_SIZE.height){
 				deltaY = y;
-				
+
 				// X does not exceed right bound
 				if(x + ICEWORLD_VIEWPORT_SIZE.width <= World.WORLD_SIZE.width){
 					deltaX = x;
@@ -328,11 +328,11 @@ MouseMotionListener, KeyListener {
 
 				}
 			}
-			
+
 		}
-		
+
 	}
-	
+
 	public void zoomChanged(){
 		zoomChanged(null);
 	}
@@ -367,23 +367,23 @@ MouseMotionListener, KeyListener {
 		System.out.println("Free mem: " + runtime.freeMemory() / mb);
 
 		Point deltaPos = Scaler.toScreenSpace(controllersLocalPosition);
-		
-		
+
+
 		if(!cameFromZoomMode){
-			
+
 			deltaPos.x -= 450;
 			deltaPos.y -= 400;
 			fixAndSetDelta(deltaPos,0);
-			
+
 		}else{
-	
+
 			overrideDelta = new Point((int)(overrideDelta.x*7.2),(int)(overrideDelta.y*7.2));
 			System.out.println(overrideDelta.toString());
 			fixAndSetDelta(overrideDelta,1);
-			
+
 			cameFromZoomMode = false;
 		}
-		
+
 		//deltaX = (int)(deltaX*zoom_factor); 
 		//deltaY = (int)(deltaY*zoom_factor);
 
@@ -391,14 +391,14 @@ MouseMotionListener, KeyListener {
 
 		/* UPDATE SIZE OF AVATAR IMAGES */
 		ali = new Alien();
-		
+
 		for(ICEtizen a : loggedinUsers.values()) {
 			a.setIcetizenLook(looksList.get(a.getUsername()));
 			avatarList.put(a.getUsername(),a.avatar);
 		}
-		
+
 		LoginPage.me.updateAvatarImage();
-		
+
 		updateWorld();
 	}
 
@@ -408,13 +408,13 @@ MouseMotionListener, KeyListener {
 		this.inh.look.gidH=look.gidH;
 		this.inh.look.gidS=look.gidS;
 		this.inh.look.gidW=look.gidW;
-		
+
 	}
-	
+
 	/**
 	 * XXX Renders the World image with the latest elements
 	 */
-	
+
 	public void updateWorld() {
 
 		Graphics2D g2 = (Graphics2D) world.getImage().getGraphics();
@@ -431,18 +431,18 @@ MouseMotionListener, KeyListener {
 
 		////
 		if(ZOOM_MODE_ON && zoom_factor < 0.9){
-	
+
 			Point zoomBoxPos = MouseInfo.getPointerInfo().getLocation();
-			
+
 			zoomBoxPos.x -= this.getLocationOnScreen().x;
 			zoomBoxPos.y -= this.getLocationOnScreen().y;
-			
+
 			g2.drawImage(zoomBox,zoomBoxPos.x,zoomBoxPos.y,null);
 		}
-		
+
 		///
-		
-		
+
+
 		// Update chat
 		updateChat(g2);
 
@@ -501,6 +501,7 @@ MouseMotionListener, KeyListener {
 		// clear minimap
 		minimap = new Minimap();
 
+		
 		if (zoom_factor == 1.0) {
 			zoomCorrectionYOffset = 0;
 			zoomCorrectionXOffset = 0;
@@ -518,6 +519,43 @@ MouseMotionListener, KeyListener {
 			zoomCorrectionXOffset = (int) ((1.0 / zoom_factor) * 1);
 		}
 
+		
+		/*
+		if (zoom_factor == 1.0) {
+			zoomCorrectionYOffset = 0;
+			zoomCorrectionXOffset = 0;
+		} else if (zoom_factor >= 0.9) {
+			zoomCorrectionYOffset = (int) ((1.0 / zoom_factor) * 20);
+			zoomCorrectionXOffset = (int) ((1.0 / zoom_factor) * 5);
+		} else if (zoom_factor >= 0.8 && zoom_factor < 0.9) {
+			zoomCorrectionYOffset = (int) ((1.0 / zoom_factor) * 5);
+			zoomCorrectionXOffset = (int) ((1.0 / zoom_factor) * 4);
+		}else if (zoom_factor >= 0.7 && zoom_factor < 0.8) {
+			zoomCorrectionYOffset = (int) ((1.0 / zoom_factor) * 5);
+			zoomCorrectionXOffset = (int) ((1.0 / zoom_factor) * 4);
+		} else if (zoom_factor >= 0.6 && zoom_factor < 0.7) {
+			zoomCorrectionYOffset = (int) ((1.0 / zoom_factor) * 4);
+			zoomCorrectionXOffset = (int) ((1.0 / zoom_factor) * 3);
+		} else if (zoom_factor >= 0.5 && zoom_factor < 0.6) {
+			zoomCorrectionYOffset = (int) ((1.0 / zoom_factor) * 3);
+			zoomCorrectionXOffset = (int) ((1.0 / zoom_factor) * 2);
+		} else if (zoom_factor >= 0.4 && zoom_factor < 0.5) {
+			zoomCorrectionYOffset = (int) ((1.0 / zoom_factor) * 5);
+			zoomCorrectionXOffset = (int) ((1.0 / zoom_factor) * 4); 
+		} else if (zoom_factor >= 0.3 && zoom_factor < 0.4) {
+			zoomCorrectionYOffset = (int) ((1.0 / zoom_factor) * 5);
+			zoomCorrectionXOffset = (int) ((1.0 / zoom_factor) * 4);
+		} else if (zoom_factor >= 0.2 && zoom_factor < 0.3) {
+			zoomCorrectionYOffset = (int) ((1.0 / zoom_factor) * 5);
+			zoomCorrectionXOffset = (int) ((1.0 / zoom_factor) * 4);
+		} else if (zoom_factor < 0.2) {
+			zoomCorrectionYOffset = (int) ((1.0 / zoom_factor) * 2);
+			zoomCorrectionXOffset = (int) ((1.0 / zoom_factor) * 1);
+			System.out.println("Y offset: "+zoomCorrectionYOffset);
+			System.out.println("X offset: "+zoomCorrectionXOffset);
+		}
+		*/
+
 		for (ICEtizen value : loggedinUsers.values()) {
 			if (value.getUsername().equals(controllerUsername))
 				continue;
@@ -533,7 +571,7 @@ MouseMotionListener, KeyListener {
 				//System.out.println(value.getUsername()+" : "+value.getCurrentPosition().x+","+value.getCurrentPosition().y);
 
 				pos = Scaler.toScreenSpace(currentTileSpacePos);
-				
+
 				g2.drawImage((value.getType() == 1) ? avatarList.get(value.getUsername())/*value.avatar*/ : ali.avatar,
 						pos.x - (int) (ICEtizen.AVATAR_OFFSET_X * zoom_factor)
 						- zoomCorrectionXOffset,
@@ -557,7 +595,7 @@ MouseMotionListener, KeyListener {
 				g2.drawString(value.getUsername(), pos.x - 10, pos.y + 10);
 				// put ip
 				g2.drawString(value.getIPAddress(), pos.x - 10, pos.y + 20);
-				
+
 				if(value.getIcePortID() == 245){
 					minimap.drawUser(currentTileSpacePos, 2);
 
@@ -602,15 +640,15 @@ MouseMotionListener, KeyListener {
 		// put username
 
 	}
-	
-	
+
+
 
 	/**
 	 * Puts empty tiles (from original map) in place of ICEtizens/Aliens This
 	 * avoids having to render a new world every time the world updates (aka.
 	 * Adaptive tile replacement)
 	 */
-	
+
 	public void patchCitizens(Graphics2D g2) {
 		Point draw;
 		Point tilePos;
@@ -657,7 +695,7 @@ MouseMotionListener, KeyListener {
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		
+
 	}
 
 	@Override
@@ -673,7 +711,7 @@ MouseMotionListener, KeyListener {
 		if(ZOOM_MODE_ON){
 			updateWorld();
 		}
-		
+
 
 	}
 
@@ -720,12 +758,12 @@ MouseMotionListener, KeyListener {
 			cameFromZoomMode = true;
 			zoom_factor = 1.0;
 			ZOOM_MODE_ON = false;
-			
+
 			//System.out.println("deltaX = "+deltaX+", deltaY = "+deltaY);
 			zoomChanged(e.getPoint());
 			return;
 		} 
-		
+
 		Point destinationTile = null;
 		// check if it is a minimap coordinate
 		if(minimap.isMinimapClicked(e)){
@@ -755,7 +793,7 @@ MouseMotionListener, KeyListener {
 
 				}
 			}
-			*/
+			 */
 
 
 
@@ -785,7 +823,7 @@ MouseMotionListener, KeyListener {
 				// reports walking to the server
 
 				LoginPage.immigration.walk(destinationTile.x, destinationTile.y);
-	
+
 			} else {
 				System.out.println("Invalid destination point");
 			}
@@ -834,8 +872,8 @@ MouseMotionListener, KeyListener {
 					System.out.println("fetching states..");
 					fetcher.updateWorldStates();
 					actionFetcher.fetchActions();
-					
-					
+
+
 					String user;
 					Point pos;
 					// If there is a new character logged in, 
@@ -855,14 +893,14 @@ MouseMotionListener, KeyListener {
 									defaultLooks.gidH = "H015";
 									defaultLooks.gidS = "S019";
 									defaultLooks.gidW = "W045";
-									
+
 									itz.setIcetizenLook(defaultLooks);
 									avatarList.put(user,itz.avatar);
-									
-									
-									
+
+
+
 								}
-								
+
 							}
 						}		
 					}
@@ -881,22 +919,22 @@ MouseMotionListener, KeyListener {
 							HashMap<String,Point> temp = new HashMap<String, Point>();
 							temp.putAll(lastKnownPositionList);
 							lastKnownPositionList = temp;
-							
+
 							// remove from the looks list
-					
-							
+
+
 						}
 					}
 
 
 					loggedinUsers = fetcher.getLoggedinUserMap();
-					
-					
+
+
 					for(ICEtizen value : loggedinUsers.values()) {
 						if(value.getType() == 0){
 							continue;
 						}
-						
+
 					}
 
 					try {
@@ -983,25 +1021,25 @@ MouseMotionListener, KeyListener {
 						System.out.println("This guy talked! ==>"
 								+ act.getUsername());
 
-					
+
 						String msg = act.getDetails();
-						
+
 						int lineAmount = (int) Math.ceil(msg.length()/25.0);
 						System.out.println("lineAmount = "+lineAmount);
-						
-						
+
+
 						bf = new BufferedImage(310, lineAmount*25,
 								BufferedImage.TYPE_INT_ARGB);
 
 						Graphics2D g2bf = bf.createGraphics();
 						g2bf.setFont(TalkingTaskOthers.TALKING_FONT);
-						
+
 						// draw a chat bubble
-						g2bf.setColor(Color.DARK_GRAY);
+						g2bf.setColor(Minimap.BLACK_WITH_50_PERCENT_ALPHA);
 						g2bf.fillRect(0, 0, 310, lineAmount*25);
-						
+
 						g2bf.setColor(YellingTaskOthers.SKY_BLUE);
-						
+
 						if(lineAmount == 1){
 							// already formatted
 							g2bf.drawString(msg, 5, 22);
@@ -1009,8 +1047,8 @@ MouseMotionListener, KeyListener {
 						}else if(lineAmount ==2){
 							g2bf.drawString(msg.substring(0,25), 5, 24*1);
 							g2bf.drawString(msg.substring(25), 5, 24*2);
-							
-						
+
+
 						}else if(lineAmount ==3){
 							g2bf.drawString(msg.substring(0,25), 5, 24*1);
 							g2bf.drawString(msg.substring(25,50), 5, 24*2);
@@ -1023,11 +1061,11 @@ MouseMotionListener, KeyListener {
 							g2bf.drawString(msg.substring(75), 5, 24*4);
 
 						}
-						
-					
-						
-						
-						
+
+
+
+
+
 						TalkObject to = new TalkObject(bf,act.getUsername());
 						talkImageList.add(to);
 						new Timer()
