@@ -61,7 +61,7 @@ MouseMotionListener, KeyListener {
 
 
 	public ICEWorldView() {
-
+		setDoubleBuffered(true);
 		looksList = new HashMap<String, IcetizenLook>();
 		avatarList = new HashMap<String, BufferedImage>();
 
@@ -196,9 +196,28 @@ MouseMotionListener, KeyListener {
 						if(tick == 5){
 							tick = 0;
 						}
-						currentWeatherSprite = rainSprite[tick++%5];
+						
+						
+						System.out.println("WEATHER_ON "+WEATHER_ON + " Condition: "+ weather);
+						if(weather.equals("Raining")){
+							System.out.println("RAINING");
+							currentWeatherSprite = rainSprite[tick++%5];
+						}else if(weather.equals("Sunny")){
+							System.out.println("SUNNY");
+
+							currentWeatherSprite = sunSprite;
+						}else if(weather.equals("Cloudy")){
+							System.out.println("CLOUDY");
+
+							currentWeatherSprite = cloudSprite[tick++%5];
+						}else if(weather.equals("Snowing")){
+							System.out.println("SNOWING");
+
+							currentWeatherSprite = snowSprite[tick++%5];
+						}
+						updateWorld();
 						try {
-							Thread.sleep(1000);
+							Thread.sleep(500);
 						} catch(Exception e){
 							e.printStackTrace();
 						}
@@ -206,6 +225,8 @@ MouseMotionListener, KeyListener {
 				
 				}
 		});
+		
+		weatherSpriteChangerThread.start();
 
 
 		/* GET RUNTIME MEMORY INFO FOR DEBUGGING */
@@ -420,7 +441,10 @@ MouseMotionListener, KeyListener {
 
 		Graphics2D g2Viewport = (Graphics2D) viewport.getGraphics();
 
-		updateWeather(g2Viewport);
+		if(WEATHER_ON){
+			updateWeather(g2Viewport);
+		}
+		
 		updateYell(g2Viewport);
 
 		g2Viewport.drawImage(minimap.getImage(), ICEWORLD_VIEWPORT_SIZE.width
@@ -437,12 +461,6 @@ MouseMotionListener, KeyListener {
 		
 		g2.drawImage(currentWeatherSprite, 0, 0, null);
 		
-		/*
-		if(tick == 5){
-			tick = 0;
-		}
-		g2.drawImage(rainSprite[tick++%5],0,0,null);
-		*/
 	}
 
 	public static int tick = 0;
@@ -454,7 +472,8 @@ MouseMotionListener, KeyListener {
 			if(talkImg.username.equals(controllerUsername)){
 				p = Scaler.toScreenSpace(controllersLocalPosition);
 			}else{
-				p = Scaler.toScreenSpace(lastKnownPositionList.get(talkImg.username));
+				if(lastKnownPositionList.get(talkImg.username) != null)
+					p = Scaler.toScreenSpace(lastKnownPositionList.get(talkImg.username));
 			}
 			if(p != null)
 				g2.drawImage(talkImg.talkImage, p.x - 150, p.y-(int)(130*zoom_factor)- talkImg.talkImage.getHeight(), null);
@@ -738,7 +757,11 @@ MouseMotionListener, KeyListener {
 		// weather resources
 		for(int i = 0; i < 5; i++ ){
 			rainSprite[i] = ImageLoader.loadImageFromLocal("rain/r"+(i+1)+".png");
+			cloudSprite[i] = ImageLoader.loadImageFromLocal("cloud/c"+(i+1)+".png");
+			snowSprite[i] = ImageLoader.loadImageFromLocal("snow/s"+(i+1)+".png");
 		}
+		
+		sunSprite = ImageLoader.loadImageFromLocal("sun/s1.png");
 		
 	}
 
@@ -1006,6 +1029,8 @@ MouseMotionListener, KeyListener {
 					//		+ actionFetcher.talkList.size());
 					for (Actions act : actionFetcher.talkList) {
 
+						if(act.getUsername() == null)
+							continue;
 						if (act.getUsername().equals(controllerUsername))
 							continue;
 						if (act.getDetails() == null
@@ -1140,7 +1165,7 @@ MouseMotionListener, KeyListener {
 
 
 	public static boolean ZOOM_MODE_ON = false;
-
+	public static boolean WEATHER_ON = true;
 	// states fetching interval (default: 2000ms)
 	public static int REFRESH_INTERVAL = 2000;
 	// chat bubble visible duration (default: 5000ms)
@@ -1196,6 +1221,9 @@ MouseMotionListener, KeyListener {
 	boolean cameFromZoomMode = false;
 
 	BufferedImage[] rainSprite = new BufferedImage[5];
+	BufferedImage sunSprite;
+	BufferedImage[] cloudSprite = new BufferedImage[5];
+	BufferedImage[] snowSprite = new BufferedImage[5];
 	
 
 }

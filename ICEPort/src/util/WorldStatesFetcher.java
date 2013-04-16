@@ -29,7 +29,7 @@ public class WorldStatesFetcher {
 	LinkedList<String> port = new LinkedList<String>();
 	LinkedList<Integer> pid = new LinkedList<Integer>();
 	LinkedList<Point> position = new LinkedList<Point>();
-	LinkedList<String> timestamp = new LinkedList<String>();
+	//LinkedList<String> timestamp = new LinkedList<String>();
 	LinkedList<Integer> uids = new LinkedList<Integer>();
 
 	long lastChangeWeather = 0;
@@ -234,7 +234,7 @@ public class WorldStatesFetcher {
 		}
 
 		//Find the value of the time of the position
-
+/*
 		finder.setMatchKey("timestamp");
 		try {
 			while (!finder.isEnd()) {
@@ -253,22 +253,11 @@ public class WorldStatesFetcher {
 		} catch (Exception pe) {
 			pe.printStackTrace();
 		}
-
-
-
-		// Find the value of the weather: condition
-		finder.setMatchKey("condition");
-		try {
-			parser.parse(out, finder, true);
-			if (finder.isFound()) {
-				finder.setFound(false);
-				conditionWeather = (String) finder.getValue();
-			}
-			parser.parse(out, finder, false);
-			finder = new KeyFinder();
-		} catch (Exception pe) {
-			pe.printStackTrace();
-		}
+*/
+		
+		String copy = out.substring(out.indexOf("condition")+12,out.indexOf("last")-3);
+		
+		conditionWeather = copy;
 
 		// Find the value of the time the weather changed
 		finder.setMatchKey("last_change");

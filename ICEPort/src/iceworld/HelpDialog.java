@@ -17,39 +17,49 @@ public class HelpDialog extends JTabbedPane{
 	}
 
 	private void addTabs(){
-		this.add("Basic", makeHtmlView());
-		this.add("Advanced", makeHtmlView());
+		this.add("Basic", makeHtmlView("basic"));
+		this.add("Advanced", makeHtmlView("advanced"));
 	}
 	
-	private JEditorPane makeHtmlView(){
+	private JEditorPane makeHtmlView(String mode){
 		final JEditorPane jep = new JEditorPane();
 		jep.setEditable(false);
-		 ToolTipManager.sharedInstance().registerComponent(jep);
+		
+		
+		ToolTipManager.sharedInstance().registerComponent(jep);
+		 
+        HyperlinkListener l = new HyperlinkListener() {
+            @Override
+            public void hyperlinkUpdate(HyperlinkEvent e) {
+                if (HyperlinkEvent.EventType.ACTIVATED == e.getEventType()) {
+                    try {
+                        jep.setPage(e.getURL());
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                }
 
-		    HyperlinkListener l = new HyperlinkListener() {
-		        @Override
-		        public void hyperlinkUpdate(HyperlinkEvent e) {
-		            if (HyperlinkEvent.EventType.ACTIVATED == e.getEventType()) {
-		                try {
-		                    jep.setPage(e.getURL());
-		                } catch (IOException e1) {
-		                    e1.printStackTrace();
-		                }
-		            }
+            }
 
-		        }
-
-		    };
-		    jep.addHyperlinkListener(l);
+        };
+        jep.addHyperlinkListener(l);
+		
 		try{
-			jep.setPage("http://cerntainly.com/demo/n.html");
+			if(mode.equals("basic")){
+				jep.setPage("https://dl.dropboxusercontent.com/u/97755864/basic.html");
+ 
+			}else if(mode.equals("advanced")){
+				jep.setPage("https://dl.dropboxusercontent.com/u/97755864/advance/advance.html"); // this should work
+			}
 		} catch(IOException e){
 			jep.setContentType("text/html");
 			jep.setText("<html>Could not load</html>");
 		}
+		
 		jep.setPreferredSize(new Dimension(500,500));
 		return jep;
 	}
+
 	
 	
 }
