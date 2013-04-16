@@ -47,56 +47,6 @@ MouseMotionListener, KeyListener {
 	HashMap<String, IcetizenLook> looksList;
 	HashMap<String, BufferedImage> avatarList;
 
-	/*
-	public void fetchLooks() {
-
-		HashMap<Integer,String> uidAndUsernameList = new HashMap<Integer, String>();
-
-		for(ICEtizen value : Application.app.view.loggedinUsers.values()){
-			uidAndUsernameList.put(value.getuid(),value.getUsername());
-		}
-
-		// key is uid
-		looks = new HashMap<Integer, IcetizenLook>();
-
-
-		String rawLook = null;
-		// for each key in the list, fetch the looks
-
-		IcetizenLook look;
-
-		for(ICEtizen value : loggedinUsers.values()){
-			if(value.getType() == 0){
-				// alien -- do nothing
-				continue;
-			}
-
-			value.getuid();
-			value.setIcetizenLook(look);
-
-		}
-
-		while(uidItr.hasNext()){
-			int key = (Integer) uidItr.next();
-
-				try {
-
-					rawLook = ICEWorldPeek.getLooks(key+"");
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				// {"status":1,"data":[{"B":null,"H":null,"S":null,"W":null}]}
-				// null will become "ul"
-				look = new IcetizenLook();
-				look.gidB = rawLook.substring(rawLook.indexOf("B")+4,rawLook.indexOf("H")-3);
-				look.gidH = rawLook.substring(rawLook.indexOf("H")+4,rawLook.indexOf("S")-3);
-				look.gidS = rawLook.substring(rawLook.indexOf("S")+4,rawLook.indexOf("W")-3);
-				look.gidW = rawLook.substring(rawLook.indexOf("W")+4,rawLook.lastIndexOf("]")-2);
-
-			looks.put(key, look);
-
-		}
-	 */
 
 	/*
 		ExecutorService pool = Executors.newFixedThreadPool(10);
@@ -238,6 +188,24 @@ MouseMotionListener, KeyListener {
 		createNewFetchingThread();
 		fetchThread.start();
 
+		
+		Thread weatherSpriteChangerThread = new Thread(new Runnable() {
+				public void run() {
+
+					while(true){
+						if(tick == 5){
+							tick = 0;
+						}
+						currentWeatherSprite = rainSprite[tick++%5];
+						try {
+							Thread.sleep(1000);
+						} catch(Exception e){
+							e.printStackTrace();
+						}
+					}
+				
+				}
+		});
 
 
 		/* GET RUNTIME MEMORY INFO FOR DEBUGGING */
@@ -443,6 +411,7 @@ MouseMotionListener, KeyListener {
 		///
 
 
+
 		// Update chat
 		updateChat(g2);
 
@@ -451,6 +420,7 @@ MouseMotionListener, KeyListener {
 
 		Graphics2D g2Viewport = (Graphics2D) viewport.getGraphics();
 
+		updateWeather(g2Viewport);
 		updateYell(g2Viewport);
 
 		g2Viewport.drawImage(minimap.getImage(), ICEWORLD_VIEWPORT_SIZE.width
@@ -458,6 +428,24 @@ MouseMotionListener, KeyListener {
 
 		showView();
 	}
+	
+	
+	public BufferedImage currentWeatherSprite;
+	
+	
+	public void updateWeather(Graphics2D g2) {
+		
+		g2.drawImage(currentWeatherSprite, 0, 0, null);
+		
+		/*
+		if(tick == 5){
+			tick = 0;
+		}
+		g2.drawImage(rainSprite[tick++%5],0,0,null);
+		*/
+	}
+
+	public static int tick = 0;
 
 	private void updateChat(Graphics2D g2) {
 
@@ -746,6 +734,12 @@ MouseMotionListener, KeyListener {
 		yellowIndicator = ImageLoader
 				.loadImageFromLocal("images/yellow-arrow.png");
 		redIndicator = ImageLoader.loadImageFromLocal("images/red-arrow.png");
+		
+		// weather resources
+		for(int i = 0; i < 5; i++ ){
+			rainSprite[i] = ImageLoader.loadImageFromLocal("rain/r"+(i+1)+".png");
+		}
+		
 	}
 
 
@@ -1201,5 +1195,7 @@ MouseMotionListener, KeyListener {
 
 	boolean cameFromZoomMode = false;
 
+	BufferedImage[] rainSprite = new BufferedImage[5];
+	
 
 }

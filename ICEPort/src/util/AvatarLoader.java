@@ -2,6 +2,8 @@ package util;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -207,18 +209,37 @@ public class AvatarLoader extends JPanel {
 		} catch (Exception e) {
 			System.out.println("Error loading image from LOCAL DATABASE");
 
+			
+			System.out.println("Try loading from the directory outside jar");
+			
 			try {
-				String result = ICEWorldPeek.getData("gurl&gid="+originalFilename).substring(27+17);
-				result = result.replaceAll("\\\\","");
-				//http://iceworld.sls-atl.com/graphics\/weapon\/waterpistol.png
+				String filePath = ClassLoader.getSystemClassLoader().getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + originalFilename +".png";
 				
-				String link = "http://iceworld.sls-atl.com/"+result.substring(1,result.length()-3);
-				img = loadImageFromRemote(link);
+				img = ImageIO.read(new File(filePath));
+				
+			} catch (Exception e3) {
+				System.out.println("Try loading from server");
 
-			} catch (Exception e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				try {
+					String result = ICEWorldPeek.getData("gurl&gid="+originalFilename).substring(27+17);
+					result = result.replaceAll("\\\\","");
+					//http://iceworld.sls-atl.com/graphics\/weapon\/waterpistol.png
+					String link = "http://iceworld.sls-atl.com/"+result.substring(1,result.length()-3);
+					img = loadImageFromRemote(link);
+
+					
+				
+					    File outputfile = new File(originalFilename+".png");
+					    ImageIO.write(img, "png", outputfile);
+	
+					
+				} catch (Exception e1) {
+					// OUT OF LUCK
+					e1.printStackTrace();
+				}
 			}
+			
+		
 						
 		}
 		return img;
