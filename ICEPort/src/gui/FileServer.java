@@ -41,7 +41,7 @@ public class FileServer {
 
 	public static void main(String[] args) {
 		int port = 8799;
-		// no... this is the server.. this is what I'm running (not related to you.)
+		
 		FileChooser  path= new FileChooser();
 		String fileName ="/Users/test3.txt";
 		//overwrite

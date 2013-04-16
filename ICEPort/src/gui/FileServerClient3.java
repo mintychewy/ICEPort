@@ -22,20 +22,19 @@ import objects.ICEtizen;
 public class FileServerClient3 extends FTPButtonListener {
 	File myfile;
 	Frame myFrame = new Frame();
-	//ICEtizen host;
+	// ICEtizen host;
 	JDialog AorD;
 	Socket sock = null;
-	
+
 	public void receiveFileFromServer(String host, int port)
 			throws ClassNotFoundException,// overwrite frm no parameter -> 2
 											// parameters
 			IOException {
-		
 
 		// overwrite
 
 		host = use.getIPAddress();
-		//host = "124.120.18.16";
+		// host = "124.120.18.16";
 		port = use.getListeningPort();
 		try {
 			System.out.print("yoyo");
