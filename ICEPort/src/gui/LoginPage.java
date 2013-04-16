@@ -107,8 +107,8 @@ class ImagePanel extends JPanel {
 		userField = new JTextField(11);
 		passField = new JPasswordField(11);
 		
-		userField.setText("Putti.O");
-		passField.setText("6637612");
+		userField.setText("Avika.L");
+		passField.setText("2516432");
 		label = new JLabel("");
 		
 		userField.setBounds(70, 55, 170, 50);

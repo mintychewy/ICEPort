@@ -48,7 +48,9 @@ public class ChatPanel extends JPanel{
 	}
 	
 	private void addListeners() {
+		//sendButton.addItemListener(new ChatController());
 		sendButton.addActionListener(new ChatController());
+		
 	}
 
 	public String getMessage() {

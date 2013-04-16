@@ -7,10 +7,12 @@ import java.awt.event.ActionListener;
 
 import javax.swing.AbstractButton;
 
+import sfx.Sound;
+
 import core.Application;
 
 public class ControlsPaneListener implements ActionListener {
-
+Sound sound;
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		AbstractButton btn = (AbstractButton) e.getSource();
@@ -19,6 +21,8 @@ public class ControlsPaneListener implements ActionListener {
 				System.out.println("Logout OK");
 				LoginPage.app.view.terminate();
 				LoginPage.app.dispose();
+				sound=new Sound("music/scream.wav");
+				
 			
 				Application.login.setVisible(true);
 				

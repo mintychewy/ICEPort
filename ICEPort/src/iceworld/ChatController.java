@@ -1,26 +1,45 @@
 package iceworld;
-
 import gui.LoginPage;
+import gui.SoundControllerWindow;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
 import java.util.Timer;
 
+import javax.swing.AbstractButton;
 import javax.swing.ButtonModel;
 
 import objects.Minimap;
+import sfx.Sound;
 
-public class ChatController implements ActionListener {
-
+public class ChatController implements ActionListener,ItemListener {
+	public Sound sound;
+	SoundControllerWindow control=new SoundControllerWindow();
+	public boolean mute;
 	public static Font chatFont = new Font("Arial", Font.PLAIN,
 			(int) (100 * ICEWorldView.zoom_factor));
 
+	
+	
+
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		// TODO Auto-generated method stub
+	
+		AbstractButton btn = (AbstractButton) e.getSource();
+		mute = btn.isSelected();
+		
+		
+		
+	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		System.out.print(mute);
 		ButtonModel btn = LoginPage.app.chat.buttonGroup.getSelection();
 		System.out.println("" + btn.getActionCommand());
 		String msg = LoginPage.app.chat.getMessage();
@@ -30,6 +49,8 @@ public class ChatController implements ActionListener {
 
 		// yell case
 		if (btn.getActionCommand().equals("yell")) {
+
+			
 
 			if (msg == null || msg.length() <= 0) {
 				return;
@@ -58,8 +79,17 @@ public class ChatController implements ActionListener {
 			new Timer().schedule(new YellingTaskOthers(bf), 5000, 1);
 			LoginPage.immigration.yell(msg);
 			LoginPage.app.view.updateWorld();
-
-		} else if (btn.getActionCommand().equals("talk")) {
+			if(mute==true){
+				
+			}
+			else if(mute==false)
+			sound=new Sound("music/scream.wav");	
+			} 
+		else if (btn.getActionCommand().equals("talk")) {
+			
+			
+			
+			
 			if (msg == null || msg.length() <= 0) {
 				return;
 			}
@@ -113,12 +143,15 @@ public class ChatController implements ActionListener {
 			LoginPage.immigration.talk(msg);
 
 			LoginPage.app.view.updateWorld();
-
 			
+		//	sound=new Sound("music/burp.wav");
+			
+		
 		}
 
 		LoginPage.app.view.requestFocus(true);
 
 	}
+
 
 }

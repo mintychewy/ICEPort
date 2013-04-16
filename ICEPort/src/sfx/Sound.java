@@ -10,7 +10,7 @@ public class Sound // Holds one audio file
 {
 	Clip clip;
 
-	Sound(String filename)
+	public Sound(String filename)
 	{	        
 	        try {
 		        URL url = this.getClass().getClassLoader().getResource(filename);
