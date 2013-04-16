@@ -380,14 +380,24 @@ public class WorldStatesFetcher {
 					} catch (Exception e){
 						e.printStackTrace();
 					}
-					
+					System.out.println("KEY: "+KEY);
 					// {"status":1,"data":[{"B":null,"H":null,"S":null,"W":null}]}
 					// null will become "ul"
-					String gidB = rawLook.substring(rawLook.indexOf("B")+4,rawLook.indexOf("H")-3);
-					String gidH = rawLook.substring(rawLook.indexOf("H")+4,rawLook.indexOf("S")-3);
-					String gidS = rawLook.substring(rawLook.indexOf("S")+4,rawLook.indexOf("W")-3);
+					rawLook = rawLook.substring(13);
+					System.out.println("rawlook: "+rawLook);
+				
+					String gidB = rawLook.substring(rawLook.indexOf("B")+4, rawLook.indexOf(",")-1);
+					rawLook = rawLook.substring(rawLook.indexOf(",")+1);
+					System.out.println("gidB: "+gidB);
+					String gidH = rawLook.substring(rawLook.indexOf("H")+4, rawLook.indexOf(",")-1);
+					rawLook = rawLook.substring(rawLook.indexOf(",")+1);
+					System.out.println("gidH: "+gidH);
+					String gidS = rawLook.substring(rawLook.indexOf("S")+4,rawLook.indexOf(",")-1);
+					rawLook = rawLook.substring(rawLook.indexOf(",")+1);
+					System.out.println("gidS: "+gidS);
 					String gidW = rawLook.substring(rawLook.indexOf("W")+4,rawLook.lastIndexOf("]")-2);
-							
+					System.out.println("gidW: "+gidW);
+
 					if(gidB.equals("ul") || gidH.equals("ul") || gidS.equals("ul") || gidW.equals("ul")){
 						
 					} else{
