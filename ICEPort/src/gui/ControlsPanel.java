@@ -43,7 +43,6 @@ public class ControlsPanel extends JPanel {
 		toggleWeather.addItemListener(new CheckBoxListener());
 		sendFileButton.addActionListener(new FTPButtonListener());
 		dragZoomButton.addActionListener(new ControlsPaneListener());
-		sendFileButton.addActionListener(new FTPButtonListener());
 		//soundCtrlButton.addActionListener(new SoundButtonListener());
 		setZoomButton.addActionListener(new ControlsPaneListener());
 		logoutButton.addActionListener(new ControlsPaneListener());
