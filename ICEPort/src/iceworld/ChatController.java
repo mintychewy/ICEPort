@@ -10,9 +10,10 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
 import java.util.Timer;
-import javax.swing.JCheckBox;
-import javax.swing.AbstractButton;
+
 import javax.swing.ButtonModel;
+import javax.swing.JCheckBox;
+import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -86,7 +87,9 @@ public class ChatController implements ActionListener,ItemListener,ChangeListene
 			if(LoginPage.MUTE_ON==true){	
 			}
 			else 
-			sound=new Sound("music/scream.wav");	
+				sound.volume((float)LoginPage.volume);
+			sound=new Sound("music/scream.wav");
+			
 			} 
 		else if (btn.getActionCommand().equals("talk")) {
 			
@@ -149,7 +152,8 @@ public class ChatController implements ActionListener,ItemListener,ChangeListene
 			if(LoginPage.MUTE_ON==true){	
 			}
 			else 
-			sound=new Sound("music/burp.wav");	
+			sound=new Sound("music/burp.wav");
+			sound.volume((float)LoginPage.volume);
 		}
 
 		LoginPage.app.view.requestFocus(true);
@@ -158,6 +162,10 @@ public class ChatController implements ActionListener,ItemListener,ChangeListene
 	@Override
 	public void stateChanged(ChangeEvent e) {
 		// TODO Auto-generated method stub
+		JSlider source=(JSlider) e.getSource();
+		// if (!source.getValueIsAdjusting()) {
+	          LoginPage.volume=source.getValue();
+	      //  }
 		
 	}
 

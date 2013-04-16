@@ -38,6 +38,7 @@ public class LoginPage extends JFrame {
 	public static ApplicationMainFrame app;
 	public static ICEtizen me;
 	public static boolean MUTE_ON=false;
+	public static int volume;
 	public LoginPage() {
 		super("Login Page");
 		

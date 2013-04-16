@@ -8,7 +8,7 @@ import javax.sound.sampled.*;
 
 public class Sound // Holds one audio file
 {
-	Clip clip;
+	static Clip clip;
 
 	public Sound(String filename)
 	{	        
@@ -34,7 +34,7 @@ public class Sound // Holds one audio file
 	{
 		clip.loop(clip.LOOP_CONTINUOUSLY); // Play continuously
 	}
-	public void stopSound()
+	public static void stopSound()
 	{
 		clip.stop(); // Stop
 	}
@@ -43,7 +43,7 @@ public class Sound // Holds one audio file
 		AudioClip audioClip = (AudioClip) clip;
 		audioClip.play(); // Play only once
 	}
-	public void volume(float a)//decrease volume
+	public static void volume(float a)//decrease volume
 	{
 	    FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
 	    gainControl.setValue(a); // Reduce volume by 10 decibels.
@@ -53,11 +53,12 @@ public class Sound // Holds one audio file
 	    FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
 	    gainControl.setValue(-15.0f); // Reduce volume by 10 decibels.
 	}
-	*/public void mute()
+	*/public static void mute()
 	{
 		BooleanControl bc = (BooleanControl) clip.getControl(BooleanControl.Type.MUTE);
 				if (bc != null) {
 				    bc.setValue(true); // true to mute the line, false to unmute
 				}
 	}
+	
 }
