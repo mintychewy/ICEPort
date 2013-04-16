@@ -192,7 +192,7 @@ MouseMotionListener, KeyListener {
 		Thread weatherSpriteChangerThread = new Thread(new Runnable() {
 				public void run() {
 
-					while(true){
+					while(!terminateThread){
 						if(tick == 5){
 							tick = 0;
 						}
@@ -960,8 +960,8 @@ MouseMotionListener, KeyListener {
 					} catch (Exception e1) {					
 						e1.printStackTrace();
 					}
-					weather = fetcher.conditionWeather;
-
+					//weather = fetcher.conditionWeather;
+					weather = "Snowing";
 					/* WALKING SCHEDULER */
 					// check whether if a (non-active) ICEtizen needs
 					// to be a scheduled a walk
