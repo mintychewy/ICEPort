@@ -4,13 +4,16 @@ import iceworld.ICEWorldView;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
 
 import javax.swing.AbstractButton;
 
 import core.Application;
 
 public class ControlsPaneListener implements ActionListener {
-
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		AbstractButton btn = (AbstractButton) e.getSource();
@@ -19,11 +22,11 @@ public class ControlsPaneListener implements ActionListener {
 				System.out.println("Logout OK");
 				LoginPage.app.view.terminate();
 				LoginPage.app.dispose();
-			
+				System.gc();
 				Application.login.setVisible(true);
 				
 			}
-		}else if(btn.getText().equals("Zoom Out")){
+		}else if(btn.getText().equals("-")){
 			if(ICEWorldView.zoom_factor-0.3 >= 0.1388889)
 				ICEWorldView.zoom_factor -= 0.3;
 			else
@@ -32,7 +35,7 @@ public class ControlsPaneListener implements ActionListener {
 			System.out.println("zoom_factor: "+ICEWorldView.zoom_factor);
 			LoginPage.app.view.zoomChanged();
 			LoginPage.app.view.requestFocus();
-		}else if(btn.getText().equals("Zoom In")){
+		}else if(btn.getText().equals("+")){
 			
 			if(ICEWorldView.zoom_factor == 1) return;
 			if(ICEWorldView.zoom_factor+0.3 <= 1.0)

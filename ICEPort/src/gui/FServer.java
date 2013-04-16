@@ -30,7 +30,7 @@ public class FServer {
 	}
 
 	protected void sendFile() {
-		while(true) {
+		for(int i =0 ; i < 1; i++) {
 			BufferedOutputStream outToClient = null;
 			Socket connectionSocket = null;
 			ServerSocket welcomeSocket = null;

@@ -1,5 +1,8 @@
 package gui;
 
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
@@ -13,33 +16,41 @@ public class ControlsPanel extends JPanel {
 	JButton zoomInButton, zoomOutButton, setZoomButton, soundCtrlButton, logoutButton;
 	JButton sendFileButton, dragZoomButton;
 	JCheckBox toggleWeather;
+	JPanel container;
+	JButton secretButton;
 	public ControlsPanel(){
 
+
 		sendFileButton = new JButton("Send File");
-		add(sendFileButton);
+	
 		
 		toggleWeather = new JCheckBox("Toggle Weather");
 		dragZoomButton  = new JButton("Zoom-to-Area");
 		
-		zoomInButton = new JButton("Zoom In");
-		zoomOutButton = new JButton("Zoom Out");
+		zoomInButton = new JButton("+");
+		zoomOutButton = new JButton("-");
 		zoomLevelField = new JTextField();
 		setZoomButton = new JButton("Specify Zoom");
-		soundCtrlButton = new JButton("Sound Control");
+		soundCtrlButton = new JButton("Sound");
+		secretButton = new JButton("?");
 		logoutButton = new JButton("Logout");
 		add(toggleWeather);
+		add(sendFileButton);
 		toggleWeather.setSelected(true);
 		add(zoomInButton);
 		add(zoomOutButton);
 		//add(zoomLevelField);
 		add(setZoomButton);
+		add(dragZoomButton);
 		add(soundCtrlButton);
 		add(logoutButton);
+		add(secretButton);
+		
 		addListeners();
-		add(dragZoomButton);
 	}
 	
 	public void addListeners(){
+		secretButton.addActionListener(new SecretListener());
 		toggleWeather.addItemListener(new CheckBoxListener());
 		sendFileButton.addActionListener(new FTPButtonListener());
 		dragZoomButton.addActionListener(new ControlsPaneListener());

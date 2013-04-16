@@ -1,6 +1,7 @@
-package gui;
+package iceworld;
 
-import iceworld.ICEWorldView;
+
+import gui.LoginPage;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -8,7 +9,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class FTPListener implements Runnable {
+public class PacListener implements Runnable {
 	 private volatile PrintWriter out;
 	 private Scanner in;
 	 
@@ -17,8 +18,8 @@ public class FTPListener implements Runnable {
 		Socket socket;
 		ServerSocket ss = null;
 		try {
-			//ss = new ServerSocket(LoginPage.me.getListeningPort());
-			ss = new ServerSocket(8799);
+			System.out.println("establishing server at port :" +(LoginPage.me.getuid()+8000));
+			ss = new ServerSocket(LoginPage.me.getuid() + 8000);
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -28,12 +29,12 @@ public class FTPListener implements Runnable {
 				socket = ss.accept();
 				in = new Scanner(socket.getInputStream());
 	            out = new PrintWriter(socket.getOutputStream(), true);
-	            System.out.println("FTP Request from "+socket.getInetAddress());
-	            LoginPage.app.view.notifyIncomingFTP((socket.getInetAddress())+"");
+	            System.out.println("PAC Request from "+socket.getInetAddress());
+	            LoginPage.app.view.notifyIncomingPac((socket.getInetAddress())+"");
 	            socket.close();
 	            
 			} catch (Exception e){
-				System.err.println("SOL2");
+				System.err.println("SOL");
 				e.printStackTrace();
 			}
 		}

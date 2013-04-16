@@ -37,7 +37,7 @@ public class ApplicationMainFrame extends JFrame{
 		initGUI();
 		
 	
-		setResizable(false);
+		//setResizable(false);
 		
 		
 		// start playing BGM

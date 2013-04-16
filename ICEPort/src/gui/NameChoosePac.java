@@ -1,5 +1,7 @@
 package gui;
 
+import iceworld.ICEWorldView;
+
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -16,11 +18,11 @@ import javax.swing.JTextField;
 
 import objects.ICEtizen;
 
-public class NameChooser extends JDialog {
+public class NameChoosePac extends JDialog {
 	
 	JTextField field;
 	JButton send;
-	public NameChooser() {
+	public NameChoosePac() {
 		createGUI();
 		setPreferredSize(new Dimension(300,200));
 		pack();
@@ -37,32 +39,37 @@ public class NameChooser extends JDialog {
 		send.addActionListener(new ActionListener(){
 			
 			public void actionPerformed(ActionEvent ae){
-				
+				LoginPage.app.view.notifyIncomingPac("me");
+
 				ICEtizen target = LoginPage.app.view.loggedinUsers.get(field.getText());
-			System.out.println(target.getUsername());
-				if(target.getIPAddress() == null || target.getListeningPort() == 0)
+				if(target == null){
+					return;
+				}
+			
+				System.out.println("target info: "+ target.getIPAddress()+ " "+ target.getuid());
+
+				
+				if(target.getIPAddress() == null || target.getuid() == 0)
 					return;
 				
-				for(int i = 0; i < 1; i++){
-					System.out.println("Going to create a new server");
-					FServer server = new FServer();
-
+				System.out.println("TARGET IP = "+(target.getIPAddress()));
+				System.out.println("TARGET LISTENINGPORT = "+ (8000+target.getuid()));
+				
 					try {
 						System.out.println("pinging target");
-						// XXX
-						//Socket socketClient = new Socket(target.getIPAddress(), target.getListeningPort());
-						Socket socketClient = new Socket("localhost", 8799);
+						Socket socketClient = new Socket(target.getIPAddress(), (8000+target.getuid()));
+						LoginPage.app.view.notifyIncomingPac("me");
 					} catch (UnknownHostException e1) {
 						e1.printStackTrace();
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					}
 
-					server.sendFile();
-					JOptionPane.showMessageDialog(new JPanel(),"Done sending!");
-					dispose();
-				}
+				
+				dispose();
+
 			}
+			
 			
 			
 		});
