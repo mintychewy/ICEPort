@@ -10,14 +10,16 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
 import java.util.Timer;
-
+import javax.swing.JCheckBox;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import objects.Minimap;
 import sfx.Sound;
 
-public class ChatController implements ActionListener,ItemListener {
+public class ChatController implements ActionListener,ItemListener,ChangeListener {
 	public Sound sound;
 	SoundControllerWindow control=new SoundControllerWindow();
 	public boolean mute;
@@ -30,12 +32,13 @@ public class ChatController implements ActionListener,ItemListener {
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		// TODO Auto-generated method stub
+		mute = ((JCheckBox)e.getSource()).isSelected();
+		if(mute){
+			LoginPage.MUTE_ON = true;
+		} else {
+			LoginPage.MUTE_ON = false;
+		}
 	
-		AbstractButton btn = (AbstractButton) e.getSource();
-		mute = btn.isSelected();
-		
-		
-		
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -79,10 +82,10 @@ public class ChatController implements ActionListener,ItemListener {
 			new Timer().schedule(new YellingTaskOthers(bf), 5000, 1);
 			LoginPage.immigration.yell(msg);
 			LoginPage.app.view.updateWorld();
-			if(mute==true){
-				
+			
+			if(LoginPage.MUTE_ON==true){	
 			}
-			else if(mute==false)
+			else 
 			sound=new Sound("music/scream.wav");	
 			} 
 		else if (btn.getActionCommand().equals("talk")) {
@@ -143,14 +146,19 @@ public class ChatController implements ActionListener,ItemListener {
 			LoginPage.immigration.talk(msg);
 
 			LoginPage.app.view.updateWorld();
-			
-		//	sound=new Sound("music/burp.wav");
-			
-		
+			if(LoginPage.MUTE_ON==true){	
+			}
+			else 
+			sound=new Sound("music/burp.wav");	
 		}
 
 		LoginPage.app.view.requestFocus(true);
 
+	}
+	@Override
+	public void stateChanged(ChangeEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 
 

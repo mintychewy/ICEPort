@@ -14,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JSlider;
 
 public class SoundControllerWindow implements ActionListener {
+	
 	JDialog soundControl;
 	JSlider BGMSlider,SFXSlider;
 	JCheckBox muteBGM;
@@ -22,6 +23,7 @@ public class SoundControllerWindow implements ActionListener {
 	public boolean selected;
 	public void actionPerformed(ActionEvent e){
 		chat=new ChatController();
+		 
 		System.out.println(selected);
 		soundControl=new JDialog();
 		soundControl.setLocation(270, 380);
@@ -32,38 +34,15 @@ public class SoundControllerWindow implements ActionListener {
 		BGMSlider=new JSlider();
 		JLabel BGM=new JLabel("BGM:");
 		SFXSlider=new JSlider();
+		SFXSlider.addChangeListener(new ChatController());
+		
 		JLabel SFX=new JLabel("SFX:");
 		muteBGM=new JCheckBox("mute");
 		muteSFX=new JCheckBox("mutesfx");
-		muteSFX.setSelected(selected);
+		
+		if(LoginPage.MUTE_ON == true)
+			 muteSFX.setSelected(true);
 		muteSFX.addItemListener(new ChatController());
-		muteSFX.addActionListener(new ActionListener(){
-
-		
-
-			
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
-	if(muteSFX.isSelected()){
-					
-					selected=true;
-					System.out.println(selected);
-					
-				
-					}
-					else if(!muteSFX.isSelected()){
-						
-						selected=false;
-						System.out.println(selected);
-						
-						//muteSFX.setSelected(selected);
-					}
-			}
-			
-		});
-		
 		soundControl.add(BGM);
 		soundControl.add(BGMSlider);
 		soundControl.add(muteBGM);

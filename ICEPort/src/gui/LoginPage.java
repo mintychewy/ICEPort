@@ -37,6 +37,7 @@ public class LoginPage extends JFrame {
 	public static ICEWorldImmigration immigration;
 	public static ApplicationMainFrame app;
 	public static ICEtizen me;
+	public static boolean MUTE_ON=false;
 	public LoginPage() {
 		super("Login Page");
 		
