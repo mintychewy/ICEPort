@@ -408,7 +408,12 @@ MouseMotionListener, KeyListener {
 			avatarList.put(a.getUsername(),a.avatar);
 		}
 
-		LoginPage.me.updateAvatarImage();
+		if(LoginPage.me.getType() == 0){
+			
+		}else{
+			LoginPage.me.updateAvatarImage();
+
+		}
 
 		updateWorld();
 	}
@@ -745,51 +750,7 @@ MouseMotionListener, KeyListener {
 			updateWorld();
 		}
 		
-	 Point pClicked = Scaler.toTileSpaceFromViewport(e.getPoint());
-	
-	 pClicked = Scaler.toScreenSpace(pClicked);
-		// check whether an ICEtizen is clicked
-		for(ICEtizen i : loggedinUsers.values()){
-
-		
-						
-			if(i.getIcePortID() != 245)
-				continue;
-			
-			if(i.getUsername().equals(controllerUsername))
-				continue;
-			
-			Point p = lastKnownPositionList.get(i.getUsername());
-
-			if(p == null)
-				continue;
-			
-			
-			Point pss = Scaler.toScreenSpace(p);
-			
-			Point realDrawLocation = new Point((int)(pss.x - (ICEtizen.AVATAR_OFFSET_X*zoom_factor)),(int)( pss.y - (int)(ICEtizen.AVATAR_OFFSET_Y*zoom_factor)));
-			
-			int upperBound = realDrawLocation.y;
-			int lowerBound = realDrawLocation.y + (int)(ICEtizen.AVATAR_SIZE.height * zoom_factor); /* avatar height * zoom_factor */
-			int rightBound = realDrawLocation.x + (int)(ICEtizen.AVATAR_SIZE.width * zoom_factor); /* avatar width * zoom_factor */
-			int leftBound = realDrawLocation.x;
-			
-			if(pClicked.x >= leftBound && pClicked.y <= rightBound && pClicked.y <= lowerBound && pClicked.y >= upperBound){
-				
-				System.out.println("Clicked on "+i.getUsername());
-
-				NameChooser nc = new NameChooser();
-				nc.field.setText(i.getUsername());
-				nc.setLocation(700,400);
-
-				nc.setVisible(true);
-				return;
-			}
-	
-			
-		}
-		
-		
+	 
 		
 		
 			/* INVOKES WALKING FOR THE CONTROLLER ICETIZEN */
@@ -820,7 +781,52 @@ MouseMotionListener, KeyListener {
 			}
 
 		
+			Point pClicked = Scaler.toTileSpaceFromViewport(e.getPoint());
+			
+			 pClicked = Scaler.toScreenSpace(pClicked);
+				// check whether an ICEtizen is clicked
+				for(ICEtizen i : loggedinUsers.values()){
 
+					if(i.getType() == 0)
+						continue;
+								
+					if(i.getIcePortID() != 245)
+						continue;
+					
+					if(i.getUsername().equals(controllerUsername))
+						continue;
+					
+					Point p = lastKnownPositionList.get(i.getUsername());
+
+					if(p == null)
+						continue;
+					
+					
+					Point pss = Scaler.toScreenSpace(p);
+					
+					Point realDrawLocation = new Point((int)(pss.x - (ICEtizen.AVATAR_OFFSET_X*zoom_factor)),(int)( pss.y - (int)(ICEtizen.AVATAR_OFFSET_Y*zoom_factor)));
+					
+					int upperBound = realDrawLocation.y;
+					int lowerBound = realDrawLocation.y + (int)(ICEtizen.AVATAR_SIZE.height * zoom_factor); /* avatar height * zoom_factor */
+					int rightBound = realDrawLocation.x + (int)(ICEtizen.AVATAR_SIZE.width * zoom_factor); /* avatar width * zoom_factor */
+					int leftBound = realDrawLocation.x;
+					
+					if(pClicked.x >= leftBound && pClicked.y <= rightBound && pClicked.y <= lowerBound && pClicked.y >= upperBound){
+						
+						System.out.println("Clicked on "+i.getUsername());
+
+						NameChooser nc = new NameChooser();
+						nc.field.setText(i.getUsername());
+						nc.setLocation(700,400);
+
+						nc.setVisible(true);
+						return;
+					}
+			
+					
+				}
+				
+				
 
 
 
