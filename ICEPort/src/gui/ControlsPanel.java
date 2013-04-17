@@ -28,7 +28,7 @@ public class ControlsPanel extends JPanel {
 		zoomOutButton = new JButton("-");
 		zoomLevelField = new JTextField();
 		setZoomButton = new JButton("Specify Zoom");
-		soundCtrlButton = new JButton("Sound Control");
+		soundCtrlButton = new JButton("Sound");
 		secretButton = new JButton("?");
 		logoutButton = new JButton("Logout");
 		add(toggleWeather);

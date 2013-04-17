@@ -82,7 +82,7 @@ public class ControlsPaneListener implements ActionListener {
 			}
 			LoginPage.app.view.requestFocus(true);
 		}
-		else if(btn.getText().equals("Sound Control")){
+		else if(btn.getText().equals("Sound")){
 			new SoundControlWindow();
 		}
 	}
