@@ -47,8 +47,12 @@ public class MenuBarListener implements ActionListener {
 			TalkVisibleDurationAdjustmentWindow tvdawindow = new TalkVisibleDurationAdjustmentWindow();
 			tvdawindow.setLocation(Application.screenDimension.width/2, Application.screenDimension.height/2);
 			tvdawindow.setVisible(true);
+		}else if (source.getText().equals("Set received file destination")){
+			DirectorySetterWindow dsWindow = new DirectorySetterWindow();
+			dsWindow.setLocation(Application.screenDimension.width/2 - 100, Application.screenDimension.height/2);
+			dsWindow.setVisible(true);
 		}
-		else{
+		else {
 			System.out.println("do nothing");
 		}
 		

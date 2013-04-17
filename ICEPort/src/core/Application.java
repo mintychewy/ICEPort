@@ -8,10 +8,11 @@ import gui.LoginPage;
  
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.net.URISyntaxException;
  
  
 public class Application {
-  
+	public static String JAR_PATH;
 	public static ApplicationMainFrame app;
 	//public static ApplicationMainFrame login;
 	public static LoginPage login;
@@ -21,6 +22,8 @@ public class Application {
 	 * Create an application frame at the centre of the screen
 	 */
 	public static void createAppAndShowGUI(){
+		
+		
 		// Get screen dimension
 		screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
 		
@@ -42,6 +45,7 @@ public class Application {
 	public static void main(String[] args){
 		javax.swing.SwingUtilities.invokeLater(new Runnable(){
 			public void run(){
+			
 				createAppAndShowGUI();
 			}
 		});

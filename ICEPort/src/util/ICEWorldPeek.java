@@ -1,11 +1,17 @@
 package util;
 
+import java.awt.Dimension;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+
+import core.Application;
 
 public class ICEWorldPeek {
 
@@ -72,6 +78,7 @@ public class ICEWorldPeek {
 			HttpURLConnection connection = (HttpURLConnection) url
 					.openConnection();
 			connection.setRequestMethod("GET");
+			connection.setConnectTimeout(5000);
 			connection.setRequestProperty("Accept", "application/json");
 
 			if (connection.getResponseCode() != 200) {
@@ -92,6 +99,17 @@ public class ICEWorldPeek {
 
 		} catch (IOException e) {
 			System.out.println("Connection failed");
+			
+	
+				JDialog dialog = new JDialog();
+				dialog.add(new JLabel("ICEWorld Server cannot be reached!"));
+				dialog.pack();
+				dialog.setLocation(Application.screenDimension.width/2-100, Application.screenDimension.height/2);
+				dialog.setModal(true);
+				dialog.setVisible(true);
+				return null;
+			
+			
 		} finally{
 			return output;
 		}
@@ -121,8 +139,8 @@ public class ICEWorldPeek {
 			httpUrlConn.setRequestMethod("HEAD");
 
 			// Set timeouts in milliseconds
-			httpUrlConn.setConnectTimeout(10000);
-			httpUrlConn.setReadTimeout(10000);
+			httpUrlConn.setConnectTimeout(5000);
+			httpUrlConn.setReadTimeout(5000);
 
 			return (httpUrlConn.getResponseCode() == HttpURLConnection.HTTP_OK);
 		} catch (Exception e) {

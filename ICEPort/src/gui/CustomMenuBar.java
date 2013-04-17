@@ -19,7 +19,7 @@ public class CustomMenuBar extends JMenuBar{
 	
 	// "Settings" menu
 	JMenu settingsMenu;
-	JMenuItem talkDurationMenuItem, customiseAvatarMenuItem, refreshRateMenuItem;
+	JMenuItem talkDurationMenuItem, customiseAvatarMenuItem, refreshRateMenuItem, fileDirectoryMenuItem;
 	
 	// "Help" menu
 	JMenu helpMenu;
@@ -40,9 +40,11 @@ public class CustomMenuBar extends JMenuBar{
 		talkDurationMenuItem = new JMenuItem("Talk Duration");
 		customiseAvatarMenuItem = new JMenuItem("Customise Avatar");
 		refreshRateMenuItem = new JMenuItem("Refresh Rate");
+		fileDirectoryMenuItem = new JMenuItem("Set received file destination");
 		settingsMenu.add(customiseAvatarMenuItem);
 		settingsMenu.add(talkDurationMenuItem);
 		settingsMenu.add(refreshRateMenuItem);
+		settingsMenu.add(fileDirectoryMenuItem);
 		
 		helpMenu =  new JMenu("Help");
 		
@@ -62,7 +64,9 @@ public class CustomMenuBar extends JMenuBar{
 
 	}
 	
+	
 	public void addListeners(){
+		fileDirectoryMenuItem.addActionListener(new MenuBarListener());
 		talkDurationMenuItem.addActionListener(new MenuBarListener());
 		customiseAvatarMenuItem.addActionListener(new MenuBarListener());
 		userManualMenuItem.addActionListener(new MenuBarListener());

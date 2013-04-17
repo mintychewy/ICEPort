@@ -67,7 +67,6 @@ MouseMotionListener, KeyListener {
 	public ICEWorldView() {
 		setDoubleBuffered(true);
 
-
 		looksList = new HashMap<String, IcetizenLook>();
 		avatarList = new HashMap<String, BufferedImage>();
 
@@ -264,9 +263,8 @@ MouseMotionListener, KeyListener {
 	
 	public static boolean GOT_PAC = false;
 	public void notifyIncomingFTP(String fromIP){
-		String senderIP = fromIP.substring(1);
-		System.out.println(senderIP+" is requesting to send a file.");
-		FClient client = new FClient(senderIP, 12345);
+		System.out.println(fromIP+" is requesting to send a file.");
+		FClient client = new FClient(fromIP, 12345);
 		client.showDialog();
 	}
 
@@ -1134,14 +1132,7 @@ MouseMotionListener, KeyListener {
 	}
 
 	public void showView() {
-		Graphics2D g2 =  (Graphics2D) getGraphics();
-		if (g2 == null)
-			return;
-		g2.drawImage(viewport, 0, 0, null);
-		
-		if(GOT_PAC){
-			g2.drawImage(pac,0,0,null);
-		}
+		repaint();
 	}
 
 
@@ -1177,6 +1168,19 @@ MouseMotionListener, KeyListener {
 
 
 	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		g.drawImage(viewport, 0, 0, null);
+		
+		/*
+		Graphics2D g2 =  (Graphics2D) getGraphics();
+		if (g2 == null)
+			return;
+		g2.drawImage(viewport, 0, 0, null);
+		
+		if(GOT_PAC){
+			g2.drawImage(pac,0,0,null);
+		}
+		*/
 	}
 
 
@@ -1213,6 +1217,7 @@ MouseMotionListener, KeyListener {
 	// controller ICEtizen's position
 	public static Point controllersLocalPosition;
 
+	public static String RECEIVED_FILES = "/";
 	/* PRIVATE */
 	private static final long serialVersionUID = 5658988277615488303L;
 

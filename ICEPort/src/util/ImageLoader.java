@@ -16,7 +16,6 @@ public class ImageLoader {
 
 		URL url = ClassLoader.getSystemClassLoader().getResource(path);
 		try {
-			System.out.println("READING FROM PATH: "+url.toString());
 			//image = ImageIO.read(new File(url.toString()));
 			
 			image = ImageIO.read(ClassLoader.getSystemClassLoader().getResourceAsStream(path));

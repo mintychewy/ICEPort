@@ -51,16 +51,17 @@ public class WorldStatesFetcher {
 
 		// checks whether if the ICEWorld can be reached
 		// if not, update nothing and prints the error
-
-		if(!ICEWorldPeek.isReachable(ICEWorldPeek.BASE_URL)){
+		boolean isReachable = ICEWorldPeek.isReachable(ICEWorldPeek.BASE_URL+"states");
+		if(!isReachable){
 			JDialog dialog = new JDialog();
 			dialog.add(new JLabel("ICEWorld Server cannot be reached!"));
-			dialog.setPreferredSize(new Dimension(200,100));
 			dialog.pack();
+			dialog.setLocation(Application.screenDimension.width/2-100, Application.screenDimension.height/2);
 			dialog.setModal(true);
 			dialog.setVisible(true);
 			return ;
 		}
+		
 
 
 		//////////////////////////////////////////////////////////////
@@ -369,23 +370,17 @@ public class WorldStatesFetcher {
 					} catch (Exception e){
 						e.printStackTrace();
 					}
-					System.out.println("KEY: "+KEY);
 					// {"status":1,"data":[{"B":null,"H":null,"S":null,"W":null}]}
 					// null will become "ul"
 					rawLook = rawLook.substring(13);
-					System.out.println("rawlook: "+rawLook);
 				
 					String gidB = rawLook.substring(rawLook.indexOf("B")+4, rawLook.indexOf(",")-1);
 					rawLook = rawLook.substring(rawLook.indexOf(",")+1);
-					System.out.println("gidB: "+gidB);
 					String gidH = rawLook.substring(rawLook.indexOf("H")+4, rawLook.indexOf(",")-1);
 					rawLook = rawLook.substring(rawLook.indexOf(",")+1);
-					System.out.println("gidH: "+gidH);
 					String gidS = rawLook.substring(rawLook.indexOf("S")+4,rawLook.indexOf(",")-1);
 					rawLook = rawLook.substring(rawLook.indexOf(",")+1);
-					System.out.println("gidS: "+gidS);
 					String gidW = rawLook.substring(rawLook.indexOf("W")+4,rawLook.lastIndexOf("]")-2);
-					System.out.println("gidW: "+gidW);
 
 					if(gidB.equals("ul") || gidH.equals("ul") || gidS.equals("ul") || gidW.equals("ul")){
 						
@@ -400,9 +395,7 @@ public class WorldStatesFetcher {
 					
 					icetizen.setIcetizenLook(defaultLooks);
 		
-					System.out.println("Is this thing null? "+(looks == null));
 					looks.put(icetizen.getUsername(), defaultLooks);
-					System.out.println("From the fetcher "+icetizen.getIcetizenLook().gidB);
 
 				} else {
 					icetizen.setIcetizenLook(null);

@@ -5,6 +5,7 @@ import iceworld.ICEWorldView;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 
@@ -20,10 +21,28 @@ public class ControlsPaneListener implements ActionListener {
 		if(btn.getText().equals("Logout")){
 			if (LoginPage.immigration.logout()){
 				System.out.println("Logout OK");
+				
+				Runtime runtime = Runtime.getRuntime();
+				
+				try {
+					Application.JAR_PATH = ClassLoader.getSystemClassLoader().getResource(".").getPath();
+					System.out.println(Application.JAR_PATH);
+
+					Process proc = runtime.exec("java -jar "+Application.JAR_PATH+"ICEPort.jar");
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+				System.exit(0);
+				
+				
 				LoginPage.app.view.terminate();
 				LoginPage.app.dispose();
 				System.gc();
+				/*
 				Application.login.setVisible(true);
+				*/
+			
+				
 				
 			}
 		}else if(btn.getText().equals("-")){

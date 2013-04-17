@@ -18,18 +18,19 @@ public class FTPListener implements Runnable {
 		ServerSocket ss = null;
 		try {
 			//ss = new ServerSocket(LoginPage.me.getListeningPort());
-			ss = new ServerSocket(8799);
+			ss = new ServerSocket(8888);
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
 		
 		while(!ICEWorldView.terminateThread){
+			System.out.println("!ICEWorldView.terminateThread");
 			try{
 				socket = ss.accept();
 				in = new Scanner(socket.getInputStream());
 	            out = new PrintWriter(socket.getOutputStream(), true);
-	            System.out.println("FTP Request from "+socket.getInetAddress());
-	            LoginPage.app.view.notifyIncomingFTP((socket.getInetAddress())+"");
+	            System.out.println("FTP Request from "+socket.getInetAddress().getHostAddress());
+	            LoginPage.app.view.notifyIncomingFTP((socket.getInetAddress().getHostAddress())+"");
 	            socket.close();
 	            
 			} catch (Exception e){

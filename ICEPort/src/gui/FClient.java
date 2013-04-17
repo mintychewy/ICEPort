@@ -1,4 +1,6 @@
 package gui;
+import iceworld.ICEWorldView;
+
 import java.net.*;
 import java.io.*;
 
@@ -45,7 +47,7 @@ public class FClient {
 	            BufferedOutputStream bos = null;
 	            try {
 	            	System.out.println("Start receiving stream");
-	                fos = new FileOutputStream(new File("/Users/puttio/iceport.jpg"));
+	                fos = new FileOutputStream(new File(ICEWorldView.RECEIVED_FILES+"iceportFile.ip"));
 	                bos = new BufferedOutputStream(fos);
 	                bytesRead = is.read(aByte, 0, aByte.length);
 
