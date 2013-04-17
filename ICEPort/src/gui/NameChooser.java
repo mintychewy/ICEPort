@@ -18,7 +18,7 @@ import objects.ICEtizen;
 
 public class NameChooser extends JDialog {
 	
-	JTextField field;
+	public JTextField field;
 	JButton send;
 	public NameChooser() {
 		createGUI();

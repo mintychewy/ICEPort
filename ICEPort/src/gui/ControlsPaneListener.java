@@ -4,10 +4,7 @@ import iceworld.ICEWorldView;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
 
 import javax.swing.AbstractButton;
 
@@ -15,6 +12,7 @@ import core.Application;
 
 public class ControlsPaneListener implements ActionListener {
 	
+	@SuppressWarnings({ "static-access", "unused" })
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		AbstractButton btn = (AbstractButton) e.getSource();
@@ -28,6 +26,7 @@ public class ControlsPaneListener implements ActionListener {
 					Application.JAR_PATH = ClassLoader.getSystemClassLoader().getResource(".").getPath();
 					System.out.println(Application.JAR_PATH);
 
+					@SuppressWarnings("unused")
 					Process proc = runtime.exec("java -jar "+Application.JAR_PATH+"ICEPort.jar");
 				} catch (IOException e1) {
 					e1.printStackTrace();

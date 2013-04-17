@@ -10,7 +10,6 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import util.Sound;
 
 @SuppressWarnings("serial")
 public class ApplicationMainFrame extends JFrame{
@@ -22,8 +21,6 @@ public class ApplicationMainFrame extends JFrame{
 	public JButton logoutButton, sendButton, soundButton, zoomInButton, zoomOutButton, setZoomButton; 
 	
 	
-	// sound
-	public Sound sound;
 	
 	public ApplicationMainFrame(){
 		super("ICE Port - version "+VERSION+" by Cerntainly");

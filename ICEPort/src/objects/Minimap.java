@@ -19,7 +19,6 @@ public class Minimap {
 	private final int POSITION_DOT_STROKE_SIZE = 14;
 	private final int POSITION_DOT_SIZE = 10;
 	public static final Color BLACK_WITH_50_PERCENT_ALPHA = new Color(0f,0f,0f,0.5f);
-	//public static final Color BLACK_WITH_50_PERCENT_ALPHA = new Color(0f,0f,0f);
 
 	// public static 
 	public final static Dimension MINIMAP_SIZE = new Dimension(270,180);
@@ -41,7 +40,7 @@ public class Minimap {
 		mapImage = new BufferedImage(MINIMAP_SIZE.width, MINIMAP_SIZE.height, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = mapImage.createGraphics();	
 
-		g.setColor(Color.black);
+		g.setColor(this.BLACK_WITH_50_PERCENT_ALPHA);
 		g.fillRect(0, 0, MINIMAP_SIZE.width, MINIMAP_SIZE.height);
 		g.setColor(Color.DARK_GRAY);
 		

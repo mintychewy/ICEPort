@@ -3,6 +3,7 @@ package iceworld;
 import gui.FClient;
 import gui.FTPListener;
 import gui.LoginPage;
+import gui.NameChooser;
 import iceworld.given.IcetizenLook;
 
 import java.awt.Color;
@@ -34,7 +35,6 @@ import javax.swing.KeyStroke;
 
 import objects.Alien;
 import objects.ICEtizen;
-import objects.Inhabitant;
 import objects.Minimap;
 import objects.World;
 import util.ActionFetcher;
@@ -51,18 +51,6 @@ MouseMotionListener, KeyListener {
 	
 	HashMap<String, IcetizenLook> looksList;
 	HashMap<String, BufferedImage> avatarList;
-
-
-	/*
-		ExecutorService pool = Executors.newFixedThreadPool(10);
-
-		for (int k = 0; k < uids.size(); k++) {
-		    pool.submit(new GetLooksTask(uids.get(k)));
-		}
-
-		pool.shutdown();
-		pool.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
-	 */
 
 
 	public ICEWorldView() {
@@ -426,13 +414,6 @@ MouseMotionListener, KeyListener {
 	}
 
 
-	public void setCustomise(IcetizenLook look){
-		this.inh.look.gidB=look.gidB;
-		this.inh.look.gidH=look.gidH;
-		this.inh.look.gidS=look.gidS;
-		this.inh.look.gidW=look.gidW;
-
-	}
 
 	/**
 	 * XXX Renders the World image with the latest elements
@@ -473,29 +454,12 @@ MouseMotionListener, KeyListener {
 		// Show update
 		viewport = panner.getWorldViewport();
 
-		Graphics2D g2Viewport = (Graphics2D) viewport.getGraphics();
-
-		if(WEATHER_ON){
-			updateWeather(g2Viewport);
-		}
-
-		updateYell(g2Viewport);
-
-		g2Viewport.drawImage(minimap.getImage(), ICEWORLD_VIEWPORT_SIZE.width
-				- Minimap.MINIMAP_SIZE.width - 10, 10, null);
-
 		showView();
 	}
 
 
 	public BufferedImage currentWeatherSprite;
 
-
-	public void updateWeather(Graphics2D g2) {
-
-		g2.drawImage(currentWeatherSprite, 0, 0, null);
-
-	}
 
 	public static int tick = 0;
 
@@ -515,16 +479,6 @@ MouseMotionListener, KeyListener {
 
 	}
 
-	/**
-	 * This method paints yells on the user's screen
-	 * 
-	 * @param g viewport Graphics object
-	 */
-	public void updateYell(Graphics g) {
-		for (BufferedImage yellImg : yellImageList) {
-			g.drawImage(yellImg, 0, 300, null);
-		}
-	}
 
 	/**
 	 * This method draws logged-in ICEtizens and Aliens on the World Image
@@ -559,43 +513,6 @@ MouseMotionListener, KeyListener {
 			zoomCorrectionYOffset = (int) ((1.0 / zoom_factor) * 2);
 			zoomCorrectionXOffset = (int) ((1.0 / zoom_factor) * 1);
 		}
-
-
-		/*
-		if (zoom_factor == 1.0) {
-			zoomCorrectionYOffset = 0;
-			zoomCorrectionXOffset = 0;
-		} else if (zoom_factor >= 0.9) {
-			zoomCorrectionYOffset = (int) ((1.0 / zoom_factor) * 20);
-			zoomCorrectionXOffset = (int) ((1.0 / zoom_factor) * 5);
-		} else if (zoom_factor >= 0.8 && zoom_factor < 0.9) {
-			zoomCorrectionYOffset = (int) ((1.0 / zoom_factor) * 5);
-			zoomCorrectionXOffset = (int) ((1.0 / zoom_factor) * 4);
-		}else if (zoom_factor >= 0.7 && zoom_factor < 0.8) {
-			zoomCorrectionYOffset = (int) ((1.0 / zoom_factor) * 5);
-			zoomCorrectionXOffset = (int) ((1.0 / zoom_factor) * 4);
-		} else if (zoom_factor >= 0.6 && zoom_factor < 0.7) {
-			zoomCorrectionYOffset = (int) ((1.0 / zoom_factor) * 4);
-			zoomCorrectionXOffset = (int) ((1.0 / zoom_factor) * 3);
-		} else if (zoom_factor >= 0.5 && zoom_factor < 0.6) {
-			zoomCorrectionYOffset = (int) ((1.0 / zoom_factor) * 3);
-			zoomCorrectionXOffset = (int) ((1.0 / zoom_factor) * 2);
-		} else if (zoom_factor >= 0.4 && zoom_factor < 0.5) {
-			zoomCorrectionYOffset = (int) ((1.0 / zoom_factor) * 5);
-			zoomCorrectionXOffset = (int) ((1.0 / zoom_factor) * 4); 
-		} else if (zoom_factor >= 0.3 && zoom_factor < 0.4) {
-			zoomCorrectionYOffset = (int) ((1.0 / zoom_factor) * 5);
-			zoomCorrectionXOffset = (int) ((1.0 / zoom_factor) * 4);
-		} else if (zoom_factor >= 0.2 && zoom_factor < 0.3) {
-			zoomCorrectionYOffset = (int) ((1.0 / zoom_factor) * 5);
-			zoomCorrectionXOffset = (int) ((1.0 / zoom_factor) * 4);
-		} else if (zoom_factor < 0.2) {
-			zoomCorrectionYOffset = (int) ((1.0 / zoom_factor) * 2);
-			zoomCorrectionXOffset = (int) ((1.0 / zoom_factor) * 1);
-			System.out.println("Y offset: "+zoomCorrectionYOffset);
-			System.out.println("X offset: "+zoomCorrectionXOffset);
-		}
-		 */
 
 		for (ICEtizen value : loggedinUsers.values()) {
 			if (value.getUsername().equals(controllerUsername))
@@ -823,35 +740,58 @@ MouseMotionListener, KeyListener {
 			int x = panDelta.x;
 			int y = panDelta.y;
 
-			/* VALIDATING DELTA CHANGE */
 			fixAndSetDelta(panDelta,1);
-			/*
-
-			if(y + ICEWORLD_VIEWPORT_SIZE.height <= World.WORLD_SIZE.height){
-				deltaY = y;
-				if(x + ICEWORLD_VIEWPORT_SIZE.width <= World.WORLD_SIZE.width){
-					deltaX = x;
-				}else {
-					deltaX = World.WORLD_SIZE.width - ICEWORLD_VIEWPORT_SIZE.width;
-
-				}
-			} else {
-				deltaY = World.WORLD_SIZE.height - ICEWORLD_VIEWPORT_SIZE.height;
-				if(x + ICEWORLD_VIEWPORT_SIZE.width <= World.WORLD_SIZE.width){
-					deltaX = x;
-				}else {
-					deltaX = World.WORLD_SIZE.width - ICEWORLD_VIEWPORT_SIZE.width;
-
-				}
-			}
-			 */
-
-
-
-
+	
 			updateWorld();
-		} else {
+		}
+		
+	 Point pClicked = Scaler.toTileSpaceFromViewport(e.getPoint());
+	
+	 pClicked = Scaler.toScreenSpace(pClicked);
+		// check whether an ICEtizen is clicked
+		for(ICEtizen i : loggedinUsers.values()){
 
+		
+						
+			if(i.getIcePortID() != 245)
+				continue;
+			
+			if(i.getUsername().equals(controllerUsername))
+				continue;
+			
+			Point p = lastKnownPositionList.get(i.getUsername());
+
+			if(p == null)
+				continue;
+			
+			
+			Point pss = Scaler.toScreenSpace(p);
+			
+			Point realDrawLocation = new Point((int)(pss.x - (ICEtizen.AVATAR_OFFSET_X*zoom_factor)),(int)( pss.y - (int)(ICEtizen.AVATAR_OFFSET_Y*zoom_factor)));
+			
+			int upperBound = realDrawLocation.y;
+			int lowerBound = realDrawLocation.y + (int)(ICEtizen.AVATAR_SIZE.height * zoom_factor); /* avatar height * zoom_factor */
+			int rightBound = realDrawLocation.x + (int)(ICEtizen.AVATAR_SIZE.width * zoom_factor); /* avatar width * zoom_factor */
+			int leftBound = realDrawLocation.x;
+			
+			if(pClicked.x >= leftBound && pClicked.y <= rightBound && pClicked.y <= lowerBound && pClicked.y >= upperBound){
+				
+				System.out.println("Clicked on "+i.getUsername());
+
+				NameChooser nc = new NameChooser();
+				nc.field.setText(i.getUsername());
+				nc.setLocation(700,400);
+
+				nc.setVisible(true);
+				return;
+			}
+	
+			
+		}
+		
+		
+		
+		
 			/* INVOKES WALKING FOR THE CONTROLLER ICETIZEN */
 
 			// converts mouseclick position into a tile position
@@ -879,7 +819,7 @@ MouseMotionListener, KeyListener {
 				System.out.println("Invalid destination point");
 			}
 
-		}
+		
 
 
 
@@ -1178,6 +1118,24 @@ MouseMotionListener, KeyListener {
 		super.paintComponent(g);
 		g.drawImage(viewport, 0, 0, null);
 		
+		
+		// update yell
+		for (BufferedImage yellImg : yellImageList) {
+			g.drawImage(yellImg, 0, 300, null);
+		}
+		
+
+		// update minimap
+		g.drawImage(minimap.getImage(), ICEWORLD_VIEWPORT_SIZE.width
+				- Minimap.MINIMAP_SIZE.width - 10, 10, null);
+
+		
+		// update weather
+		if(WEATHER_ON){
+			g.drawImage(currentWeatherSprite, 0, 0, null);
+
+		}
+		
 		/*
 		Graphics2D g2 =  (Graphics2D) getGraphics();
 		if (g2 == null)
@@ -1239,7 +1197,6 @@ MouseMotionListener, KeyListener {
 	public static boolean terminateThread = false;
 
 	/* IMAGE RESOURCES */
-	Inhabitant inh;
 	Alien ali;
 	Image yellowIndicator, redIndicator;
 	BufferedImage zoomBox;

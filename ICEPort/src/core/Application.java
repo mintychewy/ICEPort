@@ -8,7 +8,6 @@ import gui.LoginPage;
  
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.net.URISyntaxException;
  
  
 public class Application {

@@ -40,12 +40,8 @@ public class LoginPage extends JFrame {
 	public LoginPage() {
 		super("Login Page");
 		
-		/*
-		if(!ICEWorldPeek.isReachable("http://iceworld.sls-atl.com")){
-			System.out.println("unreachable");
-			System.exit(0);
-		}
-		*/
+		
+		
 			
 		createAndDisplayGUI();
 	}
@@ -107,8 +103,8 @@ class ImagePanel extends JPanel {
 		userField = new JTextField(11);
 		passField = new JPasswordField(11);
 		
-		userField.setText("Putti.O");
-		passField.setText("6637612");
+		userField.setText("");
+		passField.setText("");
 		label = new JLabel("");
 		
 		userField.setBounds(70, 55, 170, 50);

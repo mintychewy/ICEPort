@@ -19,9 +19,8 @@ public class WorldStatesFetcherTest {
 		fetcher.updateWorldStates();
 		
 		
-		// the number of ICEtizens logged-in must be equal
-		// to the number of elements in timestamp list
-		assertTrue(fetcher.icetizens.size() == fetcher.timestamp.size());
+		// all uids must be used 
+		assertTrue(fetcher.uids.size() == 0);
 		
 		// list out all the icetizens
 		Object[] usernameArray = fetcher.icetizens.keySet().toArray();
