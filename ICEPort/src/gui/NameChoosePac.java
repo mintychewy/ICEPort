@@ -59,10 +59,10 @@ public class NameChoosePac extends JDialog {
 						System.out.println("pinging target");
 						Socket socketClient = new Socket(target.getIPAddress(), (8000+target.getuid()));
 						LoginPage.app.view.notifyIncomingPac("me");
-					} catch (UnknownHostException e1) {
-						e1.printStackTrace();
-					} catch (IOException e1) {
-						e1.printStackTrace();
+					} catch (Exception e ){
+						System.out.println("error establishing socket");
+						dispose();
+						return ;
 					}
 
 				

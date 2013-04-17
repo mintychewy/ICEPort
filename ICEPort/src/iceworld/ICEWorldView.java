@@ -48,6 +48,7 @@ import util.WorldStatesFetcher;
 public class ICEWorldView extends JPanel implements MouseListener,
 MouseMotionListener, KeyListener {
 
+	
 	HashMap<String, IcetizenLook> looksList;
 	HashMap<String, BufferedImage> avatarList;
 
@@ -66,6 +67,8 @@ MouseMotionListener, KeyListener {
 
 	public ICEWorldView() {
 		setDoubleBuffered(true);
+
+		RECEIVED_FILES = ClassLoader.getSystemClassLoader().getResource(".").getPath();
 
 		looksList = new HashMap<String, IcetizenLook>();
 		avatarList = new HashMap<String, BufferedImage>();
@@ -229,7 +232,11 @@ MouseMotionListener, KeyListener {
 		weatherSpriteChangerThread.start();
 
 		// 
-		establishFTPListeningServer();
+		if(LoginPage.me.getType() == 0){
+			
+		}else{
+			establishFTPListeningServer();
+		}
 		//
 		establishPacListeningServer();
 
@@ -1176,11 +1183,12 @@ MouseMotionListener, KeyListener {
 		if (g2 == null)
 			return;
 		g2.drawImage(viewport, 0, 0, null);
+		*/
 		
 		if(GOT_PAC){
-			g2.drawImage(pac,0,0,null);
+			g.drawImage(pac,0,0,null);
 		}
-		*/
+		
 	}
 
 

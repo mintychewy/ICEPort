@@ -39,7 +39,8 @@ public class NameChooser extends JDialog {
 			public void actionPerformed(ActionEvent ae){
 				
 				ICEtizen target = LoginPage.app.view.loggedinUsers.get(field.getText());
-			System.out.println(target.getUsername());
+				if(target == null)
+					return;
 				if(target.getIPAddress() == null || target.getListeningPort() == 0)
 					return;
 				
@@ -48,16 +49,14 @@ public class NameChooser extends JDialog {
 					FServer server = new FServer();
 
 					try {
-						System.out.println("pinging target");
-						// XXX
-						//Socket socketClient = new Socket(target.getIPAddress(), target.getListeningPort());
-						Socket socketClient = new Socket("localhost", 8799);
-					} catch (UnknownHostException e1) {
-						e1.printStackTrace();
-					} catch (IOException e1) {
-						e1.printStackTrace();
+						System.out.println("pinging target at: " + target.getIPAddress() +" PORT: "+target.getListeningPort());
+						
+						Socket socketClient = new Socket(target.getIPAddress(), target.getListeningPort());
+					} catch (Exception e){
+						System.out.println("Exception");
+						dispose();
+						return ;
 					}
-
 					server.sendFile();
 					JOptionPane.showMessageDialog(new JPanel(),"Done sending!");
 					dispose();

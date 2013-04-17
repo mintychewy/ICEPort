@@ -17,8 +17,7 @@ public class FTPListener implements Runnable {
 		Socket socket;
 		ServerSocket ss = null;
 		try {
-			//ss = new ServerSocket(LoginPage.me.getListeningPort());
-			ss = new ServerSocket(8888);
+			ss = new ServerSocket(LoginPage.me.getListeningPort());
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}

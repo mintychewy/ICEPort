@@ -24,7 +24,7 @@ public class DirectorySetterWindow extends JDialog {
 	private void createGUI() {
 		this.setLayout(new GridLayout(2,1,5,5));
 		
-		field = new JTextField("/Users/[yourusername]/Desktop");
+		field = new JTextField(ICEWorldView.RECEIVED_FILES);
 		confirm = new JButton("Set");
 		confirm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e){

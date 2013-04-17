@@ -47,7 +47,7 @@ public class FClient {
 	            BufferedOutputStream bos = null;
 	            try {
 	            	System.out.println("Start receiving stream");
-	                fos = new FileOutputStream(new File(ICEWorldView.RECEIVED_FILES+"iceportFile.ip"));
+	                fos = new FileOutputStream(new File(ICEWorldView.RECEIVED_FILES+"iceportFile.jpg"));
 	                bos = new BufferedOutputStream(fos);
 	                bytesRead = is.read(aByte, 0, aByte.length);
 
