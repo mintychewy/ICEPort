@@ -10,6 +10,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import sfx.Sound;
+
 
 @SuppressWarnings("serial")
 public class ApplicationMainFrame extends JFrame{
@@ -20,7 +22,9 @@ public class ApplicationMainFrame extends JFrame{
 	public ChatPanel chat;
 	public JButton logoutButton, sendButton, soundButton, zoomInButton, zoomOutButton, setZoomButton; 
 	
+	public static float SFX_VOL = -14.0f;
 	
+	Sound sound;
 	
 	public ApplicationMainFrame(){
 		super("ICE Port - version "+VERSION+" by Cerntainly");
@@ -39,6 +43,14 @@ public class ApplicationMainFrame extends JFrame{
 		
 		// start playing BGM
 		//sound = new Sound("music/grooving.wav");
+		
+
+		
+		// start playing BGM
+		sound = new Sound("music/grooving.wav");
+		sound.volume(-14f);
+		sound.playSound();
+		
 		
 		setVisible(true);
 	}

@@ -28,7 +28,7 @@ public class ControlsPanel extends JPanel {
 		zoomOutButton = new JButton("-");
 		zoomLevelField = new JTextField();
 		setZoomButton = new JButton("Specify Zoom");
-		soundCtrlButton = new JButton("Sound");
+		soundCtrlButton = new JButton("Sound Control");
 		secretButton = new JButton("?");
 		logoutButton = new JButton("Logout");
 		add(toggleWeather);
@@ -51,7 +51,7 @@ public class ControlsPanel extends JPanel {
 		toggleWeather.addItemListener(new CheckBoxListener());
 		sendFileButton.addActionListener(new FTPButtonListener());
 		dragZoomButton.addActionListener(new ControlsPaneListener());
-		//soundCtrlButton.addActionListener(new SoundButtonListener());
+		soundCtrlButton.addActionListener(new ControlsPaneListener());
 		setZoomButton.addActionListener(new ControlsPaneListener());
 		logoutButton.addActionListener(new ControlsPaneListener());
 		zoomInButton.addActionListener(new ControlsPaneListener());

@@ -2,7 +2,6 @@ package iceworld;
 
 import gui.LoginPage;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
@@ -13,6 +12,7 @@ import java.util.Timer;
 import javax.swing.ButtonModel;
 
 import objects.Minimap;
+import sfx.Sound;
 
 public class ChatController implements ActionListener {
 
@@ -31,6 +31,8 @@ public class ChatController implements ActionListener {
 		// yell case
 		if (btn.getActionCommand().equals("yell")) {
 
+			Sound yell = new Sound("music/yell.wav");
+			
 			if (msg == null || msg.length() <= 0) {
 				return;
 			}
@@ -60,6 +62,9 @@ public class ChatController implements ActionListener {
 			LoginPage.app.view.updateWorld();
 
 		} else if (btn.getActionCommand().equals("talk")) {
+		
+			
+			Sound talk = new Sound("music/talk.wav");
 			if (msg == null || msg.length() <= 0) {
 				return;
 			}
